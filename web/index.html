@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>autoRTA · 来源核对工作台</title>
+  <link rel="stylesheet" href="/style.css">
+  <script defer src="/app.js"></script>
+</head>
+<body>
+<nav style="padding:12px 24px"><a href="/msa">进入通用 MSA 工作台 →</a></nav>
+  <header class="masthead">
+    <div class="brand"><span class="mark">aR</span><div><strong>autoRTA</strong><span class="brand-note">分析与证明工作台</span></div></div>
+    <div class="workflow"><span class="done">01 导入论文</span><i>／</i><span class="current">02 核对与冻结</span><i>／</i><span>03 双向推导</span></div>
+    <span class="local">● 本机存储</span>
+  </header>
+  <div id="test-banner" hidden>独立浏览器验收环境 · 此处确认不写入正式项目</div>
+  <div id="message" role="status" aria-live="polite" hidden></div>
+  <main>
+    <section class="project-bar">
+      <div><p class="eyebrow">SOURCE REVIEW</p><h1 id="project-title">从论文建立可追溯的分析上下文</h1><p id="project-note" class="muted">核对原文、修订字段，再选择需要独立证明的目标。</p></div>
+      <div class="project-actions">
+        <label>项目<select id="projects" aria-label="选择项目"><option value="">新建核对项目</option></select></label>
+        <button id="import-open" class="secondary">导入 / 新建</button>
+        <button id="freeze" class="primary" disabled>预览冻结上下文 →</button>
+      </div>
+    </section>
+    <section id="empty" class="empty">
+      <div class="empty-symbol">↗</div><h2>让每一条条件都有出处</h2>
+      <p>导入 case_11 数字版论文，或从已保存的语义草稿开始。</p>
+      <p class="muted">原文引用、核对意见与所有修订会一同保留。</p>
+      <button id="begin" class="primary">选择论文或已有草稿</button>
+    </section>
+    <section id="workspace" hidden>
+      <div class="revision-bar"><div><span id="revision-label"></span><span id="proof-state" class="badge">目标未证明</span><span id="gate-count"></span></div><label>修订历史 <select id="history" aria-label="修订历史"></select></label></div>
+      <div id="historical" class="notice" hidden>正在查看历史修订。旧上下文保持原样；修改请先返回最新修订。 <button id="latest">返回最新修订</button></div>
+      <div class="workspace-grid">
+        <aside class="sidebar"><div class="sidebar-title">核对清单 <span id="progress"></span></div><nav id="items" aria-label="语义条目"></nav>
+          <div class="sidebar-footer"><button id="goals-tab">◎ 选择证明目标</button><button id="scope-tab">⊞ 形式化范围</button><button id="audit-tab">↺ 变更与冻结记录</button></div>
+        </aside>
+        <section id="editor" class="editor" aria-label="字段核对"></section>
+        <section class="source" aria-label="论文来源">
+          <div class="source-header"><div><p class="eyebrow">ORIGINAL SOURCE</p><h2>原文对照</h2></div><div class="segmented"><button id="image-tab" class="active">页图</button><button id="text-tab">文字</button></div></div>
+          <div class="page-controls"><button id="prev-page" aria-label="上一页">←</button><label>第 <select id="page-number" aria-label="论文页码"></select> 页</label><button id="next-page" aria-label="下一页">→</button><span class="muted">物理页码</span></div>
+          <p id="source-hint" class="source-hint">点击左侧引用可定位并高亮原文。</p>
+          <div id="image-view" class="page-scroll"><div id="page-canvas"><img id="page-image" alt="论文原始页面"><div id="highlights"></div></div></div>
+          <div id="text-view" class="page-scroll" hidden><pre id="page-text" tabindex="0"></pre></div>
+          <div class="source-bottom"><button id="cite-selection" class="secondary" disabled>将选中文字补充为来源</button><span class="muted">切换文字视图后选择片段</span></div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <dialog id="import-dialog"><form method="dialog" class="dialog-close"><button aria-label="关闭">×</button></form><p class="eyebrow">START A REVIEW</p><h2>导入论文 / 新建核对项目</h2><p class="muted">当前语义适配器支持 case_11 六页数字版论文。</p><label class="upload">选择 PDF 文件<input id="pdf-file" type="file" accept="application/pdf,.pdf"></label><button id="upload" class="primary">导入并提取</button><hr><label>已有语义草稿<select id="drafts"></select></label><label>项目名称<input id="new-name" value="case_11 · 来源核对" maxlength="120"></label><button id="create" class="secondary">从草稿创建</button></dialog>
+  <dialog id="preview-dialog"><form method="dialog" class="dialog-close"><button aria-label="关闭">×</button></form><p class="eyebrow">REVIEW BEFORE CONFIRMING</p><h2 id="preview-title">确认具体变更</h2><div id="preview-content"></div><div class="confirmation">
+      <label>核对人<input id="actor" value="本机核对者" maxlength="80"></label>
+      <label id="reason-label">核对 / 修订说明<textarea id="reason" rows="2" placeholder="记录原文核对结论、修订依据及范围影响"></textarea></label>
+      <label class="check-label"><input id="confirm-check" type="checkbox"><span id="confirm-label">我已核对上述变更、来源与影响。</span></label>
+      <button id="confirm-action" class="primary" disabled>确认并保存修订</button>
+  </div></dialog>
+  <footer>autoRTA Platform <span>W03 / W04 · 来源核对与推导</span><span>语义确认与形式证明分别记录</span></footer>
+</body>
+</html>

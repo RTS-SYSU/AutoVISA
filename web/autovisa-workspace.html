@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>AutoVISA Workspace</title>
+<script defer src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js" crossorigin="anonymous"></script>
+<style>body{margin:0}#rt-workspace{min-height:100vh}</style>
+<script id="av-katex" defer src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.js" crossorigin="anonymous"></script>
+<style>
+#rt-workspace{--rt-bg:light-dark(#f6f7fa,#151b25);--rt-panel:light-dark(#ffffff,#1c2532);--rt-rail:light-dark(#f0f2f7,#18212e);--rt-ink:light-dark(#202d42,#edf2fb);--rt-muted:light-dark(#667286,#b0bed2);--rt-line:light-dark(#dce2eb,#3d495b);--rt-blue:light-dark(#354bc2,#adc0ff);--rt-soft:light-dark(#edf0ff,#283858);--rt-amber:light-dark(#80530e,#f1ca7d);--rt-warm:light-dark(#fff5e2,#383021);--rt-primary:light-dark(#354bc2,#adbfff);--rt-on-primary:light-dark(#ffffff,#18213a);color:var(--rt-ink);font:14px/1.5 Inter,'Segoe UI',sans-serif;background:var(--rt-bg);border:1px solid var(--rt-line);border-radius:12px;overflow:hidden;max-width:100%}
+#rt-workspace *{box-sizing:border-box}#rt-workspace [hidden]{display:none!important}#rt-workspace h1,#rt-workspace h2,#rt-workspace h3,#rt-workspace p{margin:0}#rt-workspace h1{font-size:21px;letter-spacing:-.025em;font-weight:600}#rt-workspace h2{font-size:17px;letter-spacing:-.015em;font-weight:600}#rt-workspace h3{font-size:14px;font-weight:600}#rt-workspace button,#rt-workspace input,#rt-workspace select{font:inherit;color:inherit}#rt-workspace button{cursor:pointer}#rt-workspace button:focus-visible,#rt-workspace select:focus-visible,#rt-workspace input:focus-visible,#rt-workspace summary:focus-visible{outline:3px solid var(--rt-blue);outline-offset:3px}#rt-workspace svg.lucide{width:16px;height:16px;flex-shrink:0;stroke-width:1.7}#rt-workspace .shell{display:grid;grid-template-columns:146px minmax(0,1fr)}#rt-workspace .rail{padding:19px 11px;background:var(--rt-rail);border-right:1px solid var(--rt-line);display:flex;flex-direction:column;gap:22px}#rt-workspace .brand{font-size:19px;font-weight:600;letter-spacing:-.02em;padding:0 9px}#rt-workspace .navgroup{display:grid;gap:5px}#rt-workspace .navrow{display:flex;align-items:center;gap:8px;padding:8px 9px;color:var(--rt-muted);border-radius:7px;font-size:12px;white-space:nowrap}#rt-workspace .navrow.active{background:var(--rt-panel);color:var(--rt-blue);font-weight:600}#rt-workspace .projectname{padding:16px 9px 8px;border-top:1px solid var(--rt-line);font-size:12px;font-weight:600}#rt-workspace .railfoot{margin-top:auto;display:grid;gap:5px}#rt-workspace .main{min-width:0}#rt-workspace .topbar{padding:13px 20px;border-bottom:1px solid var(--rt-line);background:var(--rt-panel);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}#rt-workspace .breadcrumb{font-size:12px;color:var(--rt-muted);display:flex;align-items:center;gap:9px;flex-wrap:wrap}#rt-workspace .breadcrumb strong{color:var(--rt-ink);font-weight:500}#rt-workspace .previewmark{font-size:11px;padding:3px 7px;border:1px solid var(--rt-line);border-radius:5px;color:var(--rt-muted)}#rt-workspace .pagehead{padding:19px 20px 15px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}#rt-workspace .headinggroup{display:grid;gap:4px}#rt-workspace .muted{color:var(--rt-muted)}#rt-workspace .small{font-size:12px}#rt-workspace .tiny{font-size:11px}#rt-workspace .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#rt-workspace .control{border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:7px;min-height:34px;padding:6px 10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px;white-space:nowrap}#rt-workspace .control:hover{background:var(--rt-soft)}#rt-workspace .control.primary{background:var(--rt-primary);color:var(--rt-on-primary);border-color:var(--rt-primary);font-weight:500}#rt-workspace .control.quiet{border-color:transparent;background:transparent;color:var(--rt-muted)}#rt-workspace .control.quiet:hover{background:var(--rt-soft);color:var(--rt-blue)}#rt-workspace .control.icon-only{width:34px;padding:7px}#rt-workspace select{background:var(--rt-panel);border:1px solid var(--rt-line);padding:6px 8px;min-height:34px;border-radius:7px;font-size:12px;max-width:100%}#rt-workspace .viewbar{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:0 20px;border-bottom:1px solid var(--rt-line);flex-wrap:wrap}#rt-workspace .viewtabs{display:flex;gap:18px}#rt-workspace .viewtab{padding:10px 1px;background:transparent;border:0;border-bottom:2px solid transparent;font-size:12px;color:var(--rt-muted)}#rt-workspace .viewtab[aria-pressed=true]{color:var(--rt-blue);border-bottom-color:var(--rt-blue);font-weight:600}#rt-workspace .viewtab:hover{color:var(--rt-blue)}#rt-workspace .route-meta{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--rt-muted)}#rt-workspace .notice{padding:10px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--rt-line);font-size:12px;background:var(--rt-warm);color:var(--rt-amber)}#rt-workspace .notice strong{font-weight:500}#rt-workspace .canvasarea{padding:16px 19px 13px}#rt-workspace .canvasmeta{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--rt-muted);font-size:11px;margin-bottom:14px}#rt-workspace .graph{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(3,75px);gap:16px 18px;min-width:0}#rt-workspace .wires{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:visible}#rt-workspace .wires path{fill:none;stroke:var(--rt-line);stroke-width:1.6}#rt-workspace .wires path.relevant{stroke:var(--rt-blue);stroke-width:1.8}#rt-workspace .node{position:relative;background:var(--rt-panel);border:1px solid var(--rt-line);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;min-width:0;gap:3px}#rt-workspace .node strong{font-size:13px;font-weight:600}#rt-workspace .node:hover{border-color:var(--rt-blue)}#rt-workspace .node[aria-pressed=true]{border:2px solid var(--rt-blue);background:var(--rt-soft);padding:8px 9px}#rt-workspace .node .nodefooter{display:flex;gap:5px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--rt-muted)}#rt-workspace .node .stage-status{font-size:11px;color:var(--rt-muted)}#rt-workspace .node .stage-status.open{color:var(--rt-amber)}#rt-workspace .node:before,#rt-workspace .node:after{content:'';position:absolute;width:5px;height:5px;border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:50%;top:calc(50% - 3px)}#rt-workspace .node:before{left:-3px}#rt-workspace .node:after{right:-3px}#rt-workspace .flowcaption{font-size:11px;color:var(--rt-muted);margin-top:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}#rt-workspace .artifact-panel{background:var(--rt-panel);border-top:1px solid var(--rt-line)}#rt-workspace .stagehead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 19px;border-bottom:1px solid var(--rt-line);flex-wrap:wrap}#rt-workspace .stageheading{display:flex;align-items:center;gap:9px;flex-wrap:wrap}#rt-workspace .count{background:var(--rt-bg);color:var(--rt-muted);font-size:11px;padding:3px 7px;border-radius:5px}#rt-workspace .stagepicker{display:none}#rt-workspace .artifact-layout{display:grid;grid-template-columns:166px minmax(0,1fr)}#rt-workspace .artifact-list{padding:14px 10px;background:var(--rt-panel);border-right:1px solid var(--rt-line)}#rt-workspace .artifact-list-label{padding:0 8px 9px;font-size:11px;color:var(--rt-muted)}#rt-workspace .artifact-button{width:100%;border:0;background:transparent;border-radius:6px;padding:10px 8px;text-align:left;display:flex;gap:7px;align-items:flex-start;color:var(--rt-muted);font-size:12px;margin-bottom:4px}#rt-workspace .artifact-button svg{margin-top:1px}#rt-workspace .artifact-button[aria-pressed=true]{background:var(--rt-soft);color:var(--rt-blue);font-weight:500}#rt-workspace .artifact-button:hover{background:var(--rt-bg)}#rt-workspace .artifact-button[aria-pressed=true]:hover{background:var(--rt-soft)}#rt-workspace .artifact-body{padding:17px 20px;min-width:0}#rt-workspace .artifact-titlebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}#rt-workspace .artifact-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#rt-workspace .status{font-size:11px;border-radius:5px;padding:3px 7px;background:var(--rt-bg);color:var(--rt-muted);white-space:nowrap}#rt-workspace .status.open{background:var(--rt-warm);color:var(--rt-amber)}#rt-workspace .detailtabs{display:flex;gap:4px;align-items:center}#rt-workspace .detailtab{border:0;background:transparent;color:var(--rt-muted);padding:5px 8px;border-radius:5px;font-size:11px}#rt-workspace .detailtab[aria-pressed=true]{background:var(--rt-bg);color:var(--rt-ink);font-weight:500}#rt-workspace .detailtab:hover{background:var(--rt-soft)}#rt-workspace .artifact-caption{font-size:12px;color:var(--rt-muted);margin:8px 0 17px;max-width:65ch}#rt-workspace .artifact-content{min-height:180px}#rt-workspace .artifact-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:17px;padding-top:11px;border-top:1px solid var(--rt-line);font-size:11px;color:var(--rt-muted)}#rt-workspace .mini-graph{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,64px);gap:18px 17px;padding:0;margin:6px 0 12px}#rt-workspace .mini-graph .node{font-size:12px;padding:8px;gap:2px}#rt-workspace .mini-graph .node strong{font-size:12px;font-weight:500}#rt-workspace .mini-graph .node small{font-size:11px;color:var(--rt-muted)}#rt-workspace .mini-graph .node[aria-pressed=true]{padding:7px}#rt-workspace .claimline{padding:9px 11px;border-radius:6px;background:var(--rt-bg);font-size:12px;display:flex;gap:9px;align-items:flex-start}#rt-workspace .claimline strong{font-weight:500;white-space:nowrap}#rt-workspace .claimline span{color:var(--rt-muted)}#rt-workspace .artifact-content table{border-collapse:collapse;width:100%;font-size:12px}#rt-workspace .artifact-content th{text-align:left;font-weight:500;color:var(--rt-muted);padding:7px 9px;border-bottom:1px solid var(--rt-line)}#rt-workspace .artifact-content td{padding:10px 9px;border-bottom:1px solid var(--rt-line);vertical-align:top}#rt-workspace .artifact-content td:first-child{font-weight:500}#rt-workspace .formula{font-family:Cambria,Georgia,serif;font-size:20px;padding:17px;text-align:center;background:var(--rt-bg);border-radius:7px;margin-bottom:13px;overflow-wrap:anywhere}#rt-workspace .mathbox{border:1px solid var(--rt-line);border-radius:8px;background:var(--rt-bg);padding:14px;text-align:center}#rt-workspace .mathbox .math{font-family:Cambria,Georgia,serif;font-size:20px;margin-top:7px}#rt-workspace .mathbox p{font-size:12px;color:var(--rt-muted);margin-top:5px}#rt-workspace .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:13px}#rt-workspace .bridge-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:11px;background:var(--rt-warm);color:var(--rt-amber);border-radius:6px;font-size:12px;margin-bottom:13px}#rt-workspace .pillrow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}#rt-workspace .pill{font-size:11px;padding:5px 8px;border:1px solid var(--rt-line);border-radius:5px;color:var(--rt-muted)}#rt-workspace .tree{display:grid;gap:8px}#rt-workspace .treeroot{padding:10px 12px;background:var(--rt-soft);color:var(--rt-blue);border-radius:6px;font-size:12px;font-weight:500}#rt-workspace .treechildren{margin-left:17px;padding-left:16px;border-left:1px solid var(--rt-line);display:grid;gap:8px}#rt-workspace .treeleaf{padding:8px 10px;background:var(--rt-bg);font-size:12px;border-radius:5px;display:flex;justify-content:space-between;gap:8px}#rt-workspace .treeleaf span{color:var(--rt-muted);font-size:11px}#rt-workspace .source-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:13px;padding:12px 0;border-bottom:1px solid var(--rt-line);font-size:12px}#rt-workspace .source-row strong{font-weight:500}#rt-workspace .source-row p{color:var(--rt-muted)}#rt-workspace .source-row .origin{font-size:11px;color:var(--rt-muted)}#rt-workspace pre{font:12px/1.7 Consolas,monospace;background:var(--rt-bg);padding:15px;border-radius:7px;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}#rt-workspace .checkrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 1px;border-bottom:1px solid var(--rt-line);font-size:12px}#rt-workspace .checkrow span{color:var(--rt-muted)}#rt-workspace .blank{padding:23px 10px;text-align:center;color:var(--rt-muted);font-size:12px}#rt-workspace .blank strong{display:block;color:var(--rt-ink);font-weight:500;font-size:14px;margin-bottom:5px}#rt-workspace .catalog{padding:18px 20px;background:var(--rt-panel)}#rt-workspace .catalog-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:15px}#rt-workspace input{padding:8px 10px;border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:7px;font-size:12px;min-width:0;width:210px;max-width:100%}#rt-workspace .catalog-row{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 100px 70px;gap:15px;align-items:center;text-align:left;padding:10px 9px;border:0;border-bottom:1px solid var(--rt-line);background:none;font-size:12px}#rt-workspace .catalog-row:hover{background:var(--rt-soft)}#rt-workspace .catalog-row .filelabel{display:flex;gap:8px;align-items:center;min-width:0}#rt-workspace .catalog-row .kind{color:var(--rt-muted);font-size:11px}#rt-workspace .catalog-labels{color:var(--rt-muted);cursor:default}#rt-workspace .catalog-labels:hover{background:none}#rt-workspace .mobile-nav{display:none}#rt-workspace .mobile-nav summary{font-size:12px;cursor:pointer}#rt-workspace .mobile-nav p{padding-top:8px;font-size:12px;color:var(--rt-muted)}#rt-workspace .preview-footer{padding:11px 19px;border-top:1px solid var(--rt-line);font-size:11px;color:var(--rt-muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}#rt-workspace .no-navigation .shell,#rt-workspace.no-navigation .shell,#rt-workspace.focused .shell{grid-template-columns:minmax(0,1fr)}#rt-workspace.no-navigation .rail,#rt-workspace.focused .rail{display:none}#rt-workspace.focused .canvasarea,#rt-workspace.focused .notice{display:none}#rt-workspace.focused .stagepicker{display:flex;gap:6px;align-items:center}#rt-workspace.focused .artifact-content{min-height:300px}#rt-workspace.focused .artifact-layout{grid-template-columns:190px minmax(0,1fr)}#rt-workspace .timeline{display:flex;align-items:center;gap:7px;padding:18px 4px 15px}#rt-workspace .timeline .end{font-size:12px;white-space:nowrap}#rt-workspace .timeline .interval{flex:1;min-width:60px;height:36px;border-bottom:1px solid var(--rt-muted);position:relative;text-align:center;font-family:Cambria,Georgia,serif;font-size:17px}#rt-workspace .timeline .interval:before,#rt-workspace .timeline .interval:after{content:'';position:absolute;bottom:-4px;width:1px;height:8px;background:var(--rt-muted)}#rt-workspace .timeline .interval:before{left:0}#rt-workspace .timeline .interval:after{right:0}
+@media(max-width:950px){#rt-workspace .shell{grid-template-columns:130px minmax(0,1fr)}#rt-workspace .rail{padding-left:7px;padding-right:7px}#rt-workspace .graph{column-gap:12px}#rt-workspace .node{padding:8px 7px}#rt-workspace .node[aria-pressed=true]{padding:7px 6px}#rt-workspace .node strong{font-size:12px}#rt-workspace .artifact-layout{grid-template-columns:152px minmax(0,1fr)}#rt-workspace .artifact-body{padding:15px}}
+@media(max-width:780px){#rt-workspace .shell{grid-template-columns:1fr}#rt-workspace .rail{display:none}#rt-workspace .mobile-nav{display:block}#rt-workspace .sidebar-toggle{display:none}#rt-workspace .topbar{padding:12px 16px}#rt-workspace .pagehead{padding:16px}#rt-workspace .viewbar{padding-left:16px;padding-right:16px}#rt-workspace .route-meta{display:none}}
+@media(max-width:600px){#rt-workspace .canvasarea{padding:14px 16px}#rt-workspace .graph{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:72px;gap:10px}#rt-workspace .graph .node{grid-column:auto!important;grid-row:auto!important}#rt-workspace .graph .node:first-of-type{grid-column:1/-1!important}#rt-workspace .wires{display:none}#rt-workspace .node:before,#rt-workspace .node:after{display:none}#rt-workspace .flowcaption{display:none}#rt-workspace .artifact-layout,#rt-workspace.focused .artifact-layout{grid-template-columns:1fr}#rt-workspace .artifact-list{border-right:0;border-bottom:1px solid var(--rt-line);display:flex;gap:5px;flex-wrap:wrap;padding:10px 13px}#rt-workspace .artifact-list-label{display:none}#rt-workspace .artifact-button{width:auto;border:1px solid var(--rt-line);padding:7px 9px;margin:0;align-items:center;min-height:36px}#rt-workspace .artifact-button svg{display:none}#rt-workspace .stagehead{padding:13px 16px}#rt-workspace .stagehead h2{font-size:16px}#rt-workspace .count{display:none}#rt-workspace .artifact-titlebar{gap:9px}#rt-workspace .detailtabs{width:100%;padding-bottom:6px;border-bottom:1px solid var(--rt-line)}#rt-workspace .detailtab{padding:7px 10px}#rt-workspace .mini-graph{grid-template-columns:1fr;grid-auto-rows:auto;gap:7px}#rt-workspace .mini-graph .node{min-height:55px}#rt-workspace .mini-graph .node:first-of-type{grid-column:auto!important}#rt-workspace .twocol{grid-template-columns:1fr}#rt-workspace .source-row{grid-template-columns:1fr;gap:4px}#rt-workspace .catalog{padding:16px}#rt-workspace .catalog-row{grid-template-columns:minmax(0,1fr) 70px;gap:8px}#rt-workspace .catalog-row .kind{display:none}#rt-workspace .claimline{display:block}#rt-workspace .claimline span{display:block;margin-top:4px}#rt-workspace .artifact-content th,#rt-workspace .artifact-content td{padding:9px 5px}#rt-workspace .artifact-content table{font-size:11px}#rt-workspace .route-control{width:100%;justify-content:space-between}#rt-workspace .artifact-content{min-height:0}#rt-workspace.focused .artifact-content{min-height:0}#rt-workspace .node strong{font-size:13px}#rt-workspace .preview-footer{font-size:11px}}
+@media(prefers-reduced-motion:no-preference){#rt-workspace .node,#rt-workspace .control,#rt-workspace .artifact-button{transition:background-color 130ms,border-color 130ms}}
+#rt-workspace .wires path{stroke:light-dark(#7c8da6,#899ab2)}
+#rt-workspace .wires path.relevant{stroke:var(--rt-blue)}
+#rt-workspace.focused .sidebar-toggle{display:none}
+@media(max-width:600px){#rt-workspace .notice span{display:none}}
+@media(pointer:coarse){#rt-workspace .control,#rt-workspace .artifact-button,#rt-workspace .detailtab,#rt-workspace .viewtab{min-height:44px}#rt-workspace input,#rt-workspace select{font-size:16px;min-height:44px}}
+#rt-workspace .shell{grid-template-columns:174px minmax(0,1fr)}
+#rt-workspace .rail{gap:26px;min-height:690px}
+#rt-workspace .navrow{width:100%;border:0;background:transparent;text-align:left;min-height:37px}
+#rt-workspace .navrow:hover{background:var(--rt-soft);color:var(--rt-blue)}
+#rt-workspace .navrow.active{background:var(--rt-panel);color:var(--rt-blue)}
+#rt-workspace .navrow.parent-active{color:var(--rt-ink);font-weight:500}
+#rt-workspace .project-nav{margin:3px 0 10px 16px;padding-left:7px;border-left:1px solid var(--rt-line);display:grid;gap:3px}
+#rt-workspace .project-nav .navrow{font-size:12px;padding-left:9px}
+#rt-workspace .breadcrumb button{border:0;background:transparent;padding:0;color:var(--rt-muted);font-size:12px}
+#rt-workspace .breadcrumb button:hover{color:var(--rt-blue)}
+#rt-workspace .page-content{padding:5px 24px 28px;min-height:580px}
+#rt-workspace .page-content h2{margin-bottom:12px}
+#rt-workspace .page-content h3{margin-bottom:7px}
+#rt-workspace .surface{background:var(--rt-panel);border:1px solid var(--rt-line);border-radius:10px;padding:20px;min-width:0}
+#rt-workspace .split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(220px,1fr);gap:22px;align-items:start}
+#rt-workspace .stack{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;min-width:0}
+#rt-workspace .stack>*,#rt-workspace .split>*{min-width:0}
+#rt-workspace .module-tabs{display:flex;gap:18px;border-bottom:1px solid var(--rt-line);margin-bottom:20px;flex-wrap:wrap}
+#rt-workspace .page-content .artifact-content{min-height:0}
+#rt-workspace .lead{font-size:14px;max-width:62ch;margin-bottom:18px;color:var(--rt-muted)}
+#rt-workspace .action-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+#rt-workspace .project-entry{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;padding:23px 0;border-top:1px solid var(--rt-line);border-bottom:1px solid var(--rt-line)}
+#rt-workspace .project-entry h2{margin:0 0 5px}#rt-workspace .project-entry p{margin-bottom:10px}
+#rt-workspace .step-row{display:flex;align-items:center;gap:13px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rt-line);padding:16px 0;background:transparent;font:inherit}
+#rt-workspace .step-row:hover{color:var(--rt-blue)}#rt-workspace .step-row .step-copy{display:grid;gap:3px;flex:1;font-size:13px}#rt-workspace .step-copy small{color:var(--rt-muted);font-size:12px}
+#rt-workspace .step-num{display:flex;align-items:center;justify-content:center;width:27px;height:27px;border:1px solid var(--rt-line);border-radius:50%;font-size:12px;flex-shrink:0;color:var(--rt-muted)}
+#rt-workspace .page-content textarea{width:100%;min-height:92px;resize:vertical;border:1px solid var(--rt-line);border-radius:7px;padding:10px 12px;background:var(--rt-panel);color:var(--rt-ink);font:13px/1.6 Inter,'Segoe UI',sans-serif;caret-color:var(--rt-blue)}
+#rt-workspace textarea:focus-visible{outline:3px solid var(--rt-blue);outline-offset:3px}
+#rt-workspace .field{display:grid;gap:7px;font-size:12px;color:var(--rt-muted)}#rt-workspace .field input,#rt-workspace .field select{width:100%}
+#rt-workspace .upload-zone{border:1px dashed var(--rt-line);border-radius:10px;padding:25px 20px;text-align:center;background:var(--rt-panel);display:grid;justify-items:center;gap:12px}
+#rt-workspace .upload-zone input{width:100%;max-width:330px}
+#rt-workspace .section-note{font-size:12px;color:var(--rt-muted);padding:12px 0}
+#rt-workspace .local-feedback{font-size:12px;color:var(--rt-blue);min-height:18px}
+#rt-workspace .resource-row{padding:18px 0;border-bottom:1px solid var(--rt-line);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center}
+#rt-workspace .resource-row p{font-size:12px;color:var(--rt-muted);max-width:55ch}
+#rt-workspace .help-item{border-bottom:1px solid var(--rt-line);padding:15px 0;font-size:13px}
+#rt-workspace .help-item summary{cursor:pointer;font-weight:500}#rt-workspace .help-item p{padding-top:10px;color:var(--rt-muted);max-width:65ch}
+#rt-workspace .run-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:15px 0;border-bottom:1px solid var(--rt-line);font-size:12px}#rt-workspace .run-row strong{flex:1;font-size:13px}
+#rt-workspace .latex-block{max-width:100%;overflow-x:auto;padding:8px 0;font-size:17px;scrollbar-color:var(--rt-line) transparent}
+#rt-workspace .latex-inline{font-size:1em}#rt-workspace .katex-display{margin:.35em 0}#rt-workspace .mathbox .latex-block{font-size:17px}
+#rt-workspace .formula .latex-block{font-size:18px}#rt-workspace .formula{overflow-wrap:normal}
+#rt-workspace .mobile-nav .navrow{min-height:44px}#rt-workspace .mobile-nav[open]{width:100%}
+#rt-workspace ::selection{background:var(--rt-soft);color:var(--rt-blue)}
+#rt-workspace .page-content [disabled]{opacity:.6;cursor:not-allowed}
+@media(max-width:780px){#rt-workspace .shell{grid-template-columns:1fr}#rt-workspace .page-content{padding:3px 16px 24px;min-height:470px}#rt-workspace .split{grid-template-columns:1fr}#rt-workspace .project-entry{gap:15px}#rt-workspace .rail{min-height:0}}
+@media(max-width:480px){#rt-workspace .project-entry,#rt-workspace .resource-row{grid-template-columns:1fr}#rt-workspace .surface{padding:16px}#rt-workspace .previewmark{display:none}#rt-workspace .page-content textarea{font-size:16px}}
+#rt-workspace .av-next,#rt-workspace .av-title{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+#rt-workspace .av-next{border-left:3px solid var(--rt-blue);background:var(--rt-soft);padding:16px 18px;border-radius:0 7px 7px 0}
+#rt-workspace .av-next p{margin:4px 0 0}#rt-workspace .av-statement{font-size:15px;line-height:1.65;max-width:70ch;white-space:pre-wrap;overflow-wrap:anywhere}
+#rt-workspace .av-fields{display:grid;grid-template-columns:7rem minmax(0,1fr);gap:0;margin:0}#rt-workspace .av-fields>*{margin:0;border-top:1px solid var(--rt-line);padding:12px 0}#rt-workspace .av-fields dt{font-weight:600}#rt-workspace .av-fields dd{white-space:pre-wrap;overflow-wrap:anywhere}
+#rt-workspace .av-picker{width:min(22rem,100%)}#rt-workspace .av-trailing{display:inline-flex;align-items:center;gap:6px;margin-left:auto;text-align:right}
+#rt-workspace .page-content{min-height:340px}#rt-workspace .rail{min-height:460px}#rt-workspace .local-feedback:empty{display:none}
+#rt-workspace .field{color:var(--rt-ink);font-size:14px}#rt-workspace .module-tabs .viewtab{font-size:13px;min-height:44px}#rt-workspace td{overflow-wrap:anywhere}#rt-workspace .artifact-foot .control{font-size:13px}
+@media(max-width:600px){#rt-workspace .av-fields{grid-template-columns:1fr}#rt-workspace .av-fields dt{padding-bottom:0}#rt-workspace .av-fields dd{border-top:0;padding-top:4px}#rt-workspace .module-tabs{column-gap:12px;row-gap:0}#rt-workspace .artifact-foot{flex-wrap:wrap;gap:8px}}
+#rt-workspace .stage-status:empty{display:none}#rt-workspace .artifact-content table{font-size:13px;line-height:1.55}
+#rt-workspace .treeleaf>span:last-child:not([data-tex]){font-size:12px}#rt-workspace .field [aria-invalid="true"]{border-color:var(--rt-amber)}
+#rt-workspace .av-reference{margin-top:7px;color:var(--rt-blue);font-size:13px}#rt-workspace .help-item[open]>.stack{padding-top:12px}#rt-workspace .field input[type="text"]{padding:8px 10px}
+#rt-workspace .rail-chevron{font:24px/1 'Segoe UI',sans-serif}#rt-workspace .navrow{font-size:14px}#rt-workspace .project-nav .navrow{font-size:13px;color:var(--rt-ink)}#rt-workspace .project-nav .navrow.active{color:var(--rt-blue)}
+#rt-workspace math{font-family:'Cambria Math',math,serif;color:var(--rt-ink)}#rt-workspace math[display="block"]{margin:0 auto}
+</style>
+</head>
+<body>
+<div id="rt-workspace" aria-label="AutoVISA research workspace">
+  <div class="shell">
+    <aside class="rail" aria-label="Main navigation">
+      <div class="brand">AutoVISA</div>
+      <nav id="av-navigation" class="navgroup" aria-label="Workspace navigation"></nav>
+      <nav id="av-utilities" class="railfoot" aria-label="Utilities"></nav>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div class="breadcrumb"><button type="button" class="control quiet icon-only sidebar-toggle" data-action="sidebar" aria-label="Collapse navigation" aria-expanded="true"><span class="rail-chevron" aria-hidden="true">‹</span></button><span id="av-breadcrumb" class="breadcrumb"></span></div><span class="previewmark">Interactive preview</span><details class="mobile-nav"><summary>Navigation</summary><nav id="av-mobile-links" aria-label="Mobile navigation"></nav></details></div>
+      <section id="av-module-page" aria-label="Current module"></section>
+      <section id="av-derivation-page" hidden>
+      <div class="pagehead"><div class="headinggroup"><h1>Derivation</h1></div><div class="toolbar route-control"><label class="small muted">Explore route <select id="rt-route" aria-label="Proof route"><option value="independent">Independent</option><option value="prosa">Prosa reuse</option></select></label><button type="button" class="control primary" data-action="gap"><i data-lucide="git-merge" aria-hidden="true"></i>Review gap</button></div></div>
+      <div class="viewbar"><div class="viewtabs" aria-label="Workspace views"><button type="button" class="viewtab" data-view="workflow" aria-pressed="true">Workflow</button><button type="button" class="viewtab" data-view="artifacts" aria-pressed="false">Artifacts</button></div><div class="route-meta"><span>Run 03</span><span>·</span><span id="rt-version">Independent v2</span><span>·</span><span>Context v2</span></div></div>
+      <section id="rt-workflow-view">
+        <section class="canvasarea" aria-label="Derivation workflow"><div id="rt-flow" class="graph" aria-label="Seven selectable derivation stages"><svg class="wires" aria-hidden="true"></svg></div></section>
+        <section class="artifact-panel" id="rt-artifact-panel" aria-label="Selected stage and its artifacts">
+          <div class="stagehead"><div class="stageheading"><h2 id="rt-stage-title">Forward reasoning</h2><span class="count" id="rt-output-count">3 outputs</span></div><div class="toolbar"><label class="stagepicker small muted">Stage<select id="rt-stage-select" aria-label="Select stage in focus mode"></select></label><button type="button" class="control quiet" data-action="focus" aria-expanded="false"><i data-lucide="maximize-2" aria-hidden="true"></i><span id="rt-focus-label">Focus</span></button></div></div>
+          <div class="artifact-layout"><nav class="artifact-list" aria-label="Stage outputs"><div class="artifact-list-label">Outputs</div><div id="rt-output-list" style="display:contents"></div></nav><div class="artifact-body"><div class="artifact-titlebar"><div class="artifact-title"><h3 id="rt-artifact-title">Claim graph</h3><span class="status" id="rt-artifact-status">Draft</span></div><div class="detailtabs" aria-label="Artifact views"><button type="button" class="detailtab" data-detail="preview" aria-pressed="true">Preview</button><button type="button" class="detailtab" data-detail="details" aria-pressed="false">Details</button><button type="button" class="detailtab" data-detail="sources" aria-pressed="false">Sources</button></div></div><div id="rt-artifact-content" class="artifact-content" aria-live="polite"></div><div class="artifact-foot"><span id="rt-artifact-id"></span><div id="av-next-output"></div></div></div></div>
+        </section>
+      </section>
+      <section id="rt-catalog-view" class="catalog" hidden><div class="catalog-head"><h2>All artifacts</h2><label class="small muted">Find an artifact <input id="rt-search" type="search" placeholder="Name or stage" autocomplete="off"></label></div><div class="catalog-row catalog-labels" aria-hidden="true"><span>Artifact</span><span>Stage</span><span class="kind">Type</span></div><div id="rt-catalog-rows"></div><div id="rt-no-results" class="blank" hidden><strong>No matching artifacts</strong><p>Try a stage name such as Forward.</p><button type="button" class="control" data-action="clear-search" style="margin-top:12px">Clear search</button></div></section>
+      </section>
+    </main>
+  </div>
+</div>
+<script>
+(() => {
+  /** @type {HTMLElement} Root element for this interactive design, isolated from the product app. */
+  const root = document.getElementById('rt-workspace');
+  /** @type {Object<string, Object>} Stage definitions and artifact ownership for the example route. */
+  const stages = {
+    context:{name:'Context',title:'Context',status:'Snapshot',cell:[1,2],inputs:['Selected model','Selected goal'],outputs:[['CTX-01','Model snapshot','Diagram','context'],['CTX-02','Scope & assumptions','Table','scope'],['CTX-03','Target statement','Statement','target'],['CTX-04','Source map','Table','sourcemap']]},
+    forward:{name:'Forward',title:'Forward reasoning',status:'Draft',cell:[2,1],inputs:['Context v2','General lemmas'],outputs:[['FWD-01','Claim graph','Diagram','claims'],['FWD-02','Bound candidates','Table','bounds'],['FWD-03','Dependencies','Diagram','dependencies']]},
+    backward:{name:'Backward',title:'Backward reasoning',status:'Draft',cell:[2,3],inputs:['Target statement','Context v2'],outputs:[['BWD-01','Goal tree','Diagram','goals'],['BWD-02','Open obligations','Table','obligations'],['BWD-03','Required premises','Table','premises']]},
+    alignment:{name:'Alignment',title:'Alignment',status:'Needs review',cell:[3,2],inputs:['Forward claims','Backward obligations'],outputs:[['ALN-01','Correspondence map','Diagram','alignment'],['ALN-02','Gap list','Table','gaps'],['ALN-03','Scope checks','Table','conflicts']]},
+    bridges:{name:'Bridges',title:'Bridge construction',status:'Open',cell:[4,2],inputs:['Alignment gap','Scheduling semantics'],outputs:[['BRG-01','Bridge candidate','Diagram','bridge'],['BRG-02','Review note','Statement','review'],['BRG-03','Impact map','Diagram','impact']]},
+    proof:{name:'Proof',title:'Proof assembly',status:'Draft',cell:[5,1],inputs:['Claims and bridge lemmas','Allowed library resources'],outputs:[['PRF-01','Proof plan','Diagram','proof'],['PRF-02','Rocq source','Code','code'],['PRF-03','Library references','Table','libraries']]},
+    check:{name:'Check',title:'Proof checking',status:'Not run',cell:[5,3],inputs:['Proof files','Versioned environment'],outputs:[['CHK-01','Goal status','Report','check'],['CHK-02','Checker log','Report','log'],['CHK-03','Assumption audit','Report','audit'],['CHK-04','Environment','Table','environment']]}
+  };
+  /** @type {Array<Array<string>>} Directed artifact dependencies, not mathematical implications. */
+  const flowEdges = [['context','forward'],['context','backward'],['forward','alignment'],['backward','alignment'],['alignment','bridges'],['bridges','proof'],['proof','check']];
+  /** @type {Object} Presentation state: page and per-module views, route selection, local input drafts and display preferences. */
+  const state = {page:'projects',stage:'forward',artifact:0,detail:'preview',view:'workflow',route:'independent',focus:false,navHidden:false,query:'',claim:'workload',documentTab:'pdf',modelTab:'model',verificationTab:'status',resourceTab:'libraries',runTab:'summary',settingsTab:'general',latex:'A_j(r_j,d_j) \\ge C_j',inputDraft:{model:'',analysis:'',goal:''},appearance:'system'};
+  /** @type {ResizeObserver|null} Observer keeping vector connectors attached to actual node positions. */
+  let diagramObserver = null;
+  /** @type {Object<string,Array<string>>} Page titles and navigation icons. */
+  const pages = {
+    projects:['Projects','folder-open'],
+    overview:['Overview','layout-dashboard'],
+    documents:['Documents','files'],
+    modeling:['Modeling','sliders-horizontal'],
+    derivation:['Derivation','workflow'],
+    verification:['Verification','shield-check'],
+    runs:['Runs','history'],
+    resources:['Resources','library'],
+    settings:['Settings','settings'],
+    help:['Help','circle-help']
+  };
+  /** @type {Array<string>} Modules scoped to the selected project, nested under Projects. */
+  const projectPages=['overview','documents','modeling','derivation','verification','runs'];
+  /** @type {string} Local notification text; never interpreted as backend confirmation. */
+  let feedback='';
+  /** @type {Object<string,string>} Reviewable fields shared by manual input, snapshots and comparisons. */
+  const inputFields={model:'Model',analysis:'Analysis',goal:'Goal'};
+  /** @type {Object<string,string>} Optional paper locators attached to individual input fields. */
+  const referenceFields={modelRef:'Model reference',analysisRef:'Analysis reference',goalRef:'Goal reference'};
+  /** @type {Object} Fixed parent record; switching the diagram view never edits this record. */
+  const exampleRun={id:3,parent:null,route:'independent',source:'case_11 scope',note:'',model:'Integer time. Independent sporadic tasks on one preemptive DM processor, with a fixed tie order and an empty initial system. Each job executes at most C, with 0 < C ≤ D ≤ T. No blocking, self-suspension or scheduling overhead.',analysis:'Accept when every task passes the iterative deadline test.',goal:'For every legal release trace, every job finishes by its deadline if the test accepts.'};
+  Object.assign(state,{records:[],draftRefs:{},activeId:3,draftParent:3,draftRoute:'independent',reviewing:false,draftStarted:false,draftNote:'',draftSource:'Manual input'});
+  /** Return an immutable input snapshot by resolving the changes against its parent.
+   * @param {number} id Run identifier.
+   * @returns {Object} Frozen input, source and route for this record.
+   */
+  function recordFor(id){
+    if(id===3)return exampleRun;
+    /** @type {Object} Stored changes for this run. */
+    const entry=state.records.find(item=>item.id===id);
+    return entry?{...recordFor(entry.parent),...entry}:exampleRun;
+  }
+  /** @param {number} id Run number. @returns {string} Display name. */
+  function runName(id){return 'Run '+String(id).padStart(2,'0');}
+  /** @param {string} route Saved proof strategy. @returns {string} Visible route name. */
+  function routeName(route){return route==='prosa'?'Prosa reuse':'Independent';}
+  /** @param {string} action Action key. @param {string} label Visible action. @param {boolean} primary Main action. @returns {string} Native button. */
+  function actionButton(action,label,primary=false){return `<button type="button" class="control ${primary?'primary':''}" data-module-action="${action}">${label}</button>`;}
+  /** @param {number} id Record to select. @param {string} label Button label. @param {string} page Destination module. @returns {string} Run-bound navigation. */
+  function recordLink(id,label,page='runs'){return `<button type="button" class="control" data-record="${id}" data-page="${page}">${esc(label)}</button>`;}
+  /** Start a working copy and preserve an existing unfinished draft. @returns {void} */
+  function prepareDraft(){
+    if(state.draftStarted)return;
+    /** @type {Object} Historical parent of the new working copy. */
+    const parent=recordFor(state.activeId);
+    state.draftParent=parent.id;state.draftRoute=parent.route;state.draftSource=parent.source;state.draftNote='';
+    state.inputDraft=Object.fromEntries(Object.keys(inputFields).map(key=>[key,parent[key]]));
+    state.draftRefs=Object.fromEntries(Object.keys(referenceFields).map(key=>[key,parent[key]||'']));
+    state.draftStarted=true;
+  }
+  /** @param {Object} parent Frozen parent. @param {Object} child Compared snapshot. @returns {Array<Array<string>>} Current parent-to-draft field changes without inferred analysis. */
+  function changesBetween(parent,child){return Object.entries({...inputFields,...referenceFields,route:'Route',source:'Source',note:'Revision note'}).filter(([key])=>(parent[key]||'')!==(child[key]||'')).map(([key,label])=>[label,key==='route'?routeName(parent[key]):parent[key]||'—',key==='route'?routeName(child[key]):child[key]||'—']);}
+  /** @returns {Object} Input snapshot currently under review. */
+  function workingCopy(){
+    /** @type {Object<string,string>} Explicit empty locators remove inherited references after changing a paper. */
+    const references=Object.fromEntries(Object.keys(referenceFields).map(key=>[key,state.draftRefs[key]||'']));
+    return {...state.inputDraft,...references,source:state.draftSource,route:state.draftRoute,note:state.draftNote.trim()};
+  }
+  /** Render LaTeX markup with an escaped, readable source fallback.
+   * @param {string} tex LaTeX expression without delimiters.
+   * @param {boolean} display Whether to use a separate display equation.
+   * @returns {string} A rendering target retaining its original expression.
+   */
+  function math(tex,display=false){
+    return `<span class="${display?'latex-block':'latex-inline'}" style="${display?'display:block':''}" data-tex="${esc(tex)}" data-display="${display}">${esc(tex)}</span>`;
+  }
+  /** Typeset known notation inside otherwise escaped table and graph labels.
+   * @param {string} value Human-readable example text.
+   * @returns {string} Escaped text with explicitly mapped formula spans.
+   */
+  function mathText(value){
+    /** @type {Object<string,string>} Existing notation mapped without changing its meaning. */
+    const notation={'0 < C ≤ D ≤ T':String.raw`0<C_i\le D_i\le T_i`,'e ≤ C':String.raw`e_j\le C_j`,'[rⱼ, dⱼ)':String.raw`[r_j,d_j)`,'eⱼ':String.raw`e_j`,'dⱼ':String.raw`d_j`,'rⱼ':String.raw`r_j`};
+    /** @type {string} Escaped content, with only recognized expressions replaced. */
+    let result=esc(value);
+    Object.entries(notation).forEach(([label,tex])=>{result=result.replaceAll(esc(label),math(tex));});
+    return result;
+  }
+  /** Typeset newly rendered expressions; a malformed formula cannot disable navigation.
+   * @returns {void}
+   */
+  function renderMath(){
+    if(!window.katex)return;
+    root.querySelectorAll('[data-tex]:not([data-typeset])').forEach(element=>{
+      try{
+        window.katex.render(element.dataset.tex,element,{displayMode:element.dataset.display==='true',output:'mathml',throwOnError:true,trust:false,strict:'ignore'});
+        element.dataset.typeset='true';
+      }catch(error){
+        element.textContent=element.dataset.tex;
+        element.dataset.typeset='invalid';
+        element.insertAdjacentHTML('beforeend','<span class="section-note"> — Check LaTeX syntax</span>');
+      }
+    });
+  }
+  /** Build a navigation control with the current page exposed to assistive technology.
+   * @param {string} id Page identifier.
+   * @returns {string} Native navigation button.
+   */
+  function navButton(id){
+    return `<button type="button" class="navrow ${state.page===id?'active':''} ${id==='projects'&&projectPages.includes(state.page)?'parent-active':''}" data-page="${id}" ${state.page===id?'aria-current="page"':''}>${icon(pages[id][1])}${pages[id][0]}</button>`;
+  }
+  /** Build compact page-local switches, preserving each module's selection.
+   * @param {string} field State property owned by the page.
+   * @param {Array<Array<string>>} options Stable values and visible labels.
+   * @returns {string} An accessible group of pressed-state buttons.
+   */
+  function moduleTabs(field,options){
+    return `<div class="module-tabs" role="group" aria-label="${pages[state.page][0]} views">${options.map(([value,label])=>`<button type="button" class="viewtab" data-tab-field="${field}" data-tab-value="${value}" aria-pressed="${state[field]===value}">${label}</button>`).join('')}</div>`;
+  }
+  /** Build a primary or secondary action that opens a specific derivation output.
+   * @param {string} stage Destination workflow stage.
+   * @param {string} label Visible action.
+   * @param {boolean} primary Whether this is the page's main next step.
+   * @returns {string} Route-preserving output link.
+   */
+  function stageLink(stage,label,primary=false){
+    return `<button type="button" class="control ${primary?'primary':''}" data-open-stage="${stage}">${label}${icon('arrow-right')}</button>`;
+  }
+  /** Build a page navigation action.
+   * @param {string} page Destination page.
+   * @param {string} label Visible action.
+   * @param {boolean} primary Whether to emphasize this action.
+   * @returns {string} Native action button.
+   */
+  function pageLink(page,label,primary=false){
+    return `<button type="button" class="control ${primary?'primary':''}" data-page="${page}">${label}${icon('arrow-right')}</button>`;
+  }
+  /** Render the selected module using example records and local-only controls.
+   * @returns {string} Module body with no invented checker receipts or source locations.
+   */
+  function moduleBody(){
+    /** @type {Object} Run selected across project modules. */
+    const active=recordFor(state.activeId);
+    /** @type {boolean} Only the seeded example contains derivation artifacts. */
+    const hasArtifacts=active.id===exampleRun.id;
+    /** @type {string} Reusable navigation from a project to its corresponding record. */
+    const openRun=recordLink(active.id,runName(active.id));
+    if(state.page==='projects')return `<div class="project-entry"><div><h2>case_11</h2><p>Deadline guarantee under DM scheduling</p></div>${pageLink('overview','Open project',true)}</div>`;
+    if(state.page==='overview')return `<div class="stack"><div><h2>${hasArtifacts?'Deadline guarantee':'Current goal'}</h2><p class="av-statement">${esc(active.goal)}</p></div>
+      <div class="av-next"><div><h3>${hasArtifacts?'Available service → job completion':'Inputs frozen'}</h3><p>${hasArtifacts?'One scheduling bridge is open.':esc(runName(active.id))+' · Derivation pending'}</p></div>${hasArtifacts?stageLink('alignment','Review gap',true):pageLink('runs','Inspect run',true)}</div>
+      <section><h3>Current record</h3><div class="run-row">${openRun}<span>${routeName(active.route)}</span><span class="status">${hasArtifacts?'Draft proof':'Inputs only'}</span></div></section><div class="action-row">${pageLink('documents','Open inputs')}</div></div>`;
+    if(state.page==='documents')return `${moduleTabs('documentTab',[['pdf','Paper PDF'],['manual','Manual input']])}
+      ${state.documentTab==='pdf'?`<div class="stack"><div class="upload-zone">${icon('file-up')}<label class="field">Choose a PDF reference<input id="av-pdf" type="file" accept=".pdf,application/pdf"></label></div>
+      <div class="av-next"><div><h3 id="av-pdf-name">${state.draftSource.startsWith('PDF · ')?esc(state.draftSource.slice(6)):'Paper reference'}</h3><p>Enter the model, analysis and goal from the paper.</p></div>${actionButton('enter-fields','Enter fields',true)}</div></div>`:
+      `<div id="av-input-form" class="stack" role="group" aria-label="Inputs for review"><div class="av-title"><h2>Input draft</h2><span class="status">From ${runName(state.draftStarted?state.draftParent:state.activeId)}</span></div>${Object.entries(inputFields).map(([key,label])=>`<label class="field">${label}<textarea name="${key}" data-input-field="${key}" required maxlength="1800" placeholder="${({model:'Tasks, arrivals and scheduling assumptions',analysis:'Test or bound to analyze',goal:'Guarantee to prove'})[key]}">${esc(state.inputDraft[key])}</textarea></label>`).join('')}
+      ${state.draftSource.startsWith('PDF · ')?`<details class="help-item"><summary>Paper references</summary><div class="stack">${Object.entries(referenceFields).map(([key,label])=>`<label class="field">${label}<input type="text" data-reference="${key}" maxlength="120" value="${esc(state.draftRefs[key]||'')}" placeholder="Page, section or figure"></label>`).join('')}</div></details>`:''}
+      <div class="action-row">${actionButton('review','Review inputs',true)}${Object.values(state.inputDraft).every(value=>!value)?actionButton('example-input','Use case_11 inputs'):''}<button type="button" class="control" data-module-action="discard" ${state.draftStarted?'':'hidden'}>Discard draft</button></div></div>`}`;
+    if(state.page==='modeling'){
+      if(state.reviewing){
+        /** @type {Array<Array<string>>} Explicit field changes to approve before a new run. */
+        const differences=changesBetween(recordFor(state.draftParent),workingCopy());
+        return `<div class="stack"><div class="av-title"><h2>Review inputs</h2><span class="status">From ${runName(state.draftParent)}</span></div><dl class="av-fields">${Object.entries(inputFields).map(([key,label])=>`<dt>${label}</dt><dd>${esc(state.inputDraft[key])}${state.draftRefs[key+'Ref']?`<div class="av-reference">${esc(state.draftRefs[key+'Ref'])}</div>`:''}</dd>`).join('')}</dl>
+        <div class="split"><label class="field">Proof route<select id="av-draft-route"><option value="independent" ${state.draftRoute==='independent'?'selected':''}>Independent</option><option value="prosa" ${state.draftRoute==='prosa'?'selected':''}>Prosa reuse</option></select></label><div><h3>Source</h3>${esc(state.draftSource)}</div></div>
+        <label class="field">Revision note (optional)<textarea id="av-revision-note" maxlength="350" placeholder="What should change in the next run?">${esc(state.draftNote)}</textarea></label>
+        <details class="help-item"><summary>Changes from ${runName(state.draftParent)}</summary><div class="artifact-content" id="av-draft-diff">${differences.length?table(['Field','Before','After'],differences):'Same inputs and route'}</div></details>
+        <div class="action-row">${actionButton('freeze','Freeze & create run',true)}${actionButton('enter-fields','Edit fields')}</div></div>`;
+      }
+      /** @type {string} Baseline visuals and standalone formula editor for the selected field. */
+      const field=state.modelTab;
+      return `${moduleTabs('modelTab',Object.entries(inputFields))}<div class="stack"><div class="av-title"><h2>${({model:'Scheduling model',analysis:'Analysis method',goal:'Selected guarantee'})[field]}</h2>${openRun}</div>
+      <div class="artifact-content">${hasArtifacts&&field==='model'?preview('context'):hasArtifacts&&field==='goal'?preview('target'):`<p class="av-statement">${esc(active[field])}</p>`}</div>
+      ${active[field+'Ref']?`<div class="source-row"><strong>Source</strong><span>${esc(active.source.replace(/^PDF · /,''))} · ${esc(active[field+'Ref'])}</span></div>`:''}
+      ${hasArtifacts&&field==='model'?`<details class="help-item"><summary>All assumptions</summary><div class="artifact-content">${preview('scope')}</div></details>`:''}
+      ${field==='goal'?`<details class="help-item"><summary>Formula scratchpad</summary><label class="field">LaTeX source<textarea id="av-latex" maxlength="1000" spellcheck="false">${esc(state.latex)}</textarea></label><div id="av-latex-preview" class="formula">${math(state.latex,true)}</div></details>`:''}
+      <div class="action-row">${hasArtifacts?stageLink('context','Inspect derivation',true):pageLink('derivation','Open derivation',true)}${actionButton('revise',state.draftStarted?'Resume input draft':'Revise inputs')}</div></div>`;
+    }
+    if(state.page==='derivation')return `<div class="stack"><h2>${runName(active.id)} · Inputs ready</h2><div class="tree"><div class="treeroot">Frozen context</div><div class="treechildren"><div class="treeleaf">Forward and backward derivation <span>Pending</span></div></div></div><p class="av-statement">${esc(active.goal)}</p><div class="action-row">${pageLink('modeling','Inspect inputs',true)}${pageLink('runs','View run')}</div></div>`;
+    if(state.page==='verification'){
+      if(!hasArtifacts)return `<h2>${runName(active.id)} · Not checked</h2><p class="av-statement">No proof source for this run.</p><div class="action-row">${pageLink('derivation','Inspect derivation',true)}</div>`;
+      return `${moduleTabs('verificationTab',[['status','Results'],['obligations','Open obligations'],['audit','Audit'],['log','Checker log']])}<div class="stack"><div class="av-title"><h2>${({status:'Proof status',obligations:'Open obligations',audit:'Audit',log:'Checker log'})[state.verificationTab]}</h2>${openRun}</div><div class="artifact-content">${state.verificationTab==='obligations'?
+        [['backward',0,'Job completion','Goal tree'],['bridges',0,'Scheduling bridge','Bridge candidate'],['forward',1,'Available-service bound','Bound candidates']].map(([stage,output,title,label])=>`<button type="button" class="step-row" data-open-stage="${stage}" data-open-output="${output}"><strong>${title}</strong><span class="av-trailing">${label} ${icon('arrow-right')}</span></button>`).join(''):preview(({status:'check',audit:'audit',log:'log'})[state.verificationTab])}</div>${state.verificationTab==='status'?`<div class="action-row"><button type="button" class="control primary" data-tab-field="verificationTab" data-tab-value="obligations">Inspect open obligations</button></div>`:''}</div>`;
+    }
+    if(state.page==='runs'){
+      /** @type {Array<Object>} Selectable records in most-recent-first order. */
+      const runs=[exampleRun,...state.records].reverse();
+      /** @type {Object|null} Immutable historical parent, when one exists. */
+      const parent=active.parent===null?null:recordFor(active.parent);
+      /** @type {Array<Array<string>>} User-visible snapshot, derivation and evidence differences. */
+      const differences=parent?changesBetween(parent,active):[];
+      if(parent?.id===3)differences.push(['Derivation','7 example stages','Pending'],['Open obligations','Scheduling bridge','Not generated']);
+      return `<div class="stack"><label class="field av-picker">Run<select id="av-run-select">${runs.map(run=>`<option value="${run.id}" ${run.id===active.id?'selected':''}>${runName(run.id)} · ${run.id===3?'Example':'Saved inputs'}</option>`).join('')}</select></label>
+      ${moduleTabs('runTab',[['summary','Summary'],['versions','Versions'],['usage','Usage'],['compare','Compare']])}<div class="artifact-content">${state.runTab==='compare'?parent?`<div class="av-title"><h2>${runName(parent.id)} → ${runName(active.id)}</h2></div>${differences.length?table(['Field',runName(parent.id),runName(active.id)],differences):'<p>Matching inputs and route.</p>'}<details class="help-item"><summary>Evidence & usage</summary>${table(['Measure',runName(parent.id),runName(active.id)],[['Rocq receipt','None','None'],['Model calls','0','0'],['Budget','Unset','Unset']])}</details><div class="action-row">${recordLink(parent.id,'Open parent record')}${recordLink(active.id,'Open child record')}</div>`:
+      `<h2>No parent for ${runName(active.id)}</h2><div class="action-row">${state.records.length?recordLink(state.records.at(-1).id,'Compare latest revision','compare'):actionButton('revise','Create a revision',true)}</div>`:
+      state.runTab==='versions'?table(['Record','Binding'],[['Run',runName(active.id)],['Parent',parent?runName(parent.id):'—'],['Input version',hasArtifacts?'Context v2':runName(active.id)+' snapshot'],['Proof route',routeName(active.route)],['Source',active.source]]):
+      state.runTab==='usage'?table(['Measure','Budget','Used'],[['Model calls','Unset','0'],['Rocq checks','Unset','0'],['Cost','Unset','0']]):
+      `<h2>${runName(active.id)}</h2><p class="av-statement">${esc(active.goal)}</p><div class="checkrow"><strong>Route</strong><span>${routeName(active.route)}</span></div><div class="checkrow"><strong>Derivation</strong><span>${hasArtifacts?'Scheduling bridge open':'Pending'}</span></div>${active.note?`<div class="checkrow"><strong>Revision note</strong><span>${esc(active.note)}</span></div>`:''}<div class="action-row">${pageLink('derivation',hasArtifacts?'Open workflow':'Open frozen context',true)}${actionButton('revise',state.draftStarted?'Resume input draft':'Revise inputs')}</div>`}</div></div>`;
+    }
+    if(state.page==='resources')return `${moduleTabs('resourceTab',[['libraries','Proof libraries'],['models','Model templates']])}${state.resourceTab==='libraries'?`<div class="resource-row"><div><h2>Prosa</h2><p>Scheduling models, lemmas and analysis theorems</p></div>${actionButton('prosa','Explore example route',true)}</div><details class="help-item"><summary>Reuse requirements</summary><p>Match the model, discharge the premises, then check the proof and its dependencies in Rocq.</p></details>`:`<div class="resource-row"><div><h2>Single-processor DM</h2><p>Integer time · Sporadic tasks · Preemptive scheduling</p></div>${recordLink(3,'Open example model','modeling')}</div>`}`;
+    if(state.page==='settings')return `${moduleTabs('settingsTab',[['general','General'],['models','Model service'],['proof','Proof tools']])}<div class="artifact-content">${state.settingsTab==='general'?`<label class="field av-picker">Appearance<select id="av-appearance">${[['system','Follow system'],['light','Light'],['dark','Dark']].map(([value,label])=>`<option value="${value}" ${state.appearance===value?'selected':''}>${label}</option>`).join('')}</select></label>`:state.settingsTab==='models'?table(['Model service','Configuration'],[['Provider','OpenAI'],['Requested model','GPT 6.1 sol · High'],['Connection','Offline']]):`${table(['Proof tool','Environment'],[['Rocq','Not configured'],['Prosa','Not pinned']])}<div class="action-row">${pageLink('resources','View proof libraries')}</div>`}</div>`;
+    return `<h2>Working with AutoVISA</h2>${[['How do I start?','Open a project, select Documents, enter the model, analysis and goal, then review the inputs.'],['How do I revise a run?','Choose Revise inputs, review the differences, then freeze a new run. Compare it with its parent in Runs.'],['Where is the evidence?','Select a workflow stage and an output. Verification links open obligations to their original artifacts.'],['What does this prototype run?','Inputs, snapshots and comparisons work locally. PDF extraction, model calls and Rocq execution are not connected.']].map(([question,answer])=>`<details class="help-item"><summary>${question}</summary><p>${answer}</p></details>`).join('')}`;
+  }
+  /** Update shared navigation, breadcrumbs and the selected module.
+   * @returns {void}
+   */
+  function renderModule(){
+    /** @type {boolean} Whether the current page belongs to the example project. */
+    const projectOpen=projectPages.includes(state.page);
+    /** @type {string} Nested navigation shared by desktop and mobile. */
+    const navigation=navButton('projects')+`<div class="project-nav" ${projectOpen?'':'hidden'}>${projectPages.map(navButton).join('')}</div>`+navButton('resources');
+    root.querySelector('#av-navigation').innerHTML=navigation;
+    root.querySelector('#av-utilities').innerHTML=navButton('settings')+navButton('help');
+    root.querySelector('#av-mobile-links').innerHTML=navigation+navButton('settings')+navButton('help');
+    root.querySelector('#av-breadcrumb').innerHTML=projectOpen?`<button type="button" data-page="projects">Projects</button><span>/</span><button type="button" data-page="overview">case_11</button><span>/</span><strong>${pages[state.page][0]}</strong>`:`<strong>${pages[state.page][0]}</strong>`;
+    /** @type {boolean} Only the example record has a graph to inspect. */
+    const showGraph=state.page==='derivation'&&state.activeId===exampleRun.id;
+    root.querySelector('#av-derivation-page').hidden=!showGraph;
+    root.querySelector('#av-module-page').hidden=showGraph;
+    root.querySelector('#av-module-page').innerHTML=showGraph?'':`<div class="pagehead"><h1>${pages[state.page][0]}</h1></div><div class="page-content">${moduleBody()}<p class="local-feedback" id="av-feedback" role="status">${esc(feedback)}</p></div>`;
+    root.style.colorScheme=state.appearance==='system'?'light dark':state.appearance;
+  }
+  /** Navigate without discarding the previously inspected derivation artifact.
+   * @param {string} page Valid destination page.
+   * @returns {void}
+   */
+  function navigate(page){
+    if(!pages[page])return;
+    state.page=page;
+    feedback='';
+    root.querySelector('.mobile-nav').open=false;
+  }
+  /** Escape text before constructing locally owned markup.
+   * @param {string} text Plain input text.
+   * @returns {string} Escaped HTML text.
+   */
+  function esc(text){return String(text).replace(/[&<>"']/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));}
+  /** Return an icon placeholder using the host-provided icon set.
+   * @param {string} name A Lucide icon identifier.
+   * @returns {string} Accessible decorative icon markup.
+   */
+  function icon(name){return `<i data-lucide="${name}" aria-hidden="true"></i>`;}
+  /** Map an artifact type to a consistent visual symbol.
+   * @param {string} kind Artifact presentation type.
+   * @returns {string} Lucide icon identifier.
+   */
+  function typeIcon(kind){return ({Diagram:'workflow',Table:'table-2',Statement:'file-text',Code:'file-code-2',Report:'clipboard-check'})[kind]||'file';}
+  /** Render concise rows with a header, without a long prose transcript.
+   * @param {Array<string>} headings Column titles.
+   * @param {Array<Array<string>>} rows Structured values.
+   * @returns {string} Table markup with escaped content.
+   */
+  function table(headings,rows){return `<table><thead><tr>${headings.map(value=>`<th scope="col">${esc(value)}</th>`).join('')}</tr></thead><tbody>${rows.map(row=>`<tr>${row.map(value=>`<td>${mathText(value)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;}
+  /** Build a diagram that can be measured after rendering.
+   * @param {Array<Object>} nodes Node identifiers, labels and grid locations.
+   * @param {Array<Array<string>>} edges Directed dependencies.
+   * @param {string} description Accessible graph summary.
+   * @returns {string} Responsive mini-graph markup.
+   */
+  function graph(nodes,edges,description){return `<div class="graph mini-graph" data-edges="${esc(JSON.stringify(edges))}" aria-label="${esc(description)}"><svg class="wires" aria-hidden="true"></svg>${nodes.map(node=>`<button type="button" class="node" data-claim="${node.id}" data-graph-node="${node.id}" aria-pressed="${state.claim===node.id}" style="grid-column:${node.col};grid-row:${node.row};${node.span?'align-self:center;min-height:64px;':''}"><strong>${esc(node.title)}</strong><small>${mathText(node.sub)}</small></button>`).join('')}</div>`;}
+  /** Describe the selected claim in one short line.
+   * @returns {string} Selected-claim explanation.
+   */
+  function claimLine(){
+    /** @type {Object<string,Array<string>>} Readable roles for illustrative mathematical nodes. */
+    const roles={arrival:['Arrival constraint','The minimum separation limits releases.'],execution:['Execution bound','Each job demands at most its task budget.'],workload:['Workload bound','Candidate upper bound on higher-priority demand.'],service:['Available service','Still needs a bridge to actual job service.'],base:['Base definitions','Their semantics must match the project model.'],bridge:['Scheduling bridge','Availability does not automatically equal delivered service.'],completion:['Completion lemma','Connect delivered service to deadline completion.'],target:['Main theorem','Not yet checked by Rocq.'],library:['Prosa resource','Candidate reuse requires exact symbols and discharged premises.']};
+    /** @type {Array<string>} Current claim description or its safe generic fallback. */
+    const selected=roles[state.claim]||['Selected dependency','Inspect its premises and downstream consumers.'];
+    return `<div class="claimline"><strong>${esc(selected[0])}</strong><span>${esc(selected[1])}</span></div>`;
+  }
+  /** Produce visual-first content specific to each artifact.
+   * @param {string} key Artifact content identifier.
+   * @returns {string} Local demonstration markup, never checker evidence.
+   */
+  function preview(key){
+    if(key==='context')return `<div class="pillrow"><span class="pill">Integer time</span><span class="pill">Sporadic arrivals</span><span class="pill">Preemptive DM</span><span class="pill">Single processor</span></div><div class="timeline" role="img" aria-label="A legal job is released at r and must finish by d; actual demand e is bounded by C"><span class="end">Release ${math('r_j')}</span><div class="interval">${math(String.raw`e_j\le C_j`)}</div><span class="end">Deadline ${math('d_j')}</span></div>${table(['Model element','Definition'],[['Task bounds','0 < C ≤ D ≤ T'],['Quantification','Every legal release trace and every job'],['Initial state','Empty system']])}`;
+    if(key==='scope')return table(['Condition','Scope'],[['Time','Nonnegative integer slots'],['Tasks','Independent; no blocking or self-suspension'],['Scheduler','Preemptive DM; fixed tie order'],['Execution','Actual demand e ≤ C; zero scheduling overhead']]);
+    if(key==='target')return `<div class="formula">${math(String.raw`\begin{gathered}\operatorname{Accept}(\tau)\Longrightarrow\\ \forall j\in\operatorname{LegalJobs}(\tau),\ f_j\le d_j\end{gathered}`,true)}</div>${table(['Part','Meaning'],[['Premise','Acceptance of the chosen iterative test'],['Guarantee','Every legal job finishes by its deadline'],['Notation','f denotes completion time; d denotes deadline'],['Excluded claim','Necessity and DM optimality are separate goals']])}`;
+    if(key==='sourcemap')return table(['Field','Origin'],[['Task and job model','User-confirmed case_11 scope'],['Integer time','User-selected formalization scope'],['Main goal','User-selected acceptance sufficiency'],['Paper spans','Source locations pending extraction hookup']]);
+    if(key==='claims')return graph([{id:'arrival',title:'Arrival constraint',sub:'Minimum separation',col:1,row:1},{id:'execution',title:'Execution bound',sub:'e ≤ C',col:1,row:2},{id:'workload',title:'Workload bound',sub:'Candidate lemma',col:2,row:'1 / 3',span:true},{id:'service',title:'Available service',sub:'Candidate lower bound',col:3,row:'1 / 3',span:true}],[['arrival','workload'],['execution','workload'],['workload','service']],'Arrival and execution constraints support workload and available-service candidates')+claimLine();
+    if(key==='bounds')return table(['Candidate','Meaning','State'],[['Release count','Bound jobs arriving in a specified interval','Draft'],['Workload','Bound higher-priority demand','Draft'],['Available service','Bound service opportunities for the target job','Draft']]);
+    if(key==='dependencies')return graph([{id:'base',title:'Base definitions',sub:'Time, jobs, service',col:1,row:1},{id:'arrival',title:'Arrival model',sub:'Context v2',col:1,row:2},{id:'workload',title:'Workload bound',sub:'FWD-02',col:2,row:'1 / 3',span:true},{id:'service',title:'Service bound',sub:'FWD-01',col:3,row:'1 / 3',span:true}],[['base','workload'],['arrival','workload'],['workload','service']],'Dependencies of forward bounds')+claimLine();
+    if(key==='goals')return `<div class="tree"><div class="treeroot">All legal jobs meet their deadlines</div><div class="treechildren"><div class="treeleaf"><div>Completion by ${math('d_j')}</div><span>Open</span></div><div class="treechildren"><div class="treeleaf"><div>Delivered service reaches ${math('e_j')}</div><span>Open</span></div><div class="treeleaf">Availability-to-service bridge <span>Missing</span></div><div class="treeleaf">Sufficient available service <span>Candidate</span></div></div></div></div>`;
+    if(key==='obligations')return table(['Obligation','Depends on','State'],[['Job completion','Delivered service','Open'],['Scheduling bridge','Eligibility and service accounting','Missing'],['Available-service bound','Workload analysis','Draft']]);
+    if(key==='premises')return table(['Premise','Role'],[['Legal releases','Defines traces covered by the guarantee'],['Execution bounded by C','Relates actual work to the task budget'],['Scheduler semantics','Determines eligibility and delivered service'],['Target interval','Preserves release and deadline endpoints']]);
+    if(key==='alignment')return `<div class="twocol"><div class="mathbox"><h3>Derived</h3>${math(String.raw`A_j(r_j,d_j)\ge C_j`,true)}<p>Available processor service</p></div><div class="mathbox"><h3>Required</h3>${math('S_j(r_j,d_j)=e_j',true)}<p>Delivered job service</p></div></div><div class="bridge-row">${icon('git-merge')}Scheduling bridge required</div>${table(['Dimension','Mapping'],[['Time and interval','Integer time · [rⱼ, dⱼ)'],['Quantity','Available service ≠ delivered service']])}`;
+    if(key==='gaps')return table(['Gap','Required output','Owner'],[['Service semantics','A scheduling bridge lemma','Bridges'],['Formal discharge','A checked proof of the bridge','Proof / Check']]);
+    if(key==='conflicts')return table(['Dimension','Current assessment'],[['Time domain','Same candidate scope: integer time'],['Interval','Same candidate interval: [rⱼ, dⱼ)'],['Service quantity','Different notions; bridge required'],['Quantifiers and premises','Must be checked in the formal statement']]);
+    if(key==='bridge')return `<div class="pillrow"><span class="pill">Eligibility</span><span class="pill">Work conservation</span><span class="pill">Service accounting</span></div><div class="formula">${math(String.raw`\begin{gathered}A_j(r_j,d_j)\ge C_j,\quad e_j\le C_j\\ \xRightarrow{\text{bridge required}} f_j\le d_j\end{gathered}`,true)}</div><div class="bridge-row">${icon('circle-alert')}Candidate implication · conditions and proof remain open</div>${table(['Input','Output'],[['Availability bound + scheduler model','Job-completion lemma']])}`;
+    if(key==='review')return table(['Review item','Proposal'],[['Missing link','Available versus delivered service'],['Requested work','State and prove the scheduling bridge'],['Model changes','None proposed in this example'],['If assumptions change','Show a precise diff and ask for mathematical confirmation']]);
+    if(key==='impact')return graph([{id:'bridge',title:'Bridge lemma',sub:'BRG-01 · open',col:1,row:'1 / 3',span:true},{id:'completion',title:'Completion lemma',sub:'Dependent',col:2,row:'1 / 3',span:true},{id:'target',title:'Main theorem',sub:'Dependent',col:3,row:'1 / 3',span:true}],[['bridge','completion'],['completion','target']],'Changes to the bridge affect completion and the main theorem')+claimLine();
+    if(key==='proof')return graph([{id:'workload',title:'Workload lemma',sub:'Draft',col:1,row:1},{id:state.route==='prosa'?'library':'bridge',title:state.route==='prosa'?'Prosa + adapter':'Scheduling bridge',sub:state.route==='prosa'?'Candidate reuse':'Open',col:1,row:2},{id:'completion',title:'Completion lemma',sub:'Draft',col:2,row:'1 / 3',span:true},{id:'target',title:'Main theorem',sub:'Not checked',col:3,row:'1 / 3',span:true}],[['workload','completion'],[state.route==='prosa'?'library':'bridge','completion'],['completion','target']],'Route-specific proof dependencies')+claimLine();
+    if(key==='code')return '<div class="blank"><strong>No Rocq source yet</strong></div>';
+    if(key==='libraries')return table(['Usage','Selected route'],state.route==='prosa'?[['Prosa theorem','Select an applicable theorem; no symbol selected yet'],['Semantic adapter','Time, jobs, arrivals, service and quantifiers'],['Premise proofs','Required before applying the theorem'],['Version record','Pin Prosa, Rocq and transitive dependencies']]:[['Base definitions','May reuse compatible definitions'],['General lemmas','May reuse with explicit dependencies'],['Covering RTA theorem','Excluded from this independent route'],['Version record','Pin every imported library']]);
+    if(key==='check')return table(['Item','Status'],[['Main theorem','Not checked'],['Scheduling bridge','Open']]);
+    if(key==='log')return `<div class="blank">${icon('terminal')}<strong>No checker output yet</strong></div>`;
+    if(key==='audit')return table(['Audit','State'],[['Unproved assumptions','No audit performed'],['Used theorem dependencies','No audit performed'],['Model-to-library correspondence','Not checked'],['Evidence receipt','Not produced']]);
+    return table(['Check environment','Version'],[['Rocq','Unset'],['Prosa','Unset']]);
+  }
+  /** Show the selected artifact's premises, role and check status.
+   * @param {Array<string>} artifact Selected output descriptor.
+   * @returns {string} Concise structured details.
+   */
+  function details(artifact){return table(['Field','Value'],[['Artifact',artifact[0]+' · '+artifact[1]],['Produced by',stages[state.stage].title],['Inputs',stages[state.stage].inputs.join(' + ')],['Route',(state.route==='prosa'?'Prosa reuse':'Independent')+' v2'],['Binding','Run 03 · Context v2 · Artifact v2'],['Formal status','Not checked']]);}
+  /** Show honest provenance rather than invented paper coordinates.
+   * @returns {string} Source rows for the current artifact.
+   */
+  function sources(){return `<div class="source-row"><div class="origin">Model scope</div><div><strong>User-confirmed case_11 model</strong><p>Integer time, sporadic arrivals, execution bounds and DM scheduling.</p></div></div><div class="source-row"><div class="origin">Upstream inputs</div><div><strong>${esc(stages[state.stage].inputs.join(' · '))}</strong><p>Bound to the current context and route versions.</p></div></div><div class="source-row"><div class="origin">Paper references</div><div><strong>No source locations attached</strong></div></div>`;}
+  /** Draw all graph connectors using measured node bounds.
+   * @returns {void}
+   */
+  function drawGraphs(){
+    root.querySelectorAll('.graph').forEach(container=>{
+      /** @type {SVGElement} Connector layer for the current graph. */
+      const svg=container.querySelector('.wires');
+      /** @type {DOMRect} Diagram bounds in the current responsive layout. */
+      const bounds=container.getBoundingClientRect();
+      if(!bounds.width||!bounds.height)return;
+      /** @type {Array<Array<string>>} Edges belonging to the stage canvas or a selected artifact. */
+      const edges=container.id==='rt-flow'?flowEdges:JSON.parse(container.dataset.edges||'[]');
+      svg.setAttribute('viewBox',`0 0 ${bounds.width} ${bounds.height}`);
+      svg.innerHTML=edges.map(([from,to])=>{
+        /** @type {HTMLElement|null} Start node. */
+        const start=container.querySelector(`[data-graph-node="${from}"]`);
+        /** @type {HTMLElement|null} End node. */
+        const end=container.querySelector(`[data-graph-node="${to}"]`);
+        if(!start||!end)return '';
+        /** @type {DOMRect} Source node geometry. */
+        const a=start.getBoundingClientRect();
+        /** @type {DOMRect} Destination node geometry. */
+        const b=end.getBoundingClientRect();
+        /** @type {boolean} True when a vertical connector best matches the node arrangement. */
+        const vertical=Math.abs(a.left-b.left)<5;
+        /** @type {number} Source connector x coordinate. */
+        const x1=(vertical?a.left+a.width/2:a.right)-bounds.left;
+        /** @type {number} Source connector y coordinate. */
+        const y1=(vertical?a.bottom:a.top+a.height/2)-bounds.top;
+        /** @type {number} Destination connector x coordinate. */
+        const x2=(vertical?b.left+b.width/2:b.left)-bounds.left;
+        /** @type {number} Destination connector y coordinate. */
+        const y2=(vertical?b.top:b.top+b.height/2)-bounds.top;
+        /** @type {string} Orthogonal artifact-dependency path. */
+        const line=vertical?`M${x1} ${y1}V${y2-4}`:`M${x1} ${y1}H${(x1+x2)/2}V${y2}H${x2-4}`;
+        /** @type {string} Small open arrow, authored as graph geometry. */
+        const arrow=vertical?`M${x2-3} ${y2-7}L${x2} ${y2-3}L${x2+3} ${y2-7}`:`M${x2-7} ${y2-3}L${x2-3} ${y2}L${x2-7} ${y2+3}`;
+        /** @type {string} Highlight only dependencies adjacent to the current selection. */
+        const active=(container.id==='rt-flow'?[from,to].includes(state.stage):[from,to].includes(state.claim))?'relevant':'';
+        return `<path class="${active}" d="${line}"/><path class="${active}" d="${arrow}"/>`;
+      }).join('');
+    });
+  }
+  /** Refresh the output list, artifact preview and selected state.
+   * @returns {void}
+   */
+  function render(){
+    /** @type {Object} Selected stage metadata. */
+    const stage=stages[state.stage];
+    /** @type {Array<string>} Selected artifact descriptor. */
+    const artifact=stage.outputs[state.artifact]||stage.outputs[0];
+    renderModule();
+    root.classList.toggle('focused',state.page==='derivation'&&state.activeId===3&&state.focus&&state.view==='workflow');
+    root.classList.toggle('no-navigation',state.navHidden);
+    root.querySelector('#rt-workflow-view').hidden=state.view!=='workflow';
+    root.querySelector('#rt-catalog-view').hidden=state.view!=='artifacts';
+    root.querySelectorAll('[data-view]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.view===state.view)));
+    root.querySelectorAll('[data-stage]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.stage===state.stage)));
+    root.querySelectorAll('[data-detail]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.detail===state.detail)));
+    root.querySelector('#rt-stage-title').textContent=stage.title;
+    root.querySelector('#rt-output-count').textContent=stage.outputs.length+' outputs';
+    root.querySelector('#rt-artifact-title').textContent=artifact[1];
+    /** @type {Object<string,string>} Next action at the currently inspected step. */
+    const nextActions={context:stageLink('forward','Inspect forward claims'),forward:stageLink('alignment','Compare claims'),backward:stageLink('alignment','Compare claims'),alignment:stageLink('bridges','Inspect bridge'),bridges:actionButton('revise','Propose a revision',true),proof:pageLink('verification','View verification'),check:pageLink('runs','View run')};
+    root.querySelector('#av-next-output').innerHTML=nextActions[state.stage];
+    root.querySelector('#rt-artifact-status').textContent=stage.status;
+    root.querySelector('#rt-artifact-status').classList.toggle('open',['alignment','bridges'].includes(state.stage));
+    root.querySelector('#rt-artifact-id').textContent=artifact[0]+' · v2 · Context v2';
+    root.querySelector('#rt-route').value=state.route;
+    root.querySelector('#rt-version').textContent=(state.route==='prosa'?'Prosa reuse':'Independent')+' v2';
+    root.querySelector('#rt-stage-select').value=state.stage;
+    root.querySelector('#rt-focus-label').textContent=state.focus?'Back to workflow':'Focus';
+    root.querySelector('[data-action="focus"]').setAttribute('aria-expanded',String(state.focus));
+    root.querySelector('[data-action="sidebar"]').setAttribute('aria-expanded',String(!state.navHidden));
+    root.querySelector('[data-action="sidebar"]').setAttribute('aria-label',state.navHidden?'Expand navigation':'Collapse navigation');
+    root.querySelector('.rail-chevron').textContent=state.navHidden?'›':'‹';
+    root.querySelector('#rt-output-list').innerHTML=stage.outputs.map((item,index)=>`<button type="button" class="artifact-button" data-output="${index}" aria-pressed="${index===state.artifact}">${icon(typeIcon(item[2]))}<span>${esc(item[1])}</span></button>`).join('');
+    root.querySelector('#rt-artifact-content').innerHTML=state.detail==='preview'?preview(artifact[3]):state.detail==='details'?details(artifact):sources();
+    renderCatalog();
+    renderMath();
+    if(window.lucide)window.lucide.createIcons({attrs:{width:16,height:16}});
+    requestAnimationFrame(drawGraphs);
+  }
+  /** Render the catalog using a literal text filter; links open an exact artifact.
+   * @returns {void}
+   */
+  function renderCatalog(){
+    /** @type {Array<Object>} Flat artifact collection for simple searching. */
+    const items=Object.entries(stages).flatMap(([stage,record])=>record.outputs.map((output,index)=>({stage,index,output})));
+    /** @type {Array<Object>} Matching artifact rows. */
+    const matches=items.filter(item=>(item.output[1]+' '+stages[item.stage].name).toLowerCase().includes(state.query.toLowerCase()));
+    root.querySelector('#rt-catalog-rows').innerHTML=matches.map(item=>`<button type="button" class="catalog-row" data-catalog-stage="${item.stage}" data-catalog-output="${item.index}"><span class="filelabel">${icon(typeIcon(item.output[2]))}${esc(item.output[1])}</span><span>${stages[item.stage].name}</span><span class="kind">${item.output[2]}</span></button>`).join('');
+    root.querySelector('#rt-no-results').hidden=matches.length>0;
+  }
+  /** Preserve the current presentation state locally.
+   * @param {boolean} announce Whether this write commits a newly frozen run.
+   * @returns {void}
+   */
+  function remember(announce=false){
+    try{
+      localStorage.setItem(storageKey,JSON.stringify({...state,designVersion:4}));
+      if(announce)root.querySelector('#av-feedback').textContent=runName(state.activeId)+' saved.';
+    }catch{
+      /** @type {HTMLElement|null} Current module's local storage status. */
+      const message=root.querySelector('#av-feedback');
+      if(message)message.textContent='This change is available in this tab only.';
+    }
+  }
+  /** Restore only validated local state belonging to this revision.
+   * @param {Object|undefined} saved Prior presentation state.
+   * @returns {void}
+   */
+  function restore(saved){
+    if(!saved||![2,3,4].includes(saved.designVersion))return;
+    if(pages[saved.page])state.page=saved.page;
+    if(stages[saved.stage])state.stage=saved.stage;
+    if(Number.isInteger(saved.artifact)&&saved.artifact>=0&&saved.artifact<stages[state.stage].outputs.length)state.artifact=saved.artifact;
+    /** @type {Object<string,Array<string>>} Persisted presentation fields and their allowed values. */
+    const choices={detail:['preview','details','sources'],view:['workflow','artifacts'],route:['independent','prosa'],documentTab:['pdf','manual'],modelTab:['model','analysis','goal'],verificationTab:['status','obligations','audit','log'],resourceTab:['libraries','models'],runTab:['summary','versions','usage','compare'],settingsTab:['general','models','proof'],appearance:['system','light','dark']};
+    Object.entries(choices).forEach(([field,values])=>{if(values.includes(saved[field]))state[field]=saved[field];});
+    state.focus=saved.focus===true;state.navHidden=saved.navHidden===true;
+    /** @type {Set<number>} Only earlier records can be referenced as parents. */
+    const ids=new Set([exampleRun.id]);
+    state.records=[];
+    for(const entry of Array.isArray(saved.records)?saved.records:[]){
+      if(entry?.id!==state.records.length+4||!ids.has(entry.parent))break;
+      /** @type {Object} Rebuild a typed delta from known fields. */
+      const record={id:entry.id,parent:entry.parent};
+      for(const key of [...Object.keys(inputFields),...Object.keys(referenceFields),'source','note']){
+        if(typeof entry[key]==='string')record[key]=entry[key].slice(0,key==='note'?350:1800);
+      }
+      if(['independent','prosa'].includes(entry.route))record.route=entry.route;
+      state.records.push(record);ids.add(record.id);
+    }
+    state.activeId=ids.has(saved.activeId)?saved.activeId:exampleRun.id;
+    state.draftParent=ids.has(saved.draftParent)?saved.draftParent:state.activeId;
+    state.draftRoute=['independent','prosa'].includes(saved.draftRoute)?saved.draftRoute:recordFor(state.draftParent).route;
+    state.draftSource=typeof saved.draftSource==='string'?saved.draftSource.slice(0,300):'Manual input';
+    state.draftNote=typeof saved.draftNote==='string'?saved.draftNote.slice(0,350):'';
+    state.draftRefs=Object.fromEntries(Object.keys(referenceFields).filter(key=>typeof saved.draftRefs?.[key]==='string').map(key=>[key,saved.draftRefs[key].slice(0,120)]));
+    state.draftStarted=saved.draftStarted===true||(saved.designVersion<4&&Object.values(saved.inputDraft||{}).some(Boolean));
+    state.reviewing=state.draftStarted&&saved.reviewing===true;
+    if(typeof saved.query==='string')state.query=saved.query.slice(0,100);
+    if(typeof saved.claim==='string'&&/^[a-z]+$/.test(saved.claim))state.claim=saved.claim;
+    if(typeof saved.latex==='string')state.latex=saved.latex.slice(0,1000);
+    ['model','analysis','goal'].forEach(field=>{if(typeof saved.inputDraft?.[field]==='string')state.inputDraft[field]=saved.inputDraft[field].slice(0,1800);});
+  }
+  /** Select a stage while resetting only its artifact-specific view.
+   * @param {string} stage Stage identifier.
+   * @param {number} artifact Output index, defaulting to its principal visual.
+   * @returns {void}
+   */
+  function selectStage(stage,artifact=0){state.stage=stage;state.artifact=artifact;state.detail='preview';state.claim=stage==='proof'?'target':stage==='bridges'?'bridge':'workload';}
+  root.querySelector('#rt-flow').insertAdjacentHTML('beforeend',Object.entries(stages).map(([id,stage])=>`<button type="button" class="node" data-stage="${id}" data-graph-node="${id}" aria-pressed="${id===state.stage}" style="grid-column:${stage.cell[0]};grid-row:${stage.cell[1]}"><strong>${stage.name}</strong><span class="stage-status ${['alignment','bridges'].includes(id)?'open':''}">${stage.status==='Draft'?'':stage.status}</span></button>`).join(''));
+  root.querySelector('#rt-stage-select').innerHTML=Object.entries(stages).map(([id,stage])=>`<option value="${id}">${stage.name}</option>`).join('');
+  /** Bind a new input draft to the selected record before the first edit. @returns {void} */
+  function startInput(){
+    if(state.draftStarted)return;
+    state.draftParent=state.activeId;state.draftRoute=recordFor(state.activeId).route;state.draftStarted=true;
+  }
+  /** Clear the editor state once its contents have been frozen or discarded. @returns {void} */
+  function clearDraft(){
+    state.inputDraft={model:'',analysis:'',goal:''};state.draftRefs={};state.draftNote='';state.draftSource='Manual input';state.draftStarted=false;state.reviewing=false;
+  }
+  /** Select a frozen run across the project modules. @param {number} id Run identifier. @returns {void} */
+  function selectRun(id){state.activeId=id;state.reviewing=false;state.focus=false;state.route=recordFor(id).route;}
+  /** Open the editable form without mutating the existing frozen record. @returns {void} */
+  function editFields(){state.reviewing=false;state.documentTab='manual';navigate('documents');}
+  /** Commit only the changed fields and open the comparison with their parent. @returns {void} */
+  function freezeDraft(){
+    /** @type {Object} Immutable input record that supplied the baseline. */
+    const parent=recordFor(state.draftParent);
+    /** @type {Object} Unique child identifier and its explicit parent. */
+    const record={id:(state.records.at(-1)?.id||3)+1,parent:parent.id};
+    for(const [key,value] of Object.entries(workingCopy()))if(value!==(parent[key]||''))record[key]=value;
+    state.records.push(record);clearDraft();selectRun(record.id);state.runTab='compare';navigate('runs');
+  }
+  /** Refresh only the diff so the route picker and note retain keyboard focus. @returns {void} */
+  function updateDraftDiff(){
+    /** @type {Array<Array<string>>} Exact parent and draft values for changed fields. */
+    const differences=changesBetween(recordFor(state.draftParent),workingCopy());
+    root.querySelector('#av-draft-diff').innerHTML=differences.length?table(['Field','Before','After'],differences):'Same inputs and route';
+    renderMath();
+  }
+  /** Validate three editable fields and open a review. @returns {boolean} Whether review opened. */
+  function reviewInputs(){
+    for(const field of root.querySelectorAll('#av-input-form [data-input-field]')){
+      if(!field.value.trim()){
+        feedback='Enter the '+field.name+' before review.';
+        field.setAttribute('aria-invalid','true');field.focus();root.querySelector('#av-feedback').textContent=feedback;return false;
+      }
+      state.inputDraft[field.name]=field.value.trim();
+    }
+    startInput();state.reviewing=true;navigate('modeling');return true;
+  }
+  root.addEventListener('click',event=>{
+    /** @type {HTMLButtonElement|null} Action selected with a pointer or keyboard. */
+    const button=event.target.closest('button');if(!button)return;
+    if(button.dataset.page){
+      if(button.dataset.record){selectRun(Number(button.dataset.record));state.runTab=button.dataset.page==='compare'?'compare':'summary';state.modelTab='model';}
+      if(button.dataset.page==='modeling')state.reviewing=false;
+      navigate(button.dataset.page==='compare'?'runs':button.dataset.page);
+    }
+    if(button.dataset.tabField){state[button.dataset.tabField]=button.dataset.tabValue;feedback='';}
+    if(button.dataset.openStage){if(state.page!=='derivation')state.route=recordFor(state.activeId).route;navigate('derivation');selectStage(button.dataset.openStage,Number(button.dataset.openOutput||0));state.view='workflow';state.focus=false;}
+    switch(button.dataset.moduleAction){
+      case 'review':if(!reviewInputs())return;break;
+      case 'prosa':selectRun(3);state.route='prosa';navigate('derivation');selectStage('proof');state.view='workflow';break;
+      case 'revise':prepareDraft();editFields();break;
+      case 'enter-fields':editFields();break;
+      case 'example-input':
+        startInput();state.inputDraft=Object.fromEntries(Object.keys(inputFields).map(key=>[key,exampleRun[key]]));state.draftSource=exampleRun.source;state.draftRefs={};break;
+      case 'discard':clearDraft();editFields();break;
+      case 'freeze':freezeDraft();break;
+    }
+    if(button.dataset.stage)selectStage(button.dataset.stage);
+    if(button.dataset.output!==undefined){state.artifact=Number(button.dataset.output);state.detail='preview';}
+    if(button.dataset.detail)state.detail=button.dataset.detail;
+    if(button.dataset.view){state.view=button.dataset.view;state.focus=false;}
+    if(button.dataset.claim)state.claim=button.dataset.claim;
+    if(button.dataset.catalogStage){selectStage(button.dataset.catalogStage,Number(button.dataset.catalogOutput));state.view='workflow';state.focus=true;}
+    if(button.dataset.action==='gap'){selectStage('alignment');state.view='workflow';state.focus=false;}
+    if(button.dataset.action==='focus')state.focus=!state.focus;
+    if(button.dataset.action==='sidebar')state.navHidden=!state.navHidden;
+    if(button.dataset.action==='clear-search'){state.query='';root.querySelector('#rt-search').value='';}
+    /** @type {boolean} Narrow screens open artifact detail directly instead of stacking it below the canvas. */
+    const openMobileDetail=Boolean(button.dataset.stage||button.dataset.catalogStage||button.dataset.openStage||button.dataset.action==='gap')&&window.matchMedia('(max-width:600px)').matches;
+    if(openMobileDetail)state.focus=true;
+    render();remember(button.dataset.moduleAction==='freeze');
+    if(button.dataset.moduleAction==='review')root.querySelector('#av-draft-route').focus({preventScroll:true});
+    if(['enter-fields','revise','example-input','discard'].includes(button.dataset.moduleAction))root.querySelector('[name="model"]').focus({preventScroll:true});
+    if(button.dataset.moduleAction==='freeze')root.querySelector('#av-run-select').focus({preventScroll:true});
+    // Recreated artifact controls retain keyboard focus after their content changes.
+    if(button.dataset.output!==undefined)root.querySelector(`[data-output="${state.artifact}"]`)?.focus({preventScroll:true});
+    if(button.dataset.claim)root.querySelector(`[data-claim="${state.claim}"]`)?.focus({preventScroll:true});
+    if(button.dataset.catalogStage)root.querySelector('[data-action="focus"]').focus({preventScroll:true});
+    if(button.dataset.action==='clear-search')root.querySelector('#rt-search').focus({preventScroll:true});
+    if(openMobileDetail)root.querySelector(`[data-output="${state.artifact}"]`)?.focus({preventScroll:true});
+    // Recreated navigation and page tabs retain a predictable keyboard focus target.
+    if(button.dataset.page){
+      root.querySelector(`.rail [data-page="${state.page}"]`)?.focus({preventScroll:true});
+      if(window.matchMedia('(max-width:780px)').matches)root.querySelector('.mobile-nav summary').focus({preventScroll:true});
+    }
+    if(button.dataset.tabField)root.querySelector(`[data-tab-field="${button.dataset.tabField}"][data-tab-value="${button.dataset.tabValue}"]`)?.focus({preventScroll:true});
+  });
+  root.addEventListener('input',event=>{
+    /** @type {HTMLInputElement|HTMLTextAreaElement} Editable local preview field. */
+    const field=event.target;
+    if(field.dataset.inputField){
+      startInput();state.inputDraft[field.dataset.inputField]=field.value;field.removeAttribute('aria-invalid');field.removeAttribute('aria-describedby');
+      feedback='';root.querySelector('#av-feedback').textContent='';
+      root.querySelector('[data-module-action="example-input"]')?.remove();root.querySelector('[data-module-action="discard"]').hidden=false;remember();
+    }
+    if(field.dataset.reference){state.draftRefs[field.dataset.reference]=field.value.trim();remember();}
+    if(field.id==='av-revision-note'){state.draftNote=field.value;updateDraftDiff();remember();}
+    if(field.id==='av-latex'){
+      state.latex=field.value;
+      root.querySelector('#av-latex-preview').innerHTML=math(state.latex,true);
+      renderMath();remember();
+    }
+  });
+  root.addEventListener('change',event=>{
+    /** @type {HTMLInputElement|HTMLSelectElement} File or preference control. */
+    const field=event.target;
+    if(field.id==='av-pdf'){
+      /** @type {File|undefined} The reference name is saved with its manually entered fields. */
+      const file=field.files?.[0];if(!file)return;
+      /** @type {string} Replacing a paper invalidates locators tied to the previous reference. */
+      const source='PDF · '+file.name.slice(0,250);startInput();
+      if(source!==state.draftSource)state.draftRefs=Object.fromEntries(Object.keys(referenceFields).map(key=>[key,'']));
+      state.draftSource=source;root.querySelector('#av-pdf-name').textContent=file.name;remember();
+    }
+    if(field.id==='av-draft-route'){state.draftRoute=field.value;updateDraftDiff();remember();}
+    if(field.id==='av-run-select'){selectRun(Number(field.value));render();remember();root.querySelector('#av-run-select').focus({preventScroll:true});}
+    if(field.id==='av-appearance'){state.appearance=field.value;render();remember();root.querySelector('#av-appearance').focus();}
+  });
+  root.querySelector('#rt-route').addEventListener('change',event=>{state.route=event.target.value;if(state.stage==='proof')state.claim='target';render();remember();});
+  root.querySelector('#rt-stage-select').addEventListener('change',event=>{selectStage(event.target.value);render();remember();});
+  root.querySelector('#rt-search').addEventListener('input',event=>{state.query=event.target.value;renderCatalog();if(window.lucide)window.lucide.createIcons({attrs:{width:16,height:16}});remember();});
+  root.addEventListener('keydown',event=>{if(event.key==='Escape'&&state.page==='derivation'&&state.focus){state.focus=false;render();remember();root.querySelector('[data-action="focus"]').focus();}});
+  /** @type {string} Origin-local storage for the standalone AutoVISA workspace. */
+  const storageKey='autovisa.workspace.v4';
+  try{restore(JSON.parse(localStorage.getItem(storageKey)));}catch{/* A fresh tab can run without storage. */}
+  root.querySelector('#rt-search').value=state.query;
+  render();
+  window.addEventListener('DOMContentLoaded',()=>{
+    if(window.lucide)window.lucide.createIcons({attrs:{width:16,height:16}});
+    renderMath();requestAnimationFrame(drawGraphs);
+  });
+  document.getElementById('av-katex').addEventListener('load',()=>{renderMath();requestAnimationFrame(drawGraphs);});
+  if(window.ResizeObserver){diagramObserver=new ResizeObserver(drawGraphs);diagramObserver.observe(root);}else window.addEventListener('resize',drawGraphs);
+})();
+</script>
+
+</body>
+</html>

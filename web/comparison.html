@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>autoRTA · 父子运行比较</title>
+  <link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/comparison.css">
+  <script defer src="/comparison.js"></script>
+</head>
+<body>
+  <header class="masthead"><a class="brand" href="/"><span class="mark">aR</span><strong>autoRTA</strong></a>
+    <div class="workflow">双向推导 ／ 反馈与修订 ／ <span class="current">运行比较</span></div><span class="local">● 本机存储</span></header>
+  <div id="test-banner" hidden>独立比较验收环境 · 不修改正式项目记录</div>
+  <main>
+    <div class="compare-heading"><div><p class="eyebrow">PARENT → CHILD · VERSIONED COMPARISON</p><h1>这次修订，改变了什么</h1>
+      <p class="muted">固定两侧运行和路线版本，追溯数学内容、证明证据与实际用量。</p></div><a id="back-run" class="download">返回子运行 ↗</a></div>
+    <section class="compare-panel" aria-label="比较版本选择">
+      <form id="compare-form" class="compare-controls">
+        <label for="parent-selection">父运行路线版本<span id="parent-id" class="muted"></span><select id="parent-selection" required></select></label>
+        <label for="child-selection">子运行路线版本<span id="child-id" class="muted"></span><select id="child-selection" required></select></label>
+        <button id="save-comparison" class="primary" type="submit" disabled>生成并保存比较 →</button>
+      </form>
+      <label class="history-label" for="comparison-history">已保存比较<select id="comparison-history"><option value="">暂无比较</option></select></label>
+      <p id="version-note" class="muted">正在读取可比较版本…</p>
+    </section>
+    <p id="compare-message" role="status" aria-live="polite"></p>
+    <div id="comparison-result" hidden>
+      <section id="comparison-summary" class="compare-summary" aria-label="差异摘要"></section>
+      <nav class="compare-nav" aria-label="比较内容"><a href="#model">模型与目标</a><a href="#graph">推导图与路线</a><a href="#proofs">证明与义务</a><a href="#usage">预算与用量</a></nav>
+      <section id="comparison-binding" class="compare-panel" aria-label="固定版本与原始记录"></section>
+      <section id="model" class="compare-panel"><p class="eyebrow">01 · MODEL & TARGETS</p><h2>模型与目标</h2><div id="model-content"></div></section>
+      <section id="graph" class="compare-panel"><p class="eyebrow">02 · GRAPH & ROUTES</p><h2>推导图与路线</h2><div id="graph-content"></div></section>
+      <section id="proofs" class="compare-panel"><p class="eyebrow">03 · PROOFS & OPEN OBLIGATIONS</p><h2>证明证据与开放义务</h2><div id="proof-content"></div></section>
+      <section id="usage" class="compare-panel"><p class="eyebrow">04 · BUDGET & ACTUAL USAGE</p><h2>预算与实际用量</h2><div id="usage-content"></div></section>
+    </div>
+  </main>
+  <footer>autoRTA Platform <span>W05-c · 父子运行比较</span><span>路线变化与证明完成分别记录</span></footer>
+</body>
+</html>

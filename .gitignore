@@ -1,0 +1,15 @@
+artifacts/
+__pycache__/
+*.pyc
+*.vo
+*.vos
+*.vok
+*.glob
+.*.aux
+# Local copies of the third-party case study and its rendered pages.
+/examples/papers/case_11/source.pdf
+/web/prototype-assets/case11.pdf
+/web/prototype-assets/case11-page2.png
+/web/prototype-assets/case11-page4.png
+.env
+.env.local

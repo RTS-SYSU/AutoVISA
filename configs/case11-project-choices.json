@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "contract": "docs/contracts/case11-integer-dm-soundness.zh.md",
+  "contract_sha256": "4bfdbdbc31fb88e92f48a6d3dc8437d8ffdc2ca41ce4f6d31fd77eb12927c9ad",
+  "prior_selection": {
+    "decision": "D11",
+    "paper_goal": "fig3_acceptance_soundness",
+    "formal_goal": "case11-fig3-acceptance-soundness-int-v1"
+  },
+  "choices": [
+    {
+      "id": "integer_time",
+      "decisions": [
+        "D12"
+      ],
+      "statement": "时间、释放、执行量、截止期与间隔采用非负整数 tick。"
+    },
+    {
+      "id": "positive_parameters",
+      "decisions": [
+        "D12",
+        "D13"
+      ],
+      "statement": "任务参数采用整数并满足 0<C_i≤D_i≤T_i。"
+    },
+    {
+      "id": "sporadic_traces",
+      "decisions": [
+        "D13"
+      ],
+      "statement": "从空系统开始，覆盖任意合法零星释放轨迹；实际执行需求满足 0≤e_j≤C_i。"
+    },
+    {
+      "id": "scheduler",
+      "decisions": [
+        "D13"
+      ],
+      "statement": "单处理器、单位速度、抢占式工作保持 DM，同截止期按固定任务顺序排序。"
+    },
+    {
+      "id": "execution_scope",
+      "decisions": [
+        "D13"
+      ],
+      "statement": "任务独立，无阻塞、自挂起，调度和抢占开销按零计算。"
+    }
+  ]
+}

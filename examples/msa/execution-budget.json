@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "title": "独立 MSA：执行需求预算",
+  "description": "若自身执行需求加已给定干扰预算不超过截止期，则自身需求不超过截止期。本例只证明预算性质，不把干扰预算当作已建立的调度分析。",
+  "scope": {
+    "adapter": "nat_arithmetic_v1",
+    "time": "integer_ticks"
+  },
+  "proof_mode": "independent",
+  "symbols": [
+    {
+      "key": "c",
+      "sort": "Nat",
+      "unit": "ticks",
+      "description": "c",
+      "sources": [
+        {
+          "kind": "manual",
+          "author": "验收案例作者",
+          "note": "独立编写的执行需求预算子问题，不声明完整调度保证。"
+        }
+      ],
+      "decision": "pending"
+    },
+    {
+      "key": "interference",
+      "sort": "Nat",
+      "unit": "ticks",
+      "description": "interference",
+      "sources": [
+        {
+          "kind": "manual",
+          "author": "验收案例作者",
+          "note": "独立编写的执行需求预算子问题，不声明完整调度保证。"
+        }
+      ],
+      "decision": "pending"
+    },
+    {
+      "key": "deadline",
+      "sort": "Nat",
+      "unit": "ticks",
+      "description": "deadline",
+      "sources": [
+        {
+          "kind": "manual",
+          "author": "验收案例作者",
+          "note": "独立编写的执行需求预算子问题，不声明完整调度保证。"
+        }
+      ],
+      "decision": "pending"
+    }
+  ],
+  "items": [
+    {
+      "key": "total_budget",
+      "category": "analysis",
+      "title": "自身需求与干扰预算之和",
+      "description": "自身需求与干扰预算之和",
+      "parameters": [
+        [
+          "own",
+          "Nat"
+        ],
+        [
+          "other",
+          "Nat"
+        ]
+      ],
+      "result": "Nat",
+      "expression": {
+        "op": "add",
+        "left": {
+          "op": "var",
+          "name": "own"
+        },
+        "right": {
+          "op": "var",
+          "name": "other"
+        }
+      },
+      "material_role": "analysis_definition",
+      "sources": [
+        {
+          "kind": "manual",
+          "author": "验收案例作者",
+          "note": "独立编写的执行需求预算子问题，不声明完整调度保证。"
+        }
+      ],
+      "decision": "pending"
+    },
+    {
+      "key": "fits_deadline",
+      "category": "model",
+      "title": "总预算不超过截止期",
+      "description": "总预算不超过截止期",
+      "parameters": [],
+      "result": "Prop",
+      "expression": {
+        "op": "le",
+        "left": {
+          "op": "call",
+          "symbol": "total_budget",
+          "args": [
+            {
+              "op": "var",
+              "name": "c"
+            },
+            {
+              "op": "var",
+              "name": "interference"
+            }
+          ]
+        },
+        "right": {
+          "op": "var",
+          "name": "deadline"
+        }
+      },
+      "material_role": "model_definition",
+      "sources": [
+        {
+          "kind": "manual",
+          "author": "验收案例作者",
+          "note": "独立编写的执行需求预算子问题，不声明完整调度保证。"
+        }
+      ],
+      "decision": "pending"
+    },
+    {
+      "key": "own_fits",
+      "category": "goal",
+      "title": "自身需求不超过截止期",
+      "description": "自身需求不超过截止期",
+      "parameters": [],
+      "result": "Prop",
+      "expression": {
+        "op": "le",
+        "left": {
+          "op": "var",
+          "name": "c"
+        },
+        "right": {
+          "op": "var",
+          "name": "deadline"
+        }
+      },
+      "material_role": "guarantee_statement",
+      "sources": [
+        {
+          "kind": "manual",
+          "author": "验收案例作者",
+          "note": "独立编写的执行需求预算子问题，不声明完整调度保证。"
+        }
+      ],
+      "decision": "pending"
+    }
+  ],
+  "selected": [
+    "own_fits"
+  ],
+  "primary": "own_fits"
+}

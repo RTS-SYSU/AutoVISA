@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "backend": "wsl",
+  "distribution": "Ubuntu",
+  "opam_root": "/home/ther/.local/share/autorta-opam",
+  "switch": "autorta-3.0",
+  "expected_packages": {
+    "rocq-core": "9.0.0",
+    "rocq-stdlib": "9.1.0"
+  },
+  "command_timeout_seconds": 60,
+  "source_note": "Existing environment verified per run; no installation is performed by the W01 checker."
+}

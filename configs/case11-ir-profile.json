@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "name": "case11-integer-dm-ir-v1",
+  "source_sha256": "d5d16b999822e16220102521cf23c56e6b88b2e4b9b40b0e26ec344a676a2f41",
+  "locks": {
+    "proofs/Analysis.v": "2c43a3c4ed514be2fec6dbef0af94921404ceb54a39896bd528b7fc4796834ae",
+    "proofs/Model.v": "05d34d1446bf28a4016e7ebdfad54a2bde04b4963eb72607397f9ff690fe0a81",
+    "configs/case11-project-choices.json": "357f813b2aa3b437aab1d864b1b114805b9ba793c84b87e5fd276a7018cbd212",
+    "docs/contracts/case11-integer-dm-soundness.zh.md": "4bfdbdbc31fb88e92f48a6d3dc8437d8ffdc2ca41ce4f6d31fd77eb12927c9ad",
+    "configs/case11-semantic-rules.json": "83eedad6ee38ba3c565394cfb5d65be7e5b1bec8a0ab0aa9b15cfad59daabca3",
+    "proofs/Target.v": "96f76cced0fec57816255b4a66754f584ce53e7ea70f7a839232ae1e5b7fb2f2"
+  },
+  "expected": {
+    "parameter_order": {
+      "summary": "计算需求、截止期与周期的关系来自原文的参数不等式。",
+      "normalized": {
+        "expression": "C_i ≤ D_i ≤ T_i",
+        "captures": {
+          "execution_bound": "≤",
+          "deadline_bound": "≤"
+        }
+      },
+      "material_role": "model_definition"
+    },
+    "dm_priority": {
+      "summary": "相对截止期越短，优先级越高。",
+      "normalized": {
+        "priority": "deadline_monotonic",
+        "equal_deadline_tie_break": "unspecified"
+      },
+      "material_role": "model_definition"
+    },
+    "sporadic_separation": {
+      "summary": "相邻释放至少相隔 m；实际释放无需保持周期性。",
+      "normalized": {
+        "release_pattern": "sporadic",
+        "minimum_separation_symbol": "m"
+      },
+      "material_role": "model_definition"
+    },
+    "sporadic_deadline": {
+      "summary": "原文给出零星任务截止期与最小释放间隔的关系，见抽取表达式。",
+      "normalized": {
+        "expression": "D ≤ m",
+        "captures": {
+          "relation": "≤"
+        }
+      },
+      "material_role": "model_definition"
+    },
+    "mixed_tasks": {
+      "summary": "论文声明允许周期和零星任务混合使用。",
+      "normalized": {},
+      "material_role": "model_definition"
+    },
+    "preemptive_context": {
+      "summary": "引言在介绍 RM 时描述了抢占机制和最高优先级就绪任务运行。",
+      "normalized": {},
+      "material_role": "background"
+    },
+    "independent_context": {
+      "summary": "引言列举了 RM 背景下的周期、独立和截止期等于周期约束。",
+      "normalized": {},
+      "material_role": "background"
+    },
+    "synchronization_scope": {
+      "summary": "作者将任务同步和变化的时序特征留作进一步研究。",
+      "normalized": {},
+      "material_role": "scope_limit"
+    },
+    "test1": {
+      "summary": "第一个测试使用截止期内高优先级释放次数的保守干扰估计。",
+      "normalized": {
+        "expression": "C_i + sum_{j<i}(ceil(D_i/T_j) * C_j) <= D_i"
+      },
+      "material_role": "analysis_definition"
+    },
+    "test2": {
+      "summary": "第二个测试对截止期之后的执行部分进行截断。",
+      "normalized": {
+        "expression": "C_i + sum_{j<i}(floor(D_i/T_j)*C_j + min(C_j,D_i-floor(D_i/T_j)*T_j)) <= D_i"
+      },
+      "material_role": "analysis_definition"
+    },
+    "fig3": {
+      "summary": "逐任务迭代干扰与执行需求，检查时间界限。",
+      "normalized": {
+        "interference": "I_i(t) = sum_{j<i}(ceil(t/T_j)*C_j)",
+        "initial": "t_0 = sum_{j<=i}(C_j)",
+        "accept": "I_i(t) + C_i <= t AND t <= D_i",
+        "update": "t_next = I_i(t) + C_i",
+        "reject": "t > D_i",
+        "taskset": "all tasks pass"
+      },
+      "material_role": "analysis_definition"
+    },
+    "fig3_acceptance_soundness": {
+      "summary": "在论文模型及优先级约束下，所有任务通过最终迭代测试即可保证可调度。",
+      "normalized": {
+        "direction": "acceptance_implies_schedulability",
+        "priority": "DM"
+      },
+      "material_role": "guarantee_statement"
+    },
+    "fig3_exactness": {
+      "summary": "最终测试被声明为充分且必要。",
+      "normalized": {
+        "direction": "acceptance_iff_schedulability",
+        "priority": "fixed"
+      },
+      "material_role": "guarantee_statement"
+    },
+    "dm_optimality": {
+      "summary": "在相应任务模型下，若存在可行静态优先级分配，DM 也可行。",
+      "normalized": {
+        "direction": "feasible_static_priority_implies_feasible_DM"
+      },
+      "material_role": "guarantee_statement"
+    },
+    "fixed_priority_soundness": {
+      "summary": "最终测试也适用于截止期不超过周期的任意给定固定优先级顺序。",
+      "normalized": {
+        "direction": "acceptance_implies_schedulability",
+        "priority": "any_fixed_total_order"
+      },
+      "material_role": "guarantee_statement"
+    }
+  },
+  "choices": [
+    {
+      "id": "integer_time",
+      "decisions": [
+        "D12"
+      ],
+      "statement": "时间、释放、执行量、截止期与间隔采用非负整数 tick。"
+    },
+    {
+      "id": "positive_parameters",
+      "decisions": [
+        "D12",
+        "D13"
+      ],
+      "statement": "任务参数采用整数并满足 0<C_i≤D_i≤T_i。"
+    },
+    {
+      "id": "sporadic_traces",
+      "decisions": [
+        "D13"
+      ],
+      "statement": "从空系统开始，覆盖任意合法零星释放轨迹；实际执行需求满足 0≤e_j≤C_i。"
+    },
+    {
+      "id": "scheduler",
+      "decisions": [
+        "D13"
+      ],
+      "statement": "单处理器、单位速度、抢占式工作保持 DM，同截止期按固定任务顺序排序。"
+    },
+    {
+      "id": "execution_scope",
+      "decisions": [
+        "D13"
+      ],
+      "statement": "任务独立，无阻塞、自挂起，调度和抢占开销按零计算。"
+    }
+  ],
+  "required_model": [
+    "parameter_order",
+    "dm_priority",
+    "sporadic_separation",
+    "sporadic_deadline",
+    "mixed_tasks"
+  ],
+  "required_analysis": [
+    "fig3"
+  ],
+  "supported_goal": "fig3_acceptance_soundness"
+}

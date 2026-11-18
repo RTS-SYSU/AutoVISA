@@ -1,0 +1,441 @@
+{
+  "schema_version": 1,
+  "name": "case11-grounded-rules-v1",
+  "scope": "case_11 digital author-layout paper, six letter-size pages",
+  "method": "local_rule_extraction",
+  "rules": [
+    {
+      "id": "parameter_order",
+      "category": "model",
+      "title": "任务参数约束",
+      "summary": "计算需求、截止期与周期的关系来自原文的参数不等式。",
+      "sources": [
+        {
+          "id": "timing",
+          "page": 2,
+          "column": "left",
+          "pattern": "C i (?P<execution_bound>≤|<|>=|<=|>|≥) D i (?P<deadline_bound>≤|<|>=|<=|>|≥) T i"
+        }
+      ],
+      "normalized": {
+        "expression": "C_i {execution_bound} D_i {deadline_bound} T_i"
+      },
+      "normalization_origin": "captured_operators",
+      "expected_captures": {
+        "execution_bound": [
+          "≤",
+          "<="
+        ],
+        "deadline_bound": [
+          "≤",
+          "<="
+        ]
+      }
+    },
+    {
+      "id": "dm_priority",
+      "category": "model",
+      "title": "DM 优先级",
+      "summary": "相对截止期越短，优先级越高。",
+      "sources": [
+        {
+          "id": "priority",
+          "page": 2,
+          "column": "left",
+          "pattern": "Thus, the process with the shortest deadline is assigned the highest priority and the longest deadline process is assigned the lowest priority\\."
+        }
+      ],
+      "normalized": {
+        "priority": "deadline_monotonic",
+        "equal_deadline_tie_break": "unspecified"
+      }
+    },
+    {
+      "id": "sporadic_separation",
+      "category": "model",
+      "title": "零星任务最小释放间隔",
+      "summary": "相邻释放至少相隔 m；实际释放无需保持周期性。",
+      "sources": [
+        {
+          "id": "minimum_separation",
+          "page": 5,
+          "column": "left",
+          "pattern": "However, we note that since the process is sporadic, the actual release times of the process will not be periodic, but successive releases will be separated by no less than m time units\\."
+        }
+      ],
+      "normalized": {
+        "release_pattern": "sporadic",
+        "minimum_separation_symbol": "m"
+      }
+    },
+    {
+      "id": "sporadic_deadline",
+      "category": "model",
+      "title": "零星任务截止期约束",
+      "summary": "原文给出零星任务截止期与最小释放间隔的关系，见抽取表达式。",
+      "sources": [
+        {
+          "id": "deadline_m",
+          "page": 5,
+          "column": "left",
+          "pattern": "deadline D where D (?P<relation>≤|<|>=|<=|>|≥) m \\."
+        }
+      ],
+      "normalized": {
+        "expression": "D {relation} m"
+      },
+      "normalization_origin": "captured_operators",
+      "expected_captures": {
+        "relation": [
+          "≤",
+          "<="
+        ]
+      }
+    },
+    {
+      "id": "mixed_tasks",
+      "category": "model",
+      "title": "周期与零星任务混合",
+      "summary": "论文声明允许周期和零星任务混合使用。",
+      "sources": [
+        {
+          "id": "mixed",
+          "page": 5,
+          "column": "left",
+          "pattern": "No limitations on the combination of periodic and sporadic processes are imposed by this scheme\\."
+        }
+      ]
+    },
+    {
+      "id": "preemptive_context",
+      "category": "model",
+      "title": "抢占调度的背景说明",
+      "summary": "引言在介绍 RM 时描述了抢占机制和最高优先级就绪任务运行。",
+      "sources": [
+        {
+          "id": "preemptive",
+          "page": 1,
+          "column": "left",
+          "pattern": "At runtime a preemptive scheduling mechanism is used: the highest priority runnable process is executed\\."
+        }
+      ],
+      "material_role": "background",
+      "review_issues": [
+        "该段属于 RM 背景，是否作为 DM 模型条件需另行确认。"
+      ]
+    },
+    {
+      "id": "independent_context",
+      "category": "model",
+      "title": "独立任务的背景说明",
+      "summary": "引言列举了 RM 背景下的周期、独立和截止期等于周期约束。",
+      "sources": [
+        {
+          "id": "independent",
+          "page": 1,
+          "column": "left",
+          "pattern": "processes must be periodic, independent and have deadline equal to period\\."
+        }
+      ],
+      "material_role": "background",
+      "review_issues": [
+        "不能将 RM 背景中的全部限制直接并入 DM 模型。"
+      ]
+    },
+    {
+      "id": "synchronization_scope",
+      "category": "model",
+      "title": "同步扩展的范围",
+      "summary": "作者将任务同步和变化的时序特征留作进一步研究。",
+      "sources": [
+        {
+          "id": "synchronise",
+          "page": 5,
+          "column": "right",
+          "pattern": "These include the effect of allowing processes to synchronise and vary their timing characteristics\\."
+        }
+      ],
+      "material_role": "scope_limit",
+      "review_issues": [
+        "该句不直接规定自挂起、调度开销或初始状态。"
+      ]
+    },
+    {
+      "id": "test1",
+      "category": "analysis",
+      "title": "测试 (1)",
+      "summary": "第一个测试使用截止期内高优先级释放次数的保守干扰估计。",
+      "sources": [
+        {
+          "id": "test1_formula",
+          "page": 2,
+          "box": [
+            0.49,
+            0,
+            0.86,
+            0.135
+          ],
+          "guards": [
+            "\\(1\\)",
+            "≤ 1",
+            "Σ",
+            "C i",
+            "I i"
+          ]
+        },
+        {
+          "id": "rounding",
+          "page": 2,
+          "column": "right",
+          "pattern": "Note: R x H evaluates to the smallest integer ≥ x ; Q x P evaluates to the largest integer ≤ x"
+        },
+        {
+          "id": "tests_sufficient",
+          "page": 2,
+          "column": "right",
+          "pattern": "The schedulability constraints given by equations \\(1\\) and \\(2\\) are sufficient but not necessary in the general case\\."
+        }
+      ],
+      "normalized": {
+        "expression": "C_i + sum_{j<i}(ceil(D_i/T_j) * C_j) <= D_i"
+      },
+      "normalization_origin": "reviewed_formula_template",
+      "review_issues": [
+        "公式字符存在错位。规范式来自 case_11 核对模板，需要逐项对照原页确认。"
+      ]
+    },
+    {
+      "id": "test2",
+      "category": "analysis",
+      "title": "测试 (2)",
+      "summary": "第二个测试对截止期之后的执行部分进行截断。",
+      "sources": [
+        {
+          "id": "test2_formula",
+          "page": 2,
+          "box": [
+            0.49,
+            0.335,
+            0.86,
+            0.445
+          ],
+          "guards": [
+            "\\(2\\)",
+            "Σ",
+            "min",
+            "C j",
+            "T j"
+          ]
+        },
+        {
+          "id": "test2_guarantee",
+          "page": 2,
+          "column": "right",
+          "pattern": "The schedulability constraints given by equations \\(1\\) and \\(2\\) are sufficient but not necessary in the general case\\."
+        }
+      ],
+      "normalized": {
+        "expression": "C_i + sum_{j<i}(floor(D_i/T_j)*C_j + min(C_j,D_i-floor(D_i/T_j)*T_j)) <= D_i"
+      },
+      "normalization_origin": "reviewed_formula_template",
+      "review_issues": [
+        "取整、求和上下标和截断项需按公式图核对。"
+      ]
+    },
+    {
+      "id": "fig3",
+      "category": "analysis",
+      "title": "Fig.3 迭代测试",
+      "summary": "逐任务迭代干扰与执行需求，检查时间界限。",
+      "sources": [
+        {
+          "id": "fig3_caption",
+          "page": 4,
+          "column": "left",
+          "pattern": "Fig\\. 3\\. Schedulability Algorithm"
+        },
+        {
+          "id": "fig3_algorithm",
+          "page": 4,
+          "box": [
+            0.12,
+            0.22,
+            0.49,
+            0.61
+          ],
+          "guards": [
+            "foreach",
+            "Σ",
+            "continue = TRUE",
+            "while",
+            "≤ 1",
+            "continue = FALSE",
+            "t > D i",
+            "exit",
+            "endwhile",
+            "endfor"
+          ]
+        },
+        {
+          "id": "initial_value",
+          "page": 3,
+          "box": [
+            0.6,
+            0.13,
+            0.85,
+            0.177
+          ],
+          "guards": [
+            "t 0",
+            "Σ",
+            "C j",
+            "j = 1"
+          ]
+        },
+        {
+          "id": "interference_function",
+          "page": 3,
+          "box": [
+            0.58,
+            0.24,
+            0.86,
+            0.29
+          ],
+          "guards": [
+            "Σ",
+            "T z",
+            "z =1"
+          ]
+        }
+      ],
+      "normalized": {
+        "interference": "I_i(t) = sum_{j<i}(ceil(t/T_j)*C_j)",
+        "initial": "t_0 = sum_{j<=i}(C_j)",
+        "accept": "I_i(t) + C_i <= t AND t <= D_i",
+        "update": "t_next = I_i(t) + C_i",
+        "reject": "t > D_i",
+        "taskset": "all tasks pass"
+      },
+      "normalization_origin": "reviewed_formula_template",
+      "review_issues": [
+        "原伪代码在每轮末尾检查 t>D_i。规范化接受条件保留截止期检查。",
+        "初值包含自身及全部高优先级任务，公式和求和上下标需要页图确认。"
+      ]
+    },
+    {
+      "id": "fig3_acceptance_soundness",
+      "category": "goal",
+      "title": "迭代测试的接受充分性",
+      "summary": "在论文模型及优先级约束下，所有任务通过最终迭代测试即可保证可调度。",
+      "sources": [
+        {
+          "id": "exact_guarantee",
+          "page": 5,
+          "column": "right",
+          "pattern": "This problem was resolved with the development of a sufficient and necessary schedulability test\\."
+        },
+        {
+          "id": "fixed_priority_scope",
+          "page": 5,
+          "column": "right",
+          "pattern": "This test is able to determine the schedulability of any fixed priority process set where deadlines are no greater than periods, whatever the priority assignment criteria used\\."
+        }
+      ],
+      "requires": [
+        "parameter_order",
+        "dm_priority",
+        "fig3"
+      ],
+      "normalized": {
+        "direction": "acceptance_implies_schedulability",
+        "priority": "DM"
+      },
+      "review_issues": [
+        "这是从原文充分且必要声明中取出的充分性方向。整数时间和合法轨迹的精确量化由项目合同另行规定。"
+      ]
+    },
+    {
+      "id": "fig3_exactness",
+      "category": "goal",
+      "title": "迭代测试的精确性",
+      "summary": "最终测试被声明为充分且必要。",
+      "sources": [
+        {
+          "id": "exact_guarantee",
+          "page": 5,
+          "column": "right",
+          "pattern": "This problem was resolved with the development of a sufficient and necessary schedulability test\\."
+        },
+        {
+          "id": "fixed_priority_scope",
+          "page": 5,
+          "column": "right",
+          "pattern": "This test is able to determine the schedulability of any fixed priority process set where deadlines are no greater than periods, whatever the priority assignment criteria used\\."
+        }
+      ],
+      "requires": [
+        "parameter_order",
+        "fig3"
+      ],
+      "normalized": {
+        "direction": "acceptance_iff_schedulability",
+        "priority": "fixed"
+      },
+      "review_issues": [
+        "必要性方向及到达相位量化需单独确认。"
+      ]
+    },
+    {
+      "id": "dm_optimality",
+      "category": "goal",
+      "title": "DM 优先级分配最优性",
+      "summary": "在相应任务模型下，若存在可行静态优先级分配，DM 也可行。",
+      "sources": [
+        {
+          "id": "optimality",
+          "page": 2,
+          "column": "left",
+          "pattern": "Deadline-monotonic priority assignment is an optimal static priority scheme \\(see theorem 2\\.4 in \\(Leung, 1982\\) \\)\\."
+        }
+      ],
+      "requires": [
+        "parameter_order",
+        "dm_priority"
+      ],
+      "normalized": {
+        "direction": "feasible_static_priority_implies_feasible_DM"
+      },
+      "review_issues": [
+        "原文引用 Leung 1982 的定理；原定理来源与前提需要核对。"
+      ]
+    },
+    {
+      "id": "fixed_priority_soundness",
+      "category": "goal",
+      "title": "任意固定优先级的测试充分性",
+      "summary": "最终测试也适用于截止期不超过周期的任意给定固定优先级顺序。",
+      "sources": [
+        {
+          "id": "fixed_priority_scope",
+          "page": 5,
+          "column": "right",
+          "pattern": "This test is able to determine the schedulability of any fixed priority process set where deadlines are no greater than periods, whatever the priority assignment criteria used\\."
+        },
+        {
+          "id": "exact_guarantee",
+          "page": 5,
+          "column": "right",
+          "pattern": "This problem was resolved with the development of a sufficient and necessary schedulability test\\."
+        }
+      ],
+      "requires": [
+        "parameter_order",
+        "fig3"
+      ],
+      "normalized": {
+        "direction": "acceptance_implies_schedulability",
+        "priority": "any_fixed_total_order"
+      }
+    }
+  ]
+}

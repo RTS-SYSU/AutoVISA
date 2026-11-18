@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>autoRTA · 双向推导工作区</title>
+  <link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="/reasoning.css">
+  <script defer src="/reasoning.js"></script><script defer src="/feedback.js"></script><script defer src="/continuation.js"></script>
+</head>
+<body>
+  <header class="masthead"><a class="brand" href="/"><span class="mark">aR</span><strong>autoRTA</strong></a>
+    <div class="workflow"><span>01 导入论文</span><i>／</i><span>02 核对与冻结</span><i>／</i><span class="current">03 双向推导</span></div><span class="local">● 本机存储</span></header>
+  <div id="test-banner" hidden>独立推导验收环境 · 此处确认不写入正式项目</div>
+  <main class="reasoning-main">
+    <section class="reasoning-heading"><div><p class="eyebrow">BIDIRECTIONAL REASONING</p><h1>从分析定义，走向证明义务</h1><p id="context" class="muted">正在读取冻结上下文…</p></div>
+      <div><button id="derive" class="primary" disabled>运行双向推导 →</button><label>已保存运行<select id="runs" aria-label="已保存推导运行"></select></label></div></section>
+    <p id="message" role="status" aria-live="polite"></p>
+    <p id="route-version" class="muted" style="overflow-wrap:anywhere;display:flex;gap:16px;flex-wrap:wrap"></p>
+    <section id="overview" class="reasoning-overview" hidden></section>
+    <section id="run-lineage" class="reasoning-panel run-lineage" aria-label="关联运行与证据继承" hidden></section>
+    <section id="empty-graph" class="empty"><h2>同一上下文，两个独立方向</h2><p>从接受轨迹推出可用事实，从目标拆出充分义务，再检查二者的连接。</p></section>
+    <section id="workspace" hidden>
+      <div class="reasoning-toolbar"><div><h2>双向推导图</h2><p class="muted">绿色节点已有证明；琥珀色节点仍有义务。∧ 表示全部前提都需要成立。</p></div>
+        <a id="run-export" class="download" target="_blank" rel="noopener">查看完整运行记录 ↗</a><a class="download" href="#feedback-workspace">反馈与修订 ↓</a></div>
+      <div class="graph-scroll"><svg id="graph" viewBox="0 0 1120 440" role="group" aria-label="前向候选、后向义务与登记目标"></svg></div>
+      <div class="reasoning-panels">
+        <section class="reasoning-panel"><p class="eyebrow">SELECTED ROUTE</p><h2>路线与开放义务</h2><div id="routes"></div><h3>对齐关系</h3><div id="alignments"></div></section>
+        <section class="reasoning-panel" aria-label="节点与证据详情"><p class="eyebrow">CLAIM & EVIDENCE</p><h2 id="detail-title">选择节点查看详情</h2><div id="details"></div></section>
+      </div>
+      <section id="feedback-workspace" class="feedback-workspace" aria-label="反馈与修订提案">
+        <div class="feedback-heading"><div><p class="eyebrow">FEEDBACK → PROPOSAL → IMPACT</p><h2>把修改意见变成可核对的提案</h2></div><span class="badge">提案与采用记录</span></div>
+        <p class="muted">选择对象，描述修改意图，查看具体差异与影响。本地规则生成具体提案；核对数学决定后，可采用并开启关联运行。</p>
+        <div class="feedback-layout">
+          <div class="reasoning-panel feedback-input">
+            <form id="feedback-form">
+              <label for="feedback-target">反馈对象</label><select id="feedback-target" required></select>
+              <label for="feedback-intent">处理方式</label><select id="feedback-intent">
+                <option value="auto">从反馈识别</option><option value="split_bridge">拆分调度桥接义务</option>
+                <option value="advance_service">推进服务上下界证明</option>
+                <option value="arrival_condition">核对释放间隔条件</option><option value="alignment_review">核对对齐与实例化</option>
+                <option value="reverse_alignment">提出反向对齐</option><option value="scope_review">登记范围修订</option>
+              </select>
+              <label for="feedback-text">修改意见</label><textarea id="feedback-text" required maxlength="8000" rows="6" placeholder="例如：把这个调度桥接义务拆成服务下界和服务上界。"></textarea>
+              <div id="feedback-examples" class="feedback-examples"></div>
+              <label for="feedback-actor">作者</label><input id="feedback-actor" required maxlength="80" value="本地用户">
+              <button id="feedback-submit" class="primary" type="submit">形成修订提案 →</button>
+            </form>
+            <label for="feedback-history">本运行的已保存提案</label><select id="feedback-history"><option value="">暂无提案</option></select>
+            <p class="muted">每条反馈绑定提交时的运行、路线版本与来源修订。</p>
+          </div>
+          <section id="proposal-panel" class="reasoning-panel" aria-label="提案差异与影响" aria-live="polite">
+            <p class="eyebrow">REVIEWABLE CHANGES</p><h3>等待一条具体反馈</h3><p class="muted">这里将展示修改前后内容、受影响目标、保留的证据和新增检查任务。</p>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+  <footer>autoRTA Platform <span>W05-c · 关联运行与版本比较</span><span>局部证明与主目标完成分别显示</span></footer>
+</body>
+</html>

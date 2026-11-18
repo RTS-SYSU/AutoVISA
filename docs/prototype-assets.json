@@ -1,0 +1,24 @@
+{
+  "purpose": "Source provenance for the isolated UI prototype",
+  "assets": [
+    {
+      "path": "web/prototype-assets/case11.pdf",
+      "origin": "examples/papers/case_11/source.pdf",
+      "operation": "Byte-for-byte local copy; no content modification"
+    },
+    {
+      "path": "web/prototype-assets/case11-page4.png",
+      "origin": "artifacts/w03/checks/20261110T130821Z-c03db2da/case11-page4.png",
+      "operation": "Reuse previously rendered page 4; source file preserved",
+      "sha256": "F6B9A7DC593F3E275DF9553FCBEFB1558C1E3386C421C5AC62215E17F6D7F52A"
+    },
+    {
+      "path": "web/prototype-assets/case11-page2.png",
+      "origin": "examples/papers/case_11/source.pdf, page 2",
+      "operation": "Rendered using the existing project WSL Poppler runtime; no image editing",
+      "parameters": "-f 2 -l 2 -singlefile -scale-to 1584 -png"
+    }
+  ],
+  "icons": "Authored SVG line geometry in prototype.js; decorative icons have aria-hidden",
+  "external_runtime_dependencies": "None; no remote fonts, CDN scripts, image services, or model calls"
+}

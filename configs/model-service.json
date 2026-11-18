@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "provider": "openai",
+  "model": "gpt-6.1-sol",
+  "reasoning_effort": "high",
+  "enabled": false,
+  "key_environment": "OPENAI_API_KEY",
+  "allowed_materials": [],
+  "max_cost_usd": null,
+  "limitation": "模型偏好已记录；实际调用前设置允许发送材料和费用上限。当前 MSA 与 Prosa 流程不调用模型。"
+}

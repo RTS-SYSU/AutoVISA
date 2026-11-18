@@ -1,0 +1,79 @@
+/* The derivation canvas uses the existing workbench's colors and typography. */
+.reasoning-main{max-width:1400px;margin:auto;padding:36px 34px}
+.reasoning-heading,.reasoning-toolbar{display:flex;justify-content:space-between;gap:24px;align-items:center}
+.reasoning-heading h1{font-size:29px;margin:8px 0 12px}.reasoning-heading label{display:block;margin-top:12px}
+.reasoning-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:25px 0}
+.reasoning-stat{background:white;border:1px solid var(--line,#dce5e5);border-radius:10px;padding:18px 22px}
+.reasoning-stat strong{display:block;font-size:27px;margin:7px 0;color:#17685f}
+.reasoning-toolbar{background:white;padding:22px 26px;border:1px solid #dce5e5;border-bottom:0;border-radius:12px 12px 0 0}
+.reasoning-toolbar h2{margin:0 0 7px}.reasoning-toolbar p{margin:0;font-size:13px}
+.graph-scroll{overflow:auto;background:#fcfdfd;border:1px solid #dce5e5;border-radius:0 0 12px 12px}
+#graph{display:block;width:100%;min-width:850px}
+.graph-heading{font-size:15px;fill:#52716d;font-weight:600;letter-spacing:1px}
+.graph-edge{fill:none;stroke:#c4d2d0;stroke-width:1.5;stroke-dasharray:5 4}
+.graph-edge.selected{stroke:#237b70;stroke-width:2;stroke-dasharray:none}
+.graph-joint{fill:#fff;stroke:#237b70}.graph-joint-label{font-size:13px;fill:#237b70}
+.graph-node{cursor:pointer;outline:none}.graph-node rect{fill:#fff;stroke:#d8e2e0;stroke-width:1.5}
+.graph-node:hover rect,.graph-node:focus rect,.graph-node.active rect{stroke:#17685f;stroke-width:2.5}
+.graph-node.complete rect{fill:#edf7f2;stroke:#88b8a4}.graph-node.open rect{fill:#fff9ed;stroke:#d9bd76}
+.graph-node .node-title{fill:#203b38;font-size:14px;font-weight:600}.graph-node .node-status{fill:#637b76;font-size:12px}
+.reasoning-panels{display:grid;grid-template-columns:1fr 1.1fr;gap:22px;margin-top:24px}
+.reasoning-panel{background:white;border:1px solid #dce5e5;border-radius:12px;padding:25px;min-width:0}
+.reasoning-panel h2{margin-top:6px;font-size:20px}.reasoning-panel pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.7;background:#f4f7f6;padding:15px;border-radius:8px}
+.route-card,.alignment-card{border-top:1px solid #e2eae8;padding:16px 0}.route-card select{width:100%;margin:10px 0}
+.route-card p,.alignment-card p{font-size:13px;line-height:1.7}.open-list{color:#876317}
+.source-quote{border-left:3px solid #91b6ab;padding:8px 14px;margin:14px 0;font-size:13px;line-height:1.7}
+.detail-links{display:flex;gap:16px;flex-wrap:wrap}.reasoning-main #message:empty{display:none}
+.reasoning-main #message{margin:20px 0;padding:14px 18px;background:#eaf4ef;border-radius:8px}
+.reasoning-main #message.error{background:#fff0ed;color:#962d25}.reasoning-main .badge{display:inline-block}
+@media(max-width:800px){.reasoning-main{padding:22px 15px}.reasoning-heading,.reasoning-toolbar{align-items:flex-start;flex-direction:column}.reasoning-overview{grid-template-columns:repeat(2,1fr)}.reasoning-panels{grid-template-columns:1fr}}
+
+/* Source excerpts expand on demand while exact statements remain immediately visible. */
+a.brand{color:inherit;text-decoration:none}
+#details details{border-top:1px solid #e2eae8;margin-top:18px;padding-top:15px}
+#details summary{cursor:pointer;color:#17685f;font-weight:600}
+#details details[open]{max-height:450px;overflow:auto}
+
+/* Feedback remains a separate proposal surface, preserving the original graph above. */
+.feedback-workspace{margin-top:36px;scroll-margin-top:24px}
+.feedback-heading{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.feedback-heading h2{margin:5px 0;font-size:24px}
+.feedback-layout{display:grid;grid-template-columns:330px minmax(0,1fr);gap:22px;margin-top:24px;align-items:start}
+.feedback-input label{display:block;font-size:13px;font-weight:600;margin:16px 0 7px}
+.feedback-input select,.feedback-input input,.feedback-input textarea{width:100%;box-sizing:border-box}
+.feedback-input textarea{resize:vertical;font:inherit;line-height:1.6;border:1px solid #c9d8d5;border-radius:7px;padding:12px}
+.feedback-input form>button{width:100%;margin:20px 0 12px}
+.feedback-examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.feedback-examples button{font-size:12px;padding:6px 9px}
+.proposal-facts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.proposal-facts span{padding:5px 9px;background:#f0f5f3;border-radius:5px;font-size:12px}
+.proposal-original{border-left:3px solid #91b6ab;padding:8px 14px;background:#f6f9f7;white-space:pre-wrap;overflow-wrap:anywhere}
+.proposal-diff{border-top:1px solid #dce5e5;padding-top:14px;margin-top:20px}
+.proposal-diff h4{margin:2px 0 12px}
+.proposal-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.proposal-columns>div{min-width:0}
+.proposal-columns h5{font-size:12px;color:#637b76;margin:0}
+.proposal-columns pre{max-height:360px;overflow:auto;margin:7px 0}
+.proposal-columns .after pre{background:#eff8f2;border-left:3px solid #75ad8b}
+.proposal-table{border-collapse:collapse;width:100%;font-size:13px;margin:16px 0}
+.proposal-table th,.proposal-table td{text-align:left;vertical-align:top;padding:12px 8px;border-bottom:1px solid #e2eae8}
+.proposal-table th{width:125px;color:#52716d;font-weight:500}
+.proposal-task{border-left:3px solid #d9bd76;padding:4px 14px;margin:14px 0}
+#proposal-panel{overflow-wrap:anywhere}#proposal-panel h3{font-size:20px}
+#proposal-panel details{margin-top:16px}#proposal-panel summary{cursor:pointer;color:#17685f}
+#proposal-panel a.download{display:inline-block;margin:10px 0}
+#proposal-panel .pending{color:#876317;background:#fff9ed;padding:10px 14px;border-radius:7px}
+@media(max-width:1050px){.feedback-layout{grid-template-columns:285px minmax(0,1fr)}.proposal-columns{grid-template-columns:1fr}}
+@media(max-width:800px){.feedback-layout{grid-template-columns:1fr}.feedback-heading{align-items:flex-start;flex-direction:column}}
+
+/* Concrete decisions and linked executions are separate from mathematical proof badges. */
+.run-lineage{margin:20px 0}.run-lineage p{line-height:1.7}.run-lineage details{margin-top:12px}
+.run-lineage summary{cursor:pointer;color:#17685f}.run-lineage .download{display:inline-block;margin:5px 0}
+.proposal-adoption{border:1px solid #c8ded5;background:#f7fbf9;border-radius:10px;padding:20px;margin:20px 0}
+.proposal-adoption h3{margin:5px 0 12px}.proposal-adoption label{display:block;font-size:13px;margin:14px 0 6px}
+.proposal-adoption input,.proposal-adoption select,.proposal-adoption textarea{width:100%;box-sizing:border-box}
+.proposal-adoption textarea{font:inherit;line-height:1.6;border:1px solid #c9d8d5;border-radius:6px;padding:10px}
+.proposal-adoption button{margin-top:16px}.proposal-adoption .decision-current{border-left:3px solid #31836b;padding-left:12px}
+.adoption-controls{border-top:1px solid #dce5e5;margin-top:18px;padding-top:4px}
+.adoption-controls input[type=number]{max-width:150px;display:block}.proposal-adoption p{line-height:1.7}
+button:disabled{cursor:not-allowed;opacity:.55}

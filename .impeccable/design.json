@@ -1,0 +1,413 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-17T01:54:32.508Z",
+  "title": "Design System: autoRTA Research Workbench Prototype",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Reading Ink",
+        "tonalRamp": [
+          "oklch(15% 0.0476 258.69)",
+          "oklch(27% 0.0476 258.69)",
+          "oklch(39% 0.0476 258.69)",
+          "oklch(51% 0.0476 258.69)",
+          "oklch(63% 0.0476 258.69)",
+          "oklch(75% 0.0476 258.69)",
+          "oklch(85% 0.0476 258.69)",
+          "oklch(95% 0.0240 258.69)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "tonalRamp": [
+          "oklch(15% 0.0384 259.38)",
+          "oklch(27% 0.0384 259.38)",
+          "oklch(39% 0.0384 259.38)",
+          "oklch(51% 0.0384 259.38)",
+          "oklch(63% 0.0384 259.38)",
+          "oklch(75% 0.0384 259.38)",
+          "oklch(85% 0.0384 259.38)",
+          "oklch(95% 0.0240 259.38)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Divider",
+        "tonalRamp": [
+          "oklch(15% 0.0156 257.20)",
+          "oklch(27% 0.0156 257.20)",
+          "oklch(39% 0.0156 257.20)",
+          "oklch(51% 0.0156 257.20)",
+          "oklch(63% 0.0156 257.20)",
+          "oklch(75% 0.0156 257.20)",
+          "oklch(85% 0.0156 257.20)",
+          "oklch(95% 0.0156 257.20)"
+        ]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Canvas",
+        "tonalRamp": [
+          "oklch(15% 0.0057 264.53)",
+          "oklch(27% 0.0057 264.53)",
+          "oklch(39% 0.0057 264.53)",
+          "oklch(51% 0.0057 264.53)",
+          "oklch(63% 0.0057 264.53)",
+          "oklch(75% 0.0057 264.53)",
+          "oklch(85% 0.0057 264.53)",
+          "oklch(95% 0.0057 264.53)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": [
+          "oklch(15% 0.0000 0)",
+          "oklch(27% 0.0000 0)",
+          "oklch(39% 0.0000 0)",
+          "oklch(51% 0.0000 0)",
+          "oklch(63% 0.0000 0)",
+          "oklch(75% 0.0000 0)",
+          "oklch(85% 0.0000 0)",
+          "oklch(95% 0.0000 0)"
+        ]
+      },
+      "rail": {
+        "role": "neutral",
+        "displayName": "Rail",
+        "tonalRamp": [
+          "oklch(15% 0.0103 261.79)",
+          "oklch(27% 0.0103 261.79)",
+          "oklch(39% 0.0103 261.79)",
+          "oklch(51% 0.0103 261.79)",
+          "oklch(63% 0.0103 261.79)",
+          "oklch(75% 0.0103 261.79)",
+          "oklch(85% 0.0103 261.79)",
+          "oklch(95% 0.0103 261.79)"
+        ]
+      },
+      "blue": {
+        "role": "primary",
+        "displayName": "Ink Blue",
+        "tonalRamp": [
+          "oklch(15% 0.0720 267.34)",
+          "oklch(27% 0.1296 267.34)",
+          "oklch(39% 0.1720 267.34)",
+          "oklch(51% 0.1720 267.34)",
+          "oklch(63% 0.1720 267.34)",
+          "oklch(75% 0.1200 267.34)",
+          "oklch(85% 0.0720 267.34)",
+          "oklch(95% 0.0240 267.34)"
+        ]
+      },
+      "blue-soft": {
+        "role": "primary",
+        "displayName": "Pale Blue",
+        "tonalRamp": [
+          "oklch(15% 0.0248 273.50)",
+          "oklch(27% 0.0248 273.50)",
+          "oklch(39% 0.0248 273.50)",
+          "oklch(51% 0.0248 273.50)",
+          "oklch(63% 0.0248 273.50)",
+          "oklch(75% 0.0248 273.50)",
+          "oklch(85% 0.0248 273.50)",
+          "oklch(95% 0.0240 273.50)"
+        ]
+      },
+      "teal": {
+        "role": "secondary",
+        "displayName": "Confirmed Teal",
+        "tonalRamp": [
+          "oklch(15% 0.0720 180.47)",
+          "oklch(27% 0.0776 180.47)",
+          "oklch(39% 0.0776 180.47)",
+          "oklch(51% 0.0776 180.47)",
+          "oklch(63% 0.0776 180.47)",
+          "oklch(75% 0.0776 180.47)",
+          "oklch(85% 0.0720 180.47)",
+          "oklch(95% 0.0240 180.47)"
+        ]
+      },
+      "teal-soft": {
+        "role": "secondary",
+        "displayName": "Pale Teal",
+        "tonalRamp": [
+          "oklch(15% 0.0158 166.73)",
+          "oklch(27% 0.0158 166.73)",
+          "oklch(39% 0.0158 166.73)",
+          "oklch(51% 0.0158 166.73)",
+          "oklch(63% 0.0158 166.73)",
+          "oklch(75% 0.0158 166.73)",
+          "oklch(85% 0.0158 166.73)",
+          "oklch(95% 0.0158 166.73)"
+        ]
+      },
+      "amber": {
+        "role": "secondary",
+        "displayName": "Decision Amber",
+        "tonalRamp": [
+          "oklch(15% 0.0720 69.12)",
+          "oklch(27% 0.0977 69.12)",
+          "oklch(39% 0.0977 69.12)",
+          "oklch(51% 0.0977 69.12)",
+          "oklch(63% 0.0977 69.12)",
+          "oklch(75% 0.0977 69.12)",
+          "oklch(85% 0.0720 69.12)",
+          "oklch(95% 0.0240 69.12)"
+        ]
+      },
+      "amber-soft": {
+        "role": "secondary",
+        "displayName": "Pale Amber",
+        "tonalRamp": [
+          "oklch(15% 0.0324 85.48)",
+          "oklch(27% 0.0324 85.48)",
+          "oklch(39% 0.0324 85.48)",
+          "oklch(51% 0.0324 85.48)",
+          "oklch(63% 0.0324 85.48)",
+          "oklch(75% 0.0324 85.48)",
+          "oklch(85% 0.0324 85.48)",
+          "oklch(95% 0.0240 85.48)"
+        ]
+      },
+      "red": {
+        "role": "secondary",
+        "displayName": "Error Red",
+        "tonalRamp": [
+          "oklch(15% 0.0720 24.22)",
+          "oklch(27% 0.1296 24.22)",
+          "oklch(39% 0.1454 24.22)",
+          "oklch(51% 0.1454 24.22)",
+          "oklch(63% 0.1454 24.22)",
+          "oklch(75% 0.1200 24.22)",
+          "oklch(85% 0.0720 24.22)",
+          "oklch(95% 0.0240 24.22)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "body": {
+        "displayName": "Reading Body",
+        "purpose": "Chinese source content and general interface text."
+      },
+      "control": {
+        "displayName": "Action Label",
+        "purpose": "Semibold button text."
+      },
+      "label": {
+        "displayName": "Compact Label",
+        "purpose": "Field labels, badges, and text actions."
+      },
+      "formula": {
+        "displayName": "Formula",
+        "purpose": "Mathematical relations in the inspector."
+      }
+    },
+    "shadows": [
+      {
+        "name": "dialog",
+        "value": "0 18px 60px #16233c24",
+        "purpose": "Modal overlay separation."
+      },
+      {
+        "name": "active-navigation",
+        "value": "0 3px 9px #25365e07",
+        "purpose": "Subtle active navigation lift."
+      },
+      {
+        "name": "paper-teaser",
+        "value": "0 10px 24px #334b7526",
+        "purpose": "Lift the physical source-page preview."
+      },
+      {
+        "name": "document-sheet",
+        "value": "0 4px 14px #283a5915",
+        "purpose": "Separate document paper from its viewer."
+      },
+      {
+        "name": "selected-node",
+        "value": "0 4px 12px #2945af12",
+        "purpose": "Support the blue selection border."
+      },
+      {
+        "name": "mobile-review-footer",
+        "value": "0 6px 20px #22375817",
+        "purpose": "Separate sticky actions from scrolling content."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-transition",
+        "value": "160ms ease",
+        "purpose": "Button background and border changes; graph-node border and shadow."
+      },
+      {
+        "name": "source-highlight",
+        "value": "200ms ease",
+        "purpose": "Source focus highlight background."
+      },
+      {
+        "name": "review-progress",
+        "value": "180ms ease",
+        "purpose": "Review progress-track width."
+      },
+      {
+        "name": "simulation-spinner",
+        "value": "1s linear infinite",
+        "purpose": "Labeled demonstration activity only."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Disable animation, transitions, and smooth scrolling."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile-max",
+        "value": "680px"
+      },
+      {
+        "name": "desktop-graph-min",
+        "value": "681px"
+      },
+      {
+        "name": "icon-rail-max",
+        "value": "900px"
+      },
+      {
+        "name": "stack-inspector-max",
+        "value": "1180px"
+      },
+      {
+        "name": "intermediate-inspector-min",
+        "value": "1181px"
+      },
+      {
+        "name": "intermediate-inspector-max",
+        "value": "1370px"
+      },
+      {
+        "name": "wide-graph-min",
+        "value": "1450px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The next task action, with the source control's hover, keyboard focus, and disabled states.",
+      "html": "<button class=\"ds-primary\" type=\"button\">进入资料核对</button>",
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:8px 16px;border:1px solid var(--line,#dce3ed);border-radius:9px;background:var(--paper,#fff);color:var(--ink,#19283f);font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:14px;line-height:1.6;font-weight:600;white-space:nowrap;cursor:pointer;transition:background .16s,border-color .16s}.ds-primary:hover{background:#f0f3f9;border-color:#aebbd0}.ds-primary:disabled{cursor:not-allowed;opacity:.48}.ds-primary:focus-visible{outline:3px solid #5275df;outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none;animation:none}}.ds-primary{background:var(--blue,#2945af);border-color:var(--blue,#2945af);color:var(--paper,#fff)}.ds-primary:hover{background:#20368d}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "A bordered supporting action.",
+      "html": "<button class=\"ds-secondary\" type=\"button\">提出修改</button>",
+      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:8px 16px;border:1px solid var(--line,#dce3ed);border-radius:9px;background:var(--paper,#fff);color:var(--ink,#19283f);font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:14px;line-height:1.6;font-weight:600;white-space:nowrap;cursor:pointer;transition:background .16s,border-color .16s}.ds-secondary:hover{background:#f0f3f9;border-color:#aebbd0}.ds-secondary:disabled{cursor:not-allowed;opacity:.48}.ds-secondary:focus-visible{outline:3px solid #5275df;outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-secondary{transition:none;animation:none}}"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Low-emphasis cancellation or previous-step action.",
+      "html": "<button class=\"ds-quiet\" type=\"button\">取消</button>",
+      "css": ".ds-quiet{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:8px 16px;border:1px solid var(--line,#dce3ed);border-radius:9px;background:var(--paper,#fff);color:var(--ink,#19283f);font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:14px;line-height:1.6;font-weight:600;white-space:nowrap;cursor:pointer;transition:background .16s,border-color .16s}.ds-quiet:hover{background:#f0f3f9;border-color:#aebbd0}.ds-quiet:disabled{cursor:not-allowed;opacity:.48}.ds-quiet:focus-visible{outline:3px solid #5275df;outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-quiet{transition:none;animation:none}}.ds-quiet{background:transparent;border-color:transparent;color:var(--muted,#637187)}.ds-quiet:hover{background:#e8edf6;color:var(--ink,#19283f)}"
+    },
+    {
+      "name": "Text Action",
+      "kind": "button",
+      "refersTo": "text-button",
+      "description": "Source and edit actions attached to a specific statement.",
+      "html": "<button class=\"ds-text\" type=\"button\">查看来源 · 第 4 页</button>",
+      "css": ".ds-text{padding:2px 0;border:0;background:none;color:var(--blue,#2945af);font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:12px;line-height:1.6;font-weight:600;cursor:pointer}.ds-text:hover{text-decoration:underline}.ds-text:disabled{opacity:.48;cursor:not-allowed}.ds-text:focus-visible{outline:3px solid #5275df;outline-offset:3px}"
+    },
+    {
+      "name": "Icon Button",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "A labeled compact utility control with an authored line icon.",
+      "html": "<button class=\"ds-icon-button\" type=\"button\" aria-label=\"关闭对话框\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m6 6 12 12M18 6 6 18\"/></svg></button>",
+      "css": ".ds-icon{width:19px;height:19px;flex:none;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}.ds-icon-button{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;color:var(--ink,#19283f);background:transparent;border:1px solid transparent;border-radius:7px;cursor:pointer}.ds-icon-button:hover{background:#e8edf6}.ds-icon-button:disabled{opacity:.48;cursor:not-allowed}.ds-icon-button:focus-visible{outline:3px solid #5275df;outline-offset:3px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "A visible label, editable text, and nearby help; native focus retains the prototype outline.",
+      "html": "<div class=\"ds-field\"><label for=\"ds-project-name\">项目名称</label><input id=\"ds-project-name\" name=\"project-name\" autocomplete=\"off\" placeholder=\"例如：任务响应时间分析…\" aria-describedby=\"ds-project-help\"><p id=\"ds-project-help\">之后还可以修改。</p></div>",
+      "css": ".ds-field{display:grid;gap:6px;margin-bottom:16px;color:var(--ink,#19283f);font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;line-height:1.6}.ds-field label{font-size:12px;font-weight:600}.ds-field input{min-width:0;border:1px solid #cbd5e4;border-radius:8px;background:var(--paper,#fff);padding:10px 12px;font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:13px;line-height:1.6;color:var(--ink,#19283f);caret-color:var(--blue,#2945af)}.ds-field input::placeholder{color:#68778c}.ds-field p{margin:0;font-size:12px;color:var(--muted,#637187)}.ds-field input:focus-visible{outline:3px solid #5275df;outline-offset:3px}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Desktop rail links with a labeled active destination; narrow layouts are documented separately.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"研究工作区\"><a href=\"#projects\" aria-current=\"page\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1.5\"/></svg>项目首页</a><a href=\"#review\"><svg class=\"ds-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6M8 13h8M8 17h5\"/></svg>资料核对</a></nav>",
+      "css": ".ds-icon{width:19px;height:19px;flex:none;stroke:currentColor;fill:none;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}.ds-nav{display:grid;gap:5px;background:var(--rail,#edf1f8);font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:14px;line-height:1.6}.ds-nav a{display:flex;gap:11px;align-items:center;padding:11px 13px;border-radius:9px;text-decoration:none;color:#536178;font-weight:550}.ds-nav a:hover{background:#e2e8f2;color:var(--ink,#19283f)}.ds-nav a[aria-current=page]{background:var(--paper,#fff);color:var(--blue,#2945af);box-shadow:0 3px 9px #25365e07}.ds-nav a:focus-visible{outline:3px solid #5275df;outline-offset:3px}"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Non-interactive status labels; color always accompanies text.",
+      "html": "<span class=\"ds-badge ds-confirmed\">已核对</span> <span class=\"ds-badge ds-pending\">待确认</span> <span class=\"ds-badge ds-info\">已选 1 项</span>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:6px;background:#eef1f6;color:#536178;font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:12px;line-height:1.6;font-weight:600;white-space:nowrap}.ds-confirmed{background:var(--teal-soft,#e8f5ef);color:var(--teal,#14675b)}.ds-pending{background:var(--amber-soft,#fff4dd);color:var(--amber,#855616)}.ds-info{background:var(--blue-soft,#e8edff);color:var(--blue,#2945af)}"
+    },
+    {
+      "name": "Node Inspector",
+      "kind": "card",
+      "refersTo": "inspector",
+      "description": "The white bordered detail surface accompanying a selected reasoning node.",
+      "html": "<aside class=\"ds-inspector\" aria-label=\"所选节点详情\"><div class=\"ds-inspector-head\"><h2>模型条件</h2></div><div class=\"ds-inspector-body\"><div><h3>这一步在做什么</h3><p>查看当前条件与来源。</p></div><button class=\"ds-detail-link\" type=\"button\">回到条件与来源</button></div></aside>",
+      "css": ".ds-inspector{border:1px solid var(--line,#dce3ed);border-radius:12px;background:var(--paper,#fff);overflow:hidden;color:var(--ink,#19283f);font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:14px;line-height:1.6}.ds-inspector-head{padding:16px 18px;border-bottom:1px solid var(--line,#dce3ed)}.ds-inspector-head h2{margin:0;font-size:15px;line-height:1.4;letter-spacing:-.015em}.ds-inspector-body{padding:18px;display:grid;gap:19px}.ds-inspector-body h3{margin:0 0 6px;font-size:12px;line-height:1.5;color:var(--muted,#637187);font-weight:500}.ds-inspector-body p{margin:0;font-size:13px;line-height:1.8}.ds-detail-link{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;border:0;border-bottom:1px solid #edf0f5;background:none;text-align:left;font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:12px;line-height:1.6;color:var(--ink,#19283f);cursor:pointer}.ds-detail-link:focus-visible{outline:3px solid #5275df;outline-offset:3px}"
+    },
+    {
+      "name": "Derivation Node",
+      "kind": "custom",
+      "refersTo": "derivation-node",
+      "description": "Selected graph node with independent status, title, and hint; placement belongs to the graph layout.",
+      "html": "<button class=\"ds-node ds-selected ds-checked\" type=\"button\" aria-pressed=\"true\"><span class=\"ds-node-state\"><span class=\"ds-status-dot\"></span>条件已核对</span><span class=\"ds-node-title\">模型条件</span><span class=\"ds-node-hint\">点击查看来源</span></button>",
+      "css": ".ds-node{width:194px;min-height:94px;text-align:left;border:1px solid #cfd9e8;border-radius:11px;padding:13px 14px;background:var(--paper,#fff);color:var(--ink,#19283f);font-family:\"Segoe UI\",\"Microsoft YaHei UI\",\"Microsoft YaHei\",sans-serif;font-size:14px;line-height:1.6;cursor:pointer;transition:border-color .16s,box-shadow .16s}.ds-node:hover{border-color:#8b9fc4}.ds-node.ds-selected{border:2px solid var(--blue,#2945af);padding:12px 13px;box-shadow:0 4px 12px #2945af12}.ds-node-state{font-size:10px;color:var(--muted,#637187);display:flex;align-items:center;gap:5px;margin-bottom:6px}.ds-checked .ds-node-state{color:var(--teal,#14675b)}.ds-status-dot{width:6px;height:6px;border-radius:50%;background:currentColor}.ds-node-title{font-size:13px;font-weight:600;display:block}.ds-node-hint{font-size:11px;display:block;color:var(--muted,#637187);margin-top:3px}.ds-node.ds-decision{background:#fffaf0;border-color:#d9bd88}.ds-decision .ds-node-state{color:var(--amber,#855616)}.ds-node:focus-visible{outline:3px solid #5275df;outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-node{transition:none;animation:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Research Workbench",
+    "overview": "Cool white work surfaces, a pale blue navigation rail, and restrained state colors support reading source material and inspecting mathematical decisions. Concise Chinese labels and nearby actions keep the work approachable.\n\nThis record covers only the clickable prototype in `web/prototype.html`, `web/prototype.css`, and `web/prototype.js`. It does not define the legacy application's design system. Tokens describe the implemented artifact; the confirmed direction is recorded in `docs/prototype-direction.md`.",
+    "keyCharacteristics": [
+      "Quiet navigation and clearly ranked actions.",
+      "White, bordered work surfaces with restrained depth.",
+      "Source-linked content and inspectable reasoning nodes.",
+      "Color states accompanied by readable labels."
+    ],
+    "rules": [
+      {
+        "name": "The Labeled State Rule",
+        "body": "Pair status color with words; confirmation of input must not visually imply a checked proof.",
+        "section": "colors"
+      },
+      {
+        "name": "The Bordered Surface Rule",
+        "body": "Use borders and tonal separation for ordinary work panels; reserve stronger depth for overlays and lifted document material.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep primary actions beside the work they advance.",
+      "Do retain readable status labels alongside color.",
+      "Do preserve visible keyboard focus and reduced-motion behavior.",
+      "Do keep source references and decision consequences accessible."
+    ],
+    "donts": [
+      "Don't present demonstration states as real proof-check evidence.",
+      "Don't replace source content with decorative metrics.",
+      "Don't flatten confirmation, selection, and pending decisions into one visual state."
+    ]
+  }
+}

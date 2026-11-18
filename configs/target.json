@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "claim_id": "case11-fig3-acceptance-soundness-int-v1",
+  "model_id": "case11-integer-sporadic-dm-v1",
+  "method_id": "case11-fig3-iteration-v1",
+  "declaration": "AutoRTA.Target.case11_fig3_acceptance_soundness_int_v1",
+  "kind": "method_level_soundness",
+  "proof_status": "unproved",
+  "source": "proofs/Target.v",
+  "contract": "docs/contracts/case11-integer-dm-soundness.zh.md",
+  "note": "A Prop definition and type check do not constitute a proof."
+}

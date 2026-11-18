@@ -1,0 +1,22 @@
+/* Fixed-version comparison layout keeps mathematical changes and proof outcomes visually distinct. */
+main{max-width:1380px}.compare-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.compare-panel{background:#fff;border:1px solid var(--line);border-radius:10px;padding:24px;margin-bottom:20px;min-width:0}
+.compare-controls{display:grid;grid-template-columns:1fr 1fr auto;gap:18px;align-items:end}
+.compare-controls label{min-width:0}.compare-controls .muted{overflow-wrap:anywhere;font-family:monospace}
+.compare-controls select{width:100%}.history-label{max-width:580px;margin-top:18px}
+#version-note{margin:12px 0 0}#compare-message{padding:10px 0;color:var(--teal)}#compare-message:empty{display:none}
+#compare-message.error{color:#963d22}.compare-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:20px 0}
+.compare-stat{background:#fff;border:1px solid var(--line);border-radius:9px;padding:20px}.compare-stat strong{display:block;font-size:26px;color:var(--teal);margin:8px 0}
+.compare-stat span,.compare-stat small{color:var(--muted);font-size:12px}.compare-nav{display:flex;gap:25px;flex-wrap:wrap;padding:12px 0 20px}
+a{color:var(--teal)}.compare-nav a{text-decoration:none;font-weight:600}.compare-panel h2{margin-bottom:18px}
+.binding-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.binding-grid>div{min-width:0}.binding-grid code{overflow-wrap:anywhere;font-size:11px}
+.binding-links{display:flex;gap:15px;flex-wrap:wrap}.comparison-table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+.comparison-table th,.comparison-table td{border-bottom:1px solid var(--line);padding:12px;text-align:left;vertical-align:top;overflow-wrap:anywhere;line-height:1.7}
+.comparison-table th{background:#f5f8f9}.comparison-table th:first-child{width:26%}.comparison-table td:last-child{background:#f7fbf9}
+.comparison-table pre{margin:0;font-size:11px;max-height:240px;overflow:auto}.table-wrap{overflow-x:auto;margin:14px 0}
+.change-tag{display:inline-block;background:#edf5f2;color:var(--teal);border-radius:4px;padding:1px 7px;margin:0 8px 6px 0;font-size:11px}
+.change-tag.removed,.obligation-note{background:#fcf6e9;color:#80622d}.obligation-card{border-left:3px solid #cfaf68;padding:14px 18px;background:#fffcf5;margin:14px 0}
+.obligation-card h3{margin:0 0 10px}.obligation-card p{margin-bottom:6px}.compare-panel details{border-top:1px solid var(--line);padding-top:12px}
+.receipt-list{display:grid;gap:12px}.receipt{border:1px solid var(--line);padding:14px;border-radius:6px;overflow-wrap:anywhere}.receipt p{margin:6px 0}
+@media(max-width:900px){.compare-controls{grid-template-columns:1fr 1fr}.compare-controls button{grid-column:1/-1}.compare-summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.compare-controls,.binding-grid{grid-template-columns:1fr}.compare-panel{padding:16px}.compare-heading{align-items:start;gap:15px}.comparison-table{min-width:540px}.compare-nav{gap:15px}}

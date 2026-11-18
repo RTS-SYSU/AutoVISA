@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>autoRTA · MSA 工作台</title><link rel="stylesheet" href="/msa.css"><script src="/msa.js" defer></script></head>
+<body>
+<header><div><span class="eyebrow">autoRTA / 语义与证明</span><h1>MSA 工作台</h1><p>把模型、分析方法和目标变成可核对、可追溯的证明输入。</p></div><a href="/">论文案例工作台 ↗</a></header>
+<div id="notice" role="status" aria-live="polite">正在打开本地项目…</div>
+<section class="card intake"><h2>开始一个分析</h2><p>手工填写，或导入已有 MSA。PDF 可先导入并核对原文，再填写语义条目。</p>
+<div class="row"><label>项目名称<input id="new-name" value="新的实时分析"></label><button id="create">空白 MSA</button>
+<label class="file">导入 MSA JSON<input id="json-file" type="file" accept=".json,application/json"></label>
+<label class="file">导入数字版 PDF<input id="pdf-file" type="file" accept=".pdf,application/pdf"></label></div>
+<div class="row"><span>体验流程：</span><button id="budget-example" class="secondary">执行预算示例</button><button id="prosa-example" class="secondary">Prosa 向上取整示例</button></div>
+<p id="model-note" class="muted"></p></section>
+<div class="layout"><aside class="card"><h2>项目与历史</h2><div id="projects"></div><div id="history"></div></aside>
+<main><section id="editor" class="card"><h2>输入你的 MSA</h2><p>从空白项目开始，或打开一个现有项目。</p></section>
+<section id="paper" class="card" hidden><h2>论文来源核对</h2><div class="row"><label>页码<input id="page-number" type="number" value="1" min="1"></label><button id="page-load">查看页面</button><label>引用到条目<select id="source-target"></select></label><button id="source-add">引用选中文字</button></div>
+<p id="page-issues" class="warning"></p><p>选择下方原文中的文字并添加引用；公式和排版请对照右侧页图。</p><div class="paper-grid"><textarea id="page-text" readonly aria-label="论文原文"></textarea><img id="page-image" alt="PDF 原始页面"></div></section>
+<section id="review" class="card" hidden></section>
+<section id="runs" class="card" hidden></section>
+<section id="result" class="card" hidden></section>
+</main></div>
+<footer>本地保存原始输入、修订、冻结上下文与检查证据。已核对、已映射和已证明是不同状态。</footer>
+</body></html>

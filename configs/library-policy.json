@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "profile": "w01-stdlib-only",
+  "mode": "fixed-reviewed-fixtures",
+  "allowed_direct_imports": [
+    "Stdlib.Arith.PeanoNat",
+    "Stdlib.Lists.List",
+    "Stdlib.Bool.Bool",
+    "AutoRTA.Model",
+    "AutoRTA.Analysis",
+    "AutoRTA.Target",
+    "AutoRTA.Examples",
+    "AutoRTA.SmokeTarget",
+    "AutoRTA.Service"
+  ],
+  "allowed_dependency_roots": [
+    "Corelib",
+    "Stdlib",
+    "AutoRTA",
+    "Candidate",
+    "Exact"
+  ],
+  "selected_lemma": {
+    "name": "Stdlib.Arith.PeanoNat.Nat.add_0_r",
+    "type": "forall n : nat, n + 0 = n",
+    "role": "smoke proof only"
+  },
+  "denied_library_roots": [
+    "prosa",
+    "mathcomp",
+    "elpi",
+    "elpi_elpi",
+    "HB",
+    "Ltac2"
+  ],
+  "default_for_unlisted_libraries": "deny",
+  "allowed_axioms": [],
+  "rationale": "W01 imports only foundational arithmetic/lists/bools and local definitions. All Prosa definitions and theorems are outside the active import set; no existing RTA theorem or wrapper is permitted. W06 adds locally authored elementary service-counting lemmas, checked without new library dependencies or axioms.",
+  "limitation": "This fixed-fixture harness is not a sandbox or a general verifier for arbitrary model-generated files. Symbol-level reusable-asset governance belongs to W02."
+}
