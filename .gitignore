@@ -9,7 +9,11 @@ __pycache__/
 .env
 .env.local
 # Local development, acceptance and research material.
-/docs/
+/docs/*
+!/docs/README.md
+!/docs/contracts/
+/docs/contracts/*
+!/docs/contracts/case11-integer-dm-soundness.zh.md
 /examples/
 /tests/
 /.impeccable/

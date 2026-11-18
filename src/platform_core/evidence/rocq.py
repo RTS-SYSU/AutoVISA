@@ -77,7 +77,7 @@ class Rocq:
         bins = self.run(self.base, self.models, "binaries", ["which", "rocq", "rocqchk"]).splitlines()
         locks = {}
         for name in ("toolchain/library-lock.json", "configs/toolchain.json", "configs/library-policy.json",
-                     "configs/target.json", "configs/contracts/case11-integer-dm-soundness.zh.md"):
+                     "configs/target.json", "docs/contracts/case11-integer-dm-soundness.zh.md"):
             data = (self.root / name).read_bytes()
             locks[name] = self.objects.put(data)
             if name.endswith("library-lock.json"):

@@ -1,4 +1,4 @@
 *.sh text eol=lf
-configs/**/*.md text eol=lf
+docs/contracts/*.md text eol=lf
 configs/*.json text eol=lf
 proofs/*.v text eol=lf

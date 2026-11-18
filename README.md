@@ -11,3 +11,5 @@ AutoVISA 是一个实时系统分析与形式证明工作台。可以录入模�
 后端使用 Windows、WSL Ubuntu、Python 3、PostgreSQL 和 Poppler；形式检查还需要匹配的 Rocq、opam 环境和所选路线的证明库。工具链参数见 [configs/toolchain.json](configs/toolchain.json)。
 
 在 PowerShell 中运行 `.\start-workbench.ps1`，打开 <http://127.0.0.1:8765/msa>。从空白项目手动录入、导入自己的 MSA JSON，或选择本地数字版 PDF。数学能力目前覆盖部分算术、Prosa 向上取整适配及 case_11 的单处理器 DM 分析；完整调度主定理仍有开放义务。
+
+数学合同及其用途见 [运行所需文档](docs/README.md)。

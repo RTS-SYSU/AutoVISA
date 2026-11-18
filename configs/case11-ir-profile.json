@@ -5,8 +5,8 @@
   "locks": {
     "proofs/Analysis.v": "2c43a3c4ed514be2fec6dbef0af94921404ceb54a39896bd528b7fc4796834ae",
     "proofs/Model.v": "05d34d1446bf28a4016e7ebdfad54a2bde04b4963eb72607397f9ff690fe0a81",
-    "configs/case11-project-choices.json": "bf77b4b98a120d2eecd92076b64005a1546b092be10b6e1c050e002e83053738",
-    "configs/contracts/case11-integer-dm-soundness.zh.md": "4bfdbdbc31fb88e92f48a6d3dc8437d8ffdc2ca41ce4f6d31fd77eb12927c9ad",
+    "configs/case11-project-choices.json": "357f813b2aa3b437aab1d864b1b114805b9ba793c84b87e5fd276a7018cbd212",
+    "docs/contracts/case11-integer-dm-soundness.zh.md": "4bfdbdbc31fb88e92f48a6d3dc8437d8ffdc2ca41ce4f6d31fd77eb12927c9ad",
     "configs/case11-semantic-rules.json": "83eedad6ee38ba3c565394cfb5d65be7e5b1bec8a0ab0aa9b15cfad59daabca3",
     "proofs/Target.v": "96f76cced0fec57816255b4a66754f584ce53e7ea70f7a839232ae1e5b7fb2f2"
   },
