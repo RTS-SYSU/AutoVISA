@@ -2,5 +2,5 @@
 proofs/Model.v
 proofs/Analysis.v
 proofs/Target.v
-proofs/Examples.v
+proofs/Service.v
 proofs/SmokeTarget.v

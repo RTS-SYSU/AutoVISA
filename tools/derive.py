@@ -37,12 +37,7 @@ def main():
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--mapping")
     mode.add_argument("--run")
-    mode.add_argument("--check",action="store_true")
     args = parser.parse_args()
-    if args.check:
-        from check_w04 import check
-        check()
-        return
     with catalog() as (importer,pg,dsn):
         # @var workspace, result Shared Interface and its saved graph with actual evidence.
         workspace = module(importer)

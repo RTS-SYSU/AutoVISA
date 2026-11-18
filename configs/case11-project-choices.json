@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "contract": "docs/contracts/case11-integer-dm-soundness.zh.md",
+  "contract": "configs/contracts/case11-integer-dm-soundness.zh.md",
   "contract_sha256": "4bfdbdbc31fb88e92f48a6d3dc8437d8ffdc2ca41ce4f6d31fd77eb12927c9ad",
   "prior_selection": {
     "decision": "D11",

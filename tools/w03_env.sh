@@ -33,37 +33,4 @@ if [ "${1:-}" = "--derive" ]; then
     shift
     exec python3 "$root/tools/derive.py" "$@"
 fi
-# --feedback-check exercises the shared proposal Interface with restored real evidence.
-if [ "${1:-}" = "--feedback-check" ]; then
-    shift
-    exec python3 "$root/tools/check_w05a.py" "$@"
-fi
-# --continuation-check validates real proof checks, decisions and linked-run restoration.
-if [ "${1:-}" = "--continuation-check" ]; then
-    shift
-    exec python3 "$root/tools/check_w05b.py" "$@"
-fi
-# --comparison-check observes archived parent/child evidence without creating new proofs.
-if [ "${1:-}" = "--comparison-check" ]; then
-    shift
-    exec python3 "$root/tools/check_w05c.py" "$@"
-fi
-# --service-proof-check preserves real W06 service proofs and the exact remaining gaps.
-if [ "${1:-}" = "--service-proof-check" ]; then
-    shift
-    exec python3 "$root/tools/check_w06.py" "$@"
-fi
-# --msa-check validates source-independent MSA workflows through their public Interface.
-if [ "${1:-}" = "--msa-check" ]; then
-    shift
-    exec python3 "$root/tools/check_msa.py" "$@"
-fi
-if [ "${1:-}" = "--msa-adapter-check" ]; then
-    shift
-    exec python3 "$root/tools/check_msa_adapters.py" "$@"
-fi
-if [ "${1:-}" = "--msa-legacy-check" ]; then
-    shift
-    exec python3 "$root/tools/check_msa_legacy.py" "$@"
-fi
 exec python3 "$root/tools/paper_import.py" "$@"

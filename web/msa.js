@@ -231,13 +231,11 @@ async function attachSource(){
   const located=await api("/api/reference?extraction="+extraction+"&page="+page+"&start="+start+"&end="+end);
   entry.sources.push({kind:"pdf",anchor:located.anchor});entry.decision="pending";state.preview=null;render();notice("来源已加入草稿，请预览并保存修订。");
 }
-/** @param {Object|null} document Imported or example MSA. @returns {Promise<void>} New unreviewed workspace. */
+/** @param {Object|null} document Imported MSA. @returns {Promise<void>} New unreviewed workspace. */
 async function create(document=null){
   const result=await api("/api/msa/create",{name:document?.title||$("new-name").value,document,actor:"local user"});await catalog();await open(result.id);
 }
 $("create").onclick=()=>perform(()=>create());
-$("budget-example").onclick=()=>perform(async()=>create(await api("/api/msa/example?name=execution-budget")));
-$("prosa-example").onclick=()=>perform(async()=>create(await api("/api/msa/example?name=prosa-ceil")));
 $("json-file").onchange=event=>perform(async()=>{const file=event.target.files[0];if(file)await create(JSON.parse(await file.text()));event.target.value="";});
 $("pdf-file").onchange=event=>perform(async()=>{const file=event.target.files[0];if(!file)return;notice("正在导入 PDF 文字与版面定位…");
   const response=await fetch("/api/msa/pdf",{method:"POST",headers:{"Content-Type":"application/pdf","X-Review-Token":state.catalog.token,"X-Filename":encodeURIComponent(file.name)},body:file});

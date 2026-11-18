@@ -1,4 +1,4 @@
-"""Map an existing frozen review or run isolated Analysis IR acceptance."""
+"""Map an existing frozen review."""
 
 import argparse
 from datetime import datetime, timezone
@@ -13,18 +13,13 @@ from platform_core.analysis_ir.service import FormalMapping
 
 def main():
     """Run explicit freeze mapping and preserve its source, IR, Rocq code and receipt."""
-    # @var parser, mode CLI arguments requiring exactly one mapping, reopening or acceptance action.
+    # @var parser, mode CLI arguments requiring exactly a mapping or reopening action.
     parser = argparse.ArgumentParser(description=__doc__)
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--freeze")
     mode.add_argument("--receipt")
-    mode.add_argument("--check", action="store_true")
     # @var args Parsed mode and immutable identity supplied by the local user.
     args = parser.parse_args()
-    if args.check:
-        from check_w03_ir import check_ir
-        check_ir()
-        return
     with catalog() as (importer, pg, dsn):
         # @var workspace, mapper Restored review history and its formal mapping service.
         workspace = ReviewWorkspace(SemanticExtractor(importer, ROOT))

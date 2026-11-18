@@ -7,6 +7,6 @@
   "kind": "method_level_soundness",
   "proof_status": "unproved",
   "source": "proofs/Target.v",
-  "contract": "docs/contracts/case11-integer-dm-soundness.zh.md",
+  "contract": "configs/contracts/case11-integer-dm-soundness.zh.md",
   "note": "A Prop definition and type check do not constitute a proof."
 }

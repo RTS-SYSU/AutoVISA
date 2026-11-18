@@ -172,9 +172,6 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 self._send(200,self.server.msa.read(query["id"],query.get("revision")))
             elif route == "/api/msa/export":
                 self._send(200,self.server.msa.export(query["id"],query.get("revision")),filename="msa.json")
-            elif route == "/api/msa/example":
-                require(query["name"] in ("execution-budget","prosa-ceil"),"unknown_example","找不到示例。")
-                self._send(200,json.loads((self.server.assets.parent/"examples/msa"/(query["name"]+".json")).read_bytes()))
             elif route == "/api/msa/frozen":
                 self._send(200,self.server.msa.frozen(query["id"]))
             elif route == "/api/msa/results":

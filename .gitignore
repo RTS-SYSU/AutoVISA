@@ -6,10 +6,23 @@ __pycache__/
 *.vok
 *.glob
 .*.aux
-# Local copies of the third-party case study and its rendered pages.
-/examples/papers/case_11/source.pdf
-/web/prototype-assets/case11.pdf
-/web/prototype-assets/case11-page2.png
-/web/prototype-assets/case11-page4.png
 .env
 .env.local
+# Local development, acceptance and research material.
+/docs/
+/examples/
+/tests/
+/.impeccable/
+/DESIGN.md
+/PRODUCT.md
+/GLOSSARY.md
+/check.ps1
+/check-*.ps1
+/tools/check_*.py
+/tools/w02_env.sh
+/tools/probe_prosa_msa.py
+/proofs/Examples.v
+/web/prototype.html
+/web/prototype.js
+/web/prototype.css
+/web/prototype-assets/

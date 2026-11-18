@@ -14,18 +14,17 @@ from uuid import uuid4
 #: Project root for imports, the reviewed paper and persistent CLI artifacts.
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
-sys.path.insert(0, str(ROOT / "tests/acceptance"))
 
 from platform_core.evidence.storage import Ledger, sha
 from platform_core.evidence.terms import Rejected
-from platform_core.paper_ingestion.models import ImportFailure, SourceAnchor
+from platform_core.paper_ingestion.models import ImportFailure
 from platform_core.paper_ingestion.pdf import Poppler
 from platform_core.paper_ingestion.service import PaperImporter
 from w02_postgres import database
 from platform_core.semantics.models import SemanticFailure
 from platform_core.semantics.service import SemanticExtractor, review_markdown
 
-#: Local catalog and isolated test runs live under this ignored artifact directory.
+#: The local catalog lives under this ignored artifact directory.
 BASE = ROOT / "artifacts/w03"
 
 
@@ -72,63 +71,15 @@ def catalog():
                 ledger.close()
 
 
-def check():
-    """Run isolated acceptance and restore its source reference in a second database.
-
-    @return Path to the completed machine-readable report.
-    @raise AssertionError If an import, integrity, geometry or restore check fails.
-    """
-    from w03_import_cases import exercise
-    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ-") + uuid4().hex[:8]
-    directory = BASE / "checks" / stamp
-    directory.mkdir(parents=True)
-    report = {"status": "running"}
-    try:
-        with database() as (dsn, pg):
-            ledger = Ledger(dsn, directory / "objects")
-            try:
-                ledger.install()
-                importer = PaperImporter(ledger, Poppler())
-                importer.install()
-                report.update(exercise(importer, ROOT / "examples/papers/case_11/source.pdf", directory, dsn, report))
-                pg("pg_dump", "--format=custom", "--no-owner", "--file", directory / "history.dump", dsn)
-                write_json(directory / "extraction.json", importer.open(report["extraction_id"]).to_dict())
-            finally:
-                ledger.close()
-        # Cross-process restoration verifies that references rely on stored data rather than in-memory state.
-        with database() as (dsn, pg):
-            pg("pg_restore", "--exit-on-error", "--no-owner", "--dbname", dsn, directory / "history.dump")
-            ledger = Ledger(dsn, directory / "objects")
-            try:
-                importer = PaperImporter(ledger, Poppler())
-                located = importer.resolve(SourceAnchor(**report["anchor"]))
-                if located.anchor.quote != "Schedulability Algorithm":
-                    raise AssertionError("Saved reference changed after restore")
-                report["checks"]["database_restore_and_reference"] = "passed"
-            finally:
-                ledger.close()
-        report["status"] = "passed"
-    except Exception as error:
-        report["status"], report["error"] = "failed", f"{type(error).__name__}: {error}"
-        raise
-    finally:
-        write_json(directory / "report.json", report)
-    write_json(BASE / "checks/latest.json", {"run": stamp, "sha256": sha((directory / "report.json").read_bytes())})
-    print(json.dumps({"status": "passed", "checks": len(report["checks"]), "report": str(directory / "report.json")}))
-    return directory / "report.json"
-
-
 def main():
-    """Route the CLI to acceptance, import or source review.
+    """Import a PDF or reopen a saved source review.
 
     @raise ImportFailure If the selected PDF, page or quote cannot be processed.
     @raise SemanticFailure If the semantic source or review draft is inconsistent.
     """
-    # parser and mode distinguish import, historical review and isolated acceptance operations.
+    # parser and mode distinguish import and historical review operations.
     parser = argparse.ArgumentParser(description=__doc__)
-    mode = parser.add_mutually_exclusive_group()
-    mode.add_argument("--check", action="store_true")
-    mode.add_argument("--check-semantics", action="store_true")
+    mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--semantic-snapshot", help="Saved semantic snapshot to reopen")
     parser.add_argument("--semantics", action="store_true", help="Extract case_11 semantic candidates")
     mode.add_argument("--show", help="Extraction ID already saved in the local catalog")
@@ -137,13 +88,6 @@ def main():
     parser.add_argument("--find", help="Exact text on the selected page to locate and crop")
     # args contains explicit CLI choices; extraction and semantic identities remain separate.
     args = parser.parse_args()
-    if args.check:
-        check()
-        return
-    if args.check_semantics:
-        from check_w03_semantics import check_semantics
-        check_semantics()
-        return
     with catalog() as (importer, pg, dsn):
         # semantic_id names a review draft, while extraction_id continues to name its PDF layout.
         semantic_id, semantic = None, None
@@ -156,7 +100,7 @@ def main():
             semantic = extractor.open(semantic_id)
             extraction_id = semantic.extraction_id
         else:
-            extraction_id = args.show or importer.import_pdf(args.pdf or ROOT / "examples/papers/case_11/source.pdf")
+            extraction_id = args.show or importer.import_pdf(args.pdf)
             if args.semantics:
                 semantic_id = extractor.extract(extraction_id)
                 semantic = extractor.open(semantic_id)
