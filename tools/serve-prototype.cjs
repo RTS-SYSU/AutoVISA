@@ -4,6 +4,7 @@
  */
 const http = require("node:http");
 const {serveOpenAI} = require("./openai-service.cjs");
+const {servePaperVerification} = require("./paper-verification.cjs");
 /** @type {typeof import('node:fs')} Stream the workspace document to the local browser. */
 const fs = require("node:fs");
 /** @type {typeof import('node:path')} Paths are resolved relative to this launcher. */
@@ -20,6 +21,7 @@ const port = Number(process.argv[process.argv.indexOf("--port") + 1]) || 8769;
 function serve(request, response) {
   /** @type {string} URL path without query parameters. */
   const route = new URL(request.url, "http://localhost").pathname;
+  if(route === "/api/paper-verification"){void servePaperVerification(request,response,port);return;}
   if(route.startsWith("/api/openai/")){void serveOpenAI(request,response,route,port);return;}
   /** @type {Object<string,string>} Only the workspace and its local document readers are served. */
   const assets = {

@@ -293,6 +293,145 @@
 .workflow-page {max-width:76rem;}
 .workflow-page .av-reading {max-width:78ch;}
 .workflow-page select {font:inherit;}
+#rt-workspace {
+  --rt-bg: light-dark(#f4f6fa, #131923);
+  --rt-rail: light-dark(#fafbfe, #171f2b);
+  --rt-ink: light-dark(#18243a, #edf2fb);
+  --rt-blue: light-dark(#344eb8, #adc0ff);
+  border: 0;
+  border-radius: 0;
+}
+#rt-workspace .shell { min-height: 100vh; }
+#rt-workspace .brand { display:flex; align-items:center; gap:9px; font-weight:700; }
+#rt-workspace .brand-mark, #rt-workspace .project-symbol {
+  display:inline-grid; place-items:center; flex:none; width:34px; height:34px;
+  border-radius:9px; background:var(--rt-soft); color:var(--rt-blue);
+}
+#rt-workspace .pagehead, #rt-workspace .page-content {
+  max-width: 1340px; margin-inline:auto; padding-inline: clamp(16px, 3vw, 44px);
+}
+#rt-workspace .pagehead { padding-block: 26px 16px; }
+#rt-workspace .pagehead h1 { font-size:clamp(1.65rem, 2.7vw, 2.25rem); line-height:1.15; }
+#rt-workspace .project-home { display:grid; gap:30px; }
+#rt-workspace .paper-entry {
+  display:grid; grid-template-columns:minmax(0, 1.35fr) minmax(220px, .65fr);
+  gap:clamp(20px, 4vw, 54px); align-items:center; padding:clamp(22px, 4vw, 52px);
+  border:1px solid light-dark(#ced9f2, #465985); border-radius:18px;
+  background:linear-gradient(120deg, var(--rt-panel), var(--rt-soft));
+}
+#rt-workspace .paper-entry h2 { font-size:clamp(1.55rem, 4vw, 2.65rem); line-height:1.12; max-width:21ch; }
+#rt-workspace .paper-entry p { color:var(--rt-muted); max-width:47ch; font-size:14px; }
+#rt-workspace .paper-entry .control, #rt-workspace .paper-picker .control { min-height:40px; padding-inline:14px; }
+#rt-workspace .paper-steps {
+  list-style:none; margin:0; padding:12px 16px; display:grid;
+  background:var(--rt-panel); border:1px solid var(--rt-line); border-radius:12px;
+}
+#rt-workspace .paper-steps li { display:flex; align-items:center; gap:12px; min-height:52px; font-weight:600; }
+#rt-workspace .paper-steps li + li { border-top:1px solid var(--rt-line); }
+#rt-workspace .paper-steps svg { color:var(--rt-blue); }
+#rt-workspace .project-list { display:grid; gap:10px; }
+#rt-workspace .project-entry {
+  border:1px solid var(--rt-line); border-radius:12px; padding:16px;
+  background:var(--rt-panel); gap:14px; overflow-wrap:anywhere;
+}
+#rt-workspace .project-entry .action-row { margin:0; }
+#rt-workspace .project-identity { display:flex; align-items:flex-start; gap:12px; }
+#rt-workspace .project-identity p { margin:0; color:var(--rt-muted); }
+#rt-workspace .project-entry h3 { margin:0 0 3px; }
+#rt-workspace .project-form { max-width:640px; }
+#rt-workspace .input-mode { margin:0; }
+#rt-workspace .paper-picker {
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:14px; padding:20px; border:1px dashed var(--rt-blue); border-radius:12px;
+  background:var(--rt-panel);
+}
+#rt-workspace .paper-picker p { color:var(--rt-muted); font-size:13px; }
+#rt-workspace .paper-picker .file-trigger { position:relative; overflow:hidden; cursor:pointer; }
+#rt-workspace .file-trigger input { position:absolute; inset:0; opacity:0; width:100%; height:100%; cursor:pointer; }
+#rt-workspace .file-trigger:focus-within { outline:3px solid var(--rt-blue); outline-offset:3px; }
+#rt-workspace .paper-source { padding:clamp(12px, 2vw, 22px); }
+#rt-workspace .paper-extraction .action-row { margin-top:0; }
+#rt-workspace .local-feedback:empty { display:none; }
+#rt-workspace .paper-entry h2 { max-width:none; }
+#rt-workspace .paper-entry .file-trigger { position:relative; overflow:hidden; }
+#rt-workspace .file-trigger input { position:absolute; inset:0; opacity:0; width:100%; height:100%; cursor:pointer; }
+#rt-workspace .file-trigger:focus-within { outline:3px solid var(--rt-blue); outline-offset:3px; }
+#rt-workspace .report-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:18px; align-items:start; }
+#rt-workspace .report-layout > * { min-width:0; }
+#rt-workspace .report-source { position:sticky; top:12px; }
+#rt-workspace .report-source .action-row { margin-top:0; }
+#rt-workspace .report-source pre { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; max-height:13rem; overflow:auto; margin-bottom:0; }
+#rt-workspace .report-source mark { color:var(--rt-ink); background:var(--rt-warm); padding:2px; }
+#rt-workspace .report-card { display:grid; gap:9px; overflow-wrap:anywhere; }
+#rt-workspace .report-card h2, #rt-workspace .report-card h3 { margin:0; }
+#rt-workspace .report-card pre { overflow:auto; margin:0; padding:12px; border-radius:8px; background:var(--rt-bg); }
+#rt-workspace .report-status { justify-self:start; padding:4px 9px; border-radius:6px; font-weight:650; background:var(--rt-warm); color:var(--rt-amber); }
+#rt-workspace .report-status.proved { background:light-dark(#e1f4e9,#203c32); color:light-dark(#176445,#9be1b8); }
+#rt-workspace .report-status.error { background:light-dark(#ffe8e7,#492a30); color:light-dark(#a22837,#ffadb2); }
+#rt-workspace .project-menu { position:relative; }
+#rt-workspace .project-menu summary { cursor:pointer; list-style:none; }
+#rt-workspace .project-menu button { position:absolute; right:0; z-index:2; margin-top:4px; }
+#rt-workspace .project-open { display:flex; gap:12px; align-items:center; width:100%; text-align:left; border:0; padding:0; background:transparent; }
+#rt-workspace .project-open:hover strong { color:var(--rt-blue); }
+#rt-workspace .report-meta { color:var(--rt-muted); font-size:13px; }
+#rt-workspace .input-progress { display:flex; flex-wrap:wrap; gap:7px 20px; margin:0; padding:0; list-style:none; }
+#rt-workspace .input-progress li { display:flex; align-items:center; gap:6px; color:var(--rt-muted); font-size:13px; }
+#rt-workspace .input-progress [aria-current="step"] { color:var(--rt-blue); font-weight:650; }
+#rt-workspace .paper-entry {
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(24px,4vw,60px);
+  background:var(--rt-panel);
+}
+#rt-workspace .paper-entry h2 { font-size:clamp(2rem,4.3vw,3.6rem); letter-spacing:-.055em; max-width:14ch; }
+#rt-workspace .paper-entry .import-actions {
+  display:grid; justify-items:start; gap:12px; margin-top:22px; padding:16px;
+  border:1px dashed var(--rt-line); border-radius:12px; background:var(--rt-bg);
+}
+#rt-workspace .import-actions .action-row { margin:0; }
+#rt-workspace .import-actions .control.quiet { padding-inline:8px; }
+#rt-workspace .import-actions [role="status"]:empty { display:none; }
+#rt-workspace .example-report {
+  padding:0; overflow:hidden; gap:0;
+  box-shadow:0 12px 28px light-dark(#26356412,#0003);
+}
+#rt-workspace .example-report header, #rt-workspace .example-report footer {
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; padding:14px 18px;
+}
+#rt-workspace .example-report header { background:var(--rt-bg); border-bottom:1px solid var(--rt-line); }
+#rt-workspace .example-report header strong { display:inline-flex; align-items:center; gap:8px; }
+#rt-workspace .example-report header svg { color:var(--rt-blue); }
+#rt-workspace .example-report footer { border-top:1px solid var(--rt-line); }
+#rt-workspace .example-report-body { display:grid; gap:14px; padding:18px; }
+#rt-workspace .example-report h3 { font-size:clamp(1.1rem,2vw,1.4rem); line-height:1.25; }
+#rt-workspace .example-obligation { padding:12px 14px; background:var(--rt-warm); border-radius:8px; color:var(--rt-amber); }
+#rt-workspace .example-obligation p { color:inherit; font-size:13px; }
+#rt-workspace .report-layout > .report-summary {
+  grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
+  border-inline-start:4px solid var(--rt-blue); gap:12px 24px;
+}
+#rt-workspace .report-summary h2 { font-size:clamp(1.25rem,2vw,1.65rem); }
+#rt-workspace .report-layout .report-card pre { border:1px solid var(--rt-line); }
+#rt-workspace .paper-entry { border:0; padding-inline:0; background:transparent; }
+#rt-workspace .example-obligation {
+  border-inline-start:3px solid var(--rt-amber); border-radius:0 6px 6px 0;
+}
+#rt-workspace .report-layout .report-card:not(.report-summary) {
+  padding:14px 0 18px; border:0; border-radius:0; background:transparent;
+}
+#rt-workspace .report-layout .report-card + .report-card { border-top:1px solid var(--rt-line); }
+#rt-workspace .report-status { font-size:14px; font-weight:700; }
+#rt-workspace .report-layout .report-card pre {
+  padding:14px 16px; background:var(--rt-panel); max-width:100%;
+}
+@media(max-width:760px) {
+  #rt-workspace .paper-entry, #rt-workspace .report-layout { grid-template-columns:minmax(0, 1fr); }
+  #rt-workspace .report-layout > .report-summary { grid-area:1 / 1 / 2 / 2; }
+  #rt-workspace .report-layout > .stack { grid-area:2 / 1 / 3 / 2; }
+  #rt-workspace .report-layout > .report-source { grid-area:3 / 1 / 4 / 2; position:static; }
+}
+@media(max-width:480px) {
+  #rt-workspace .project-entry { grid-template-columns:minmax(0,1fr) auto; }
+}
 #rt-workspace .proof-progress {
   --status-ink:var(--rt-blue);
   padding:clamp(16px,2vw,28px); border:1px solid var(--rt-line); border-radius:12px;
@@ -333,12 +472,12 @@
 <div id="rt-workspace" aria-label="AutoVISA research workspace">
   <div class="shell">
     <aside class="rail" aria-label="Main navigation">
-      <div class="brand">AutoVISA</div>
+      <div class="brand"><span class="brand-mark"><i data-lucide="shield-check" aria-hidden="true"></i></span>AutoVISA</div>
       <nav id="av-navigation" class="navgroup" aria-label="Workspace navigation"></nav>
       <nav id="av-utilities" class="railfoot" aria-label="Utilities"></nav>
     </aside>
     <main class="main">
-      <div class="topbar"><div class="breadcrumb"><button type="button" class="control quiet icon-only sidebar-toggle" data-action="sidebar" aria-label="Collapse navigation" aria-expanded="true"><span class="rail-chevron" aria-hidden="true">‹</span></button><span id="av-breadcrumb" class="breadcrumb"></span></div><span class="previewmark">Interactive preview</span><details class="mobile-nav"><summary>Navigation</summary><nav id="av-mobile-links" aria-label="Mobile navigation"></nav></details></div>
+      <div class="topbar"><div class="breadcrumb"><button type="button" class="control quiet icon-only sidebar-toggle" data-action="sidebar" aria-label="Collapse navigation" aria-expanded="true"><span class="rail-chevron" aria-hidden="true">‹</span></button><span id="av-breadcrumb" class="breadcrumb"></span></div><details class="mobile-nav"><summary>Navigation</summary><nav id="av-mobile-links" aria-label="Mobile navigation"></nav></details></div>
       <section id="av-module-page" aria-label="Current module"></section>
       <section id="av-derivation-page" hidden>
       <div class="pagehead"><div class="headinggroup"><h1>Derivation</h1></div><div class="toolbar route-control"><label class="small muted">Explore route <select id="rt-route" aria-label="Proof route"><option value="independent">Independent</option><option value="prosa">Prosa reuse</option></select></label><button type="button" class="control primary" data-action="gap"><i data-lucide="git-merge" aria-hidden="true"></i>Review gap</button></div></div>
@@ -426,9 +565,32 @@
   }
   /** @returns {string} Project list or the project metadata form. */
   function projectDirectory(){
-    if(creating)return `<form id="project-form" class="stack project-form"><label class="field">Project name<input name="projectName" required maxlength="100" autocomplete="off" placeholder="e.g. Sporadic task analysis"></label><label class="field">Description (optional)<textarea name="description" maxlength="500" placeholder="What will you analyze?"></textarea></label><div class="action-row"><button type="submit" class="control primary">Create project</button>${pageLink('projects','Cancel')}</div></form>`;
-    if (!projects.length) return '<p>No projects yet.</p>';
-    return projects.map(item=>`<div class="project-entry"><div><h2>${esc(item.name)}</h2>${item.description?`<p>${esc(item.description)}</p>`:''}</div><div class="action-row"><button class="control" type="button" data-project="${esc(item.id)}">Open project</button><button class="control delete-project" type="button" data-delete-project="${esc(item.id)}" aria-label="Delete ${esc(item.name)}">Delete</button></div></div>`).join('');
+    if(creating)return `<form id="project-form" class="stack surface project-form"><label class="field">Project name<input name="projectName" required maxlength="100" autocomplete="off" placeholder="e.g. Sporadic task analysis"></label><label class="field">Description (optional)<textarea name="description" maxlength="500"></textarea></label><div class="action-row"><button type="submit" class="control primary">Continue to import</button>${pageLink('projects','Cancel')}</div></form>`;
+    const entries=projects.map(item=>{
+      const run=(item===project?state:item.workspace)?.records?.at(-1)||(item.id==='example'?exampleRun:null);
+      const certified=[...(item.documents||[])].reverse().find(doc=>doc.paperVerification);
+      if(!run&&certified){
+        const receipt=certified.paperVerification;
+        return `<article class="project-entry"><button class="project-open" type="button" data-project="${esc(item.id)}"><span class="project-symbol">${icon('file-text')}</span><span><strong>${esc(item.name)}</strong><br><span class="report-meta">${esc(receipt.claim.statement)}</span></span></button>
+          <div class="action-row"><button class="control" type="button" data-project-report="${esc(item.id)}" data-paper-report="${esc(certified.id)}">${receipt.status==='verified'?'View verified claim':'View certificate check'}</button><details class="project-menu"><summary class="control" aria-label="More actions for ${esc(item.name)}">•••</summary><button class="control delete-project" type="button" data-delete-project="${esc(item.id)}">Delete</button></details></div></article>`;
+      }
+      const key=item.irKeys?.[run?.id];
+      const outcome=key?proofOutcome(audit.current({key,version:argumentVersions.get(key)||2,project:item.id,run:run.id})):null;
+      const exampleRunSelected=item.id==='example'&&run?.id===exampleRun.id;
+      const status=exampleRunSelected?'Main theorem unproved':outcome?.status||(run?'Report available':'Awaiting claim');
+      return `<article class="project-entry"><button class="project-open" type="button" data-project="${esc(item.id)}"><span class="project-symbol">${icon(item.id==='example'?'book-open':'folder')}</span><span><strong>${esc(item.name)}</strong><br><span class="report-meta">${esc(run?.goal?.split('\n').find(line=>line.trim())||item.description||'No confirmed claim')}</span><br><span class="report-meta">${status}</span></span></button><div class="action-row">${run?`<button type="button" class="control" data-project-report="${esc(item.id)}" data-report-run="${run.id}">View report</button>`:''}<details class="project-menu"><summary class="control" aria-label="More actions for ${esc(item.name)}">•••</summary><button class="control delete-project" type="button" data-delete-project="${esc(item.id)}">Delete</button></details></div></article>`;
+    }).join('');
+    const example=projects.find(item=>item.id==='example');
+    return `<div class="project-home">
+      <section class="paper-entry" aria-labelledby="paper-entry-title">
+        <div><h2 id="paper-entry-title">Verify a claim from a paper</h2>
+        <p>Import a real-time systems paper, locate its timing guarantee and check the formal claim in Rocq.</p>
+        <div class="import-actions"><div class="action-row"><label class="control primary file-trigger">${icon('upload')} Choose paper PDF<input id="av-paper-upload" type="file" accept=".pdf,application/pdf" aria-label="Choose paper PDF" ${quickImporting?'disabled':''}></label><button class="control quiet" type="button" data-module-action="new-project">Create project manually</button></div>
+        <p>Use a PDF with selectable text.</p><p role="status">${esc(quickImportStatus)}</p></div></div>
+        ${example?`<article class="surface report-card example-report"><header><strong>${icon('file-text')} Example report</strong><span class="report-meta">case_11</span></header><div class="example-report-body"><h3>Deadline guarantee under DM scheduling</h3><p class="paper-claim">${esc(exampleRun.goal)}</p><div class="example-obligation"><strong>Open obligation</strong><p>Derive job completion from the available-service bound.</p></div></div><footer><span class="report-status">Main theorem unproved</span><button class="control" type="button" data-project-report="example" data-report-run="${exampleRun.id}" data-report-tab="obligations">View open obligations ${icon('arrow-right')}</button></footer></article>`:''}
+      </section>
+      <section aria-labelledby="project-list-title"><h2 id="project-list-title">Recent verification</h2><div class="project-list">${entries||'<p>No projects yet.</p>'}</div></section>
+    </div>`;
   }
   /** @param {string} id Immutable project ID. Deleted IDs keep stale tabs from restoring content. */
   function wasDeleted(id){return localStorage.getItem('autovisa.removed.'+id)==='1';}
@@ -654,13 +816,165 @@
 
   /** Remember each document's current page while switching between reading and editing. */
   const sourcePages=new Map();
+  const paperChecks=new WeakMap();
+  let reportCitation='';
+  let quickImporting=false;
+  let quickImportStatus='';
+
+  async function importPaperProject(file){
+    if(quickImporting)return;
+    quickImporting=true;
+    quickImportStatus='Reading '+file.name+'…';
+    render();
+    try{
+      if(!/\.pdf$/i.test(file.name))throw Error('Choose a PDF file.');
+      const doc=await readInputDocument(file);
+      const base=file.name.replace(/\.pdf$/i,'').trim()||'Untitled paper';
+      let name=base.slice(0,100);
+      for(let i=2;projects.some(item=>item.name.toLowerCase()===name.toLowerCase());i++){
+        const suffix=' ('+i+')';
+        name=base.slice(0,100-suffix.length)+suffix;
+      }
+      const next={id:crypto.randomUUID(),name,description:'',workspace:null,documents:[doc],selectedDocument:doc.id};
+      await originalPdf(doc.id,file,next.id);
+      projects.unshift(next);
+      openProject(next);
+      navigate('documents');
+      state.documentTab='pdf';
+      readStatus='Paper imported. Extract the claim and assumptions to continue.';
+      if(!remember())readStatus+=' Browser storage is full; the project is available in this tab.';
+      quickImportStatus='';
+      void checkPaperCertificate(next,doc,file);
+    }catch(error){
+      quickImportStatus=error.message||'Could not import the paper.';
+    }finally{
+      quickImporting=false;
+      render();
+    }
+  }
+
+  async function checkPaperCertificate(owner,doc,file){
+    if(file.size>20*1024*1024)return;
+    const ticket={};
+    paperChecks.set(doc,ticket);
+    if(owner===project)render();
+    try{
+      const response=await fetch('/api/paper-verification',{
+        method:'POST', headers:{'Content-Type':'application/pdf'}, body:file,
+      });
+      if(!response.ok)return;
+      const result=await response.json();
+      if(paperChecks.get(doc)!==ticket||!projects.includes(owner))return;
+      if(result.claim&&['verified','error'].includes(result.status)){
+        doc.paperVerification=result;
+        if(owner===project&&selectedDocument()===doc&&!state.activeId&&state.page==='documents'&&state.documentTab==='pdf'){
+          navigate('verification');
+          sourcePages.set(doc.id,result.claim.page);
+        }
+        remember();
+      }
+    }catch{
+      // Paper import remains available if this server has no certificate route.
+    }finally{
+      if(paperChecks.get(doc)===ticket){
+        paperChecks.delete(doc);
+        if(owner===project)render();
+      }
+    }
+  }
+
+  function reportPreviewDocument(){
+    if(state.page!=='verification')return selectedDocument();
+    if(!state.activeId&&selectedDocument()?.paperVerification)return selectedDocument();
+    return citation(reportCitation)?.doc||reportDocument(recordFor(state.activeId));
+  }
+
+  function documentPage(doc){
+    return sourcePages.get(doc.id)||(state.page==='verification'?doc.paperVerification?.claim.page:0)||1;
+  }
+
+  function paperCertificateReport(doc){
+    const result=doc.paperVerification;
+    const {claim,status,steps,sources}=result;
+    const passed=status==='verified';
+    return `<div class="report-layout">
+      <header class="surface report-card report-summary"><div><h2>${esc(claim.title)}</h2><p class="report-meta">DOI ${esc(claim.doi)} · Certificate replay</p></div>
+      <span class="report-status ${passed?'proved':'error'}">${passed?'Published claim verified':'Certificate check failed'}</span></header>
+      <aside class="surface stack report-source"><h2>Paper source</h2><p class="report-meta">Page ${claim.page} · ${esc(claim.locator)}</p>${documentPreview(doc)}</aside>
+      <div class="stack">
+        <section class="surface report-card"><h2>Claim checked</h2><p class="paper-claim">${esc(claim.statement)}</p>
+          <h3>Model and assumptions</h3><p>${esc(claim.scope)}</p><p class="report-meta">${esc(claim.method)}</p></section>
+        <section class="surface report-card"><h2>Rocq evidence</h2>
+          ${result.message?`<p role="alert">${esc(result.message)}</p>`:''}
+          <p><code>${esc(claim.theorem)}</code></p>
+          ${sources?.['PaperClaim.v']?`<details><summary>Exact Rocq theorem</summary><pre><code>${esc(sources['PaperClaim.v'].text)}</code></pre></details>`:''}
+          <details ${passed?'':'open'}><summary>Checker log</summary>${steps.map(step=>`<h3>${esc(step.label)} · ${step.ok?'OK':'Failed'}</h3><pre>${esc(step.output||'No diagnostics.')}</pre>`).join('')}</details>
+          <details><summary>Source fingerprints</summary><p>PDF <code>${esc(result.pdfHash)}</code></p>${Object.entries(sources||{}).map(([file,value])=>`<p>${esc(file)} <code>${esc(value.sha256)}</code></p>`).join('')}</details>
+          <div class="action-row">${pageLink('documents','Open inputs')}<button class="control" type="button" data-module-action="recheck-paper" ${paperChecks.has(doc)?'disabled':''}>${paperChecks.has(doc)?'Checking certificate…':'Run certificate check again'}</button></div>
+        </section>
+      </div>
+    </div>`;
+  }
+
+  function reportDocument(active){
+    for(const field of ['goal','assumptions','model','analysis']){
+      const ref=active[field+'Ref']||'';
+      const locations=ref.startsWith('msa:')?ref.slice(4).split('|').map(pair=>pair.split('=')[1]):[ref];
+      for(const location of locations){
+        const hit=citation(location);
+        if(hit)return hit.doc;
+      }
+    }
+    return undefined;
+  }
+
+  function proofOutcome(result){
+    const goal=result?.rounds?.at(-1)?.find(entry=>entry.id==='target_claim');
+    const passed=Boolean(goal?.checked);
+    const error=result?.stage==='error'||Boolean(result?.issue&&!goal);
+    const status=passed?'Main theorem proved':error?'Verification error':result?.stage==='running'?'Verification in progress':!result||result.stage==='idle'||result.stage==='loading'?'Awaiting proof':'Main theorem unproved';
+    return {goal,passed,error,status};
+  }
+
+  function verificationReport(active,example,details){
+    const hit=citation(reportCitation);
+    const doc=hit?.doc||reportDocument(active);
+    const key=project.irKeys?.[active.id];
+    const version=argumentVersions.get(key)||2;
+    const result=key?audit.current({key,version,project:project.id,run:active.id}):null;
+    const {goal,passed,error,status}=proofOutcome(result);
+    const formalLines=goal?.source?.split('\n')||[];
+    const statement=example?`forall (ts : TaskSet) (a : Arrivals) (s : Schedule),
+  taskset_wf ts ->
+  legal_arrivals ts a ->
+  bounded_demands ts a ->
+  valid_dm_schedule a s ->
+  fig3_accepts ts ->
+  all_deadlines_met ts a s.`:formalLines.filter(line=>/^Definition (model_assumptions|target_claim|proof_obligation) : Prop :=/.test(line)).join('\n');
+    const pending=result?.rounds?.at(-1)?.find(entry=>!entry.checked&&entry.id!=='target_claim');
+    const excerpt=hit?hit.doc.units.join('\n').slice(hit.start,hit.end):'';
+    return `<div class="report-layout">
+      <header class="surface report-card report-summary"><div><h2>${esc(project.name)}</h2><p class="report-meta">${esc(runName(active.id))} · ${esc(routeName(active.route))}</p></div><span class="report-status ${passed?'proved':error?'error':''}">${example?'Main theorem unproved':status}</span></header>
+      <aside class="surface stack report-source"><h2>${doc?.unit==='Page'?'Paper source':'Source evidence'}</h2>
+        ${doc?`<p class="report-meta">${esc(doc.name)}</p>${documentPreview(doc)}`:`<p class="report-meta">${example?'The example includes a formal target and recorded scope. A source PDF is unavailable.':'This run has no linked source passages.'}</p>`}
+        ${excerpt?`<div tabindex="-1" data-report-excerpt><h3>${esc(hit.label)}</h3><pre><mark>${esc(excerpt)}</mark></pre></div>`:''}
+      </aside>
+      <div class="stack">
+        <section class="surface report-card"><h2>Verification target</h2><div class="paper-claim">${markdownView(active.goal,active.goalRef)}</div>
+          <h3>Rocq proposition</h3>${statement?`<pre><code>${esc(statement)}</code></pre>`:'<p class="report-meta">The final Rocq proposition will appear when a proof attempt records it.</p>'}
+          <details ${example?'open':''}><summary>Model and assumptions</summary>${markdownView(active.model,active.modelRef)}${active.assumptions?markdownView(active.assumptions,active.assumptionsRef):''}</details>
+        </section>
+        ${example?`<section class="surface report-card"><h2>Open obligation</h2><p>Show that sufficient available service implies job completion by its deadline under the stated scheduler assumptions.</p><div class="action-row">${stageLink('bridges','Inspect scheduling bridge',true)}${recordLink(active.id,'Open run record')}</div></section>`:!passed&&(pending||result?.issue)?`<section class="surface report-card"><h2>${error?'Run diagnostic':'Open obligation'}</h2><p>${esc(pending?.formula||result.issue)}</p><div class="action-row">${pageLink('derivation','Inspect derivation')}${recordLink(active.id,'Open run record')}</div></section>`:''}
+        <section class="surface report-card"><h2>Proof evidence</h2>${details}</section>
+      </div></div>`;
+  }
   /** @param {Object} doc Local source document. @returns {string} Original-page reader or formatted text. */
   function documentPreview(doc){
     if(doc.unit!=='Page'){
       if(/\.(md|markdown)$/i.test(doc.name))return markdownView(doc.units.join('\n'));
       return '<div class="av-reading av-plain">'+doc.units.map(esc).join(doc.unit==='Paragraph'?'\n\n':'\n')+'</div>';
     }
-    const current=sourcePages.get(doc.id)||1;
+    const current=documentPage(doc);
     return `<div class="pdf-preview"><div class="action-row"><button class="control" type="button" data-turn="-1" ${current===1?'disabled':''}>Previous</button><strong>Page ${current} of ${doc.units.length}</strong><button class="control" type="button" data-turn="1" ${current===doc.units.length?'disabled':''}>Next</button></div><div class="pdf-sheet"><span role="status">Loading original page…</span><canvas hidden aria-label="Original PDF page ${current}" role="img"></canvas></div></div>`;
   }
   /** @type {boolean} Prevent duplicate provider requests and keep pending work bound to its source. */
@@ -909,11 +1223,17 @@
   }
   function inputPage(){
     const doc=selectedDocument(),manual=state.documentTab==='manual',editing=manual||state.documentTab==='extract';
-    const choices=`<div class="action-row">${actionButton('import-mode','Import document',!manual)}${actionButton('manual-mode','Enter manually',manual)}</div>`;
+    const choices=`<div class="action-row input-mode" role="group" aria-label="Input method"><button type="button" class="control ${manual?'':'primary'}" data-module-action="import-mode" aria-pressed="${!manual}">Import document</button><button type="button" class="control ${manual?'primary':''}" data-module-action="manual-mode" aria-pressed="${manual}">Enter manually</button></div>`;
     const picker=doc?`<label class="field">Source document<select id="source-choice">${project.documents.map(d=>`<option value="${esc(d.id)}" ${doc.id===d.id?'selected':''}>${esc(d.name)}</option>`).join('')}</select></label>`:'';
-    const source=doc&&!manual?`<section class="stack">${picker}<h2>Document preview</h2>${documentPreview(doc)}<details ${editing&&doc.unit!=='Page'?'open':''}><summary>${editing?'Select a source passage':'Source text'}</summary><textarea aria-label="Source text" id="source-text" class="source-text" readonly>${esc(doc.units.join('\n'))}</textarea>${editing?`<div class="action-row">${Object.entries(inputFields).map(([key,label])=>`<button class="control" type="button" data-assign="${key}">Use as ${label.toLowerCase()}</button>`).join('')}</div>`:''}</details></section>`:'';
+    const source=doc&&!manual?`<section class="stack surface paper-source">${picker}<h2>Document preview</h2>${documentPreview(doc)}<details ${editing&&doc.unit!=='Page'?'open':''}><summary>${editing?'Select a source passage':'Source text'}</summary><textarea aria-label="Source text" id="source-text" class="source-text" readonly>${esc(doc.units.join('\n'))}</textarea>${editing?`<div class="action-row">${Object.entries(inputFields).map(([key,label])=>`<button class="control" type="button" data-assign="${key}">Use as ${label.toLowerCase()}</button>`).join('')}</div>`:''}</details></section>`:'';
     const fields=`<div id="av-input-form" class="stack"><h2>${state.draftSource.startsWith('OpenAI ·')?'Review MSA draft':'Analysis inputs'}</h2>${reviewField('goal','Target for this run',manual)}${reviewField('model','M · System model',manual)}${reviewField('assumptions','S · Assumptions',manual)}<section class="msa-analysis"><h3>A · Analysis</h3>${reviewField('analysis','Analysis method',manual)}</section><label class="field av-picker">Proof route<select id="av-draft-route"><option value="prosa" ${state.draftRoute==='prosa'?'selected':''}>Prefer Prosa reuse</option><option value="independent" ${state.draftRoute==='independent'?'selected':''}>Independent</option></select></label>${state.draftParent?'<label class="field">Revision note (optional)<textarea id="av-revision-note" maxlength="350">'+esc(state.draftNote)+'</textarea></label>':''}<div class="action-row">${actionButton('freeze','Confirm MSA',true)}${state.draftStarted?actionButton('discard','Discard draft'):''}</div>${reviewDetails()}</div>`;
-    return `<div class="stack">${choices}${!manual?`<label class="field">Choose a document · PDF, Markdown, TXT or DOCX<input id="av-file" type="file" accept=".pdf,.md,.markdown,.txt,.docx"></label><span role="status">${esc(readStatus)}</span>`:''}${editing?`${manual?'':`<div class="pane-switch">${actionButton('source-pane','Source',inputPane==='source')}${actionButton('inputs-pane','Inputs',inputPane==='inputs')}</div>`}<div class="${manual?'stack':'source-editor'}" data-pane="${inputPane}">${source}${fields}</div>`:`${source}${doc?`<div data-extract-feedback>${extractionNotice(doc)}<div class="action-row"><button type="button" class="control primary" data-module-action="generate-msa" ${generating.has(doc)?'disabled':''}>${generating.has(doc)?'Generating…':doc.extractionError?'Retry extraction':doc.unit==='Page'?'Extract paper contributions':'Generate MSA draft'}</button>${actionButton('extract','Select passages manually')}${actionButton('openai-settings','OpenAI settings')}</div></div>`:actionButton('openai-settings','OpenAI settings')}`}</div>`;
+    const upload=manual?'':`<section class="paper-picker"><div><h2>${doc?'Add another document':'Choose a paper'}</h2><p>PDF with a text layer, DOCX, Markdown or plain text.</p></div><label class="control ${doc?'':'primary'} file-trigger">${icon('upload')} Choose file<input id="av-file" type="file" accept=".pdf,.md,.markdown,.txt,.docx" aria-label="Choose a document"></label></section><span class="local-feedback" role="status">${esc(readStatus)}</span>`;
+    const extraction=doc?`<section class="surface stack paper-extraction" data-extract-feedback><div><h2>Extract the claim and its assumptions</h2>${extractionNotice(doc)}</div><div class="action-row"><button type="button" class="control primary" data-module-action="generate-msa" ${generating.has(doc)?'disabled':''}>${generating.has(doc)?'Extracting…':doc.extractionError?'Retry extraction':'Extract draft'}</button>${actionButton('extract','Select passages manually')}${actionButton('openai-settings','OpenAI settings')}</div></section>`:'';
+    const progress=doc&&!manual?`<ol class="input-progress" aria-label="Verification workflow"><li>${icon('check')} Paper imported</li><li aria-current="step">${icon('list-checks')} ${editing?'Review claim and assumptions':'Extract claim and assumptions'}</li><li>${icon('shield-check')} Verify formal claim</li></ol>
+      ${paperChecks.has(doc)?'<p role="status">Checking for a published proof certificate…</p>':doc.paperVerification?`<button type="button" class="control" data-project-report="${esc(project.id)}" data-paper-report="${esc(doc.id)}">Open certificate report</button>`:''}`:'';
+    if(!editing)return `<div class="stack">${choices}${progress}${doc?extraction+source+upload:upload}</div>`;
+    const panes=manual?'':`<div class="pane-switch">${actionButton('source-pane','Source',inputPane==='source')}${actionButton('inputs-pane','Inputs',inputPane==='inputs')}</div>`;
+    return `<div class="stack">${choices}${progress}${panes}<div class="${manual?'stack':'source-editor'}" data-pane="${inputPane}">${source}${fields}</div>${upload}</div>`;
   }
   /** @param {File} file New local source, saved before the user can assign excerpts. */
   async function importFile(file){
@@ -927,8 +1247,10 @@
       if(ticket!==reading||project!==owner)return;
       const previous=project.selectedDocument;
       if(!existing)(project.documents??=[]).push(doc);project.selectedDocument=doc.id;
+      if(existing)delete existing.paperVerification;
       if(!remember()){if(!existing)project.documents.pop();project.selectedDocument=previous;throw Error('Browser storage is full. Choose a shorter document or enter inputs manually.');}
       state.documentTab='pdf';readStatus='';remember();
+      if(doc.unit==='Page')void checkPaperCertificate(owner,existing||doc,file);
     }catch(error){if(ticket===reading)readStatus=error.message||'Could not read this document.';}
     if(ticket===reading&&project===owner)render();
   }
@@ -1157,6 +1479,7 @@
     const argument=reasoningViews.get(argumentKey(currentKey,argumentVersions.get(currentKey)||2));
     const argumentStatus=argument?.graph?'Argument available':argument?.stage==='running'?'Deriving…':argument?.stage==='failed'?'Retry available':'Awaiting derivation';
     if(state.page==='projects')return projectDirectory();
+    if(state.page==='verification'&&selectedDocument()?.paperVerification&&!active.id)return paperCertificateReport(selectedDocument());
     if(state.page==='expert-audit')return ledger.page(project,active.id,argumentVersions.get(currentKey),true);
     if(!active.id&&projectPages.includes(state.page)&&state.page!=='documents'&&!(state.page==='modeling'&&state.reviewing)){
       return `<div class="stack"><div><h2>${esc(project.name)}</h2><p class="av-statement">${esc(project.description)}</p></div><div class="av-next"><div><h3>${state.draftStarted?'Input draft':'No inputs yet'}</h3><p>Import a paper or enter its model, assumptions and analysis.</p></div>${pageLink('documents',state.draftStarted?'Resume inputs':'Add inputs',true)}</div></div>`;
@@ -1190,9 +1513,10 @@
     }
     if(state.page==='derivation')return argumentPage(active);
     if(state.page==='verification'){
-      if(!hasArtifacts)return ledger.page(project,active.id,argumentVersions.get(currentKey));
-      return `${moduleTabs('verificationTab',[['status','Results'],['obligations','Open obligations'],['audit','Audit'],['log','Checker log']])}<div class="stack"><div class="av-title"><h2>${({status:'Proof status',obligations:'Open obligations',audit:'Audit',log:'Checker log'})[state.verificationTab]}</h2>${openRun}</div><div class="artifact-content">${state.verificationTab==='obligations'?
+      if(!hasArtifacts)return verificationReport(active,false,ledger.page(project,active.id,argumentVersions.get(currentKey)));
+      const evidence=`${moduleTabs('verificationTab',[['status','Results'],['obligations','Open obligations'],['audit','Audit'],['log','Checker log']])}<div class="stack"><div class="av-title"><h3>${({status:'Proof status',obligations:'Open obligations',audit:'Audit',log:'Checker log'})[state.verificationTab]}</h3>${openRun}</div><div class="artifact-content">${state.verificationTab==='obligations'?
         [['backward',0,'Job completion','Goal tree'],['bridges',0,'Scheduling bridge','Bridge candidate'],['forward',1,'Available-service bound','Bound candidates']].map(([stage,output,title,label])=>`<button type="button" class="step-row" data-open-stage="${stage}" data-open-output="${output}"><strong>${title}</strong><span class="av-trailing">${label} ${icon('arrow-right')}</span></button>`).join(''):preview(({status:'check',audit:'audit',log:'log'})[state.verificationTab])}</div>${state.verificationTab==='status'?`<div class="action-row"><button type="button" class="control primary" data-tab-field="verificationTab" data-tab-value="obligations">Inspect open obligations</button></div>`:''}</div>`;
+      return verificationReport(active,true,evidence);
     }
     if(state.page==='runs'){
       /** @type {Array<Object>} Selectable records in most-recent-first order. */
@@ -1230,7 +1554,8 @@
     const showGraph=state.page==='derivation'&&isExample()&&state.activeId===exampleRun.id;
     root.querySelector('#av-derivation-page').hidden=!showGraph;
     root.querySelector('#av-module-page').hidden=showGraph;
-    root.querySelector('#av-module-page').innerHTML=showGraph?'':`<div class="pagehead"><h1>${creating?'New project':state.page==='documents'?'Add inputs':state.page==='runs'?'Run details':pages[state.page][0]}</h1>${state.page==='projects'&&!creating?actionButton('new-project','New project',true):''}</div><div class="page-content">${moduleBody()}<p class="local-feedback" id="av-feedback" role="status">${esc(feedback)}</p></div>`;
+    const title=creating?'New project':state.page==='documents'?({pdf:'Import paper',manual:'Enter analysis inputs',extract:'Review paper inputs'})[state.documentTab]:state.page==='runs'?'Run details':pages[state.page][0];
+    root.querySelector('#av-module-page').innerHTML=showGraph?'':`<div class="pagehead"><h1>${title}</h1></div><div class="page-content">${moduleBody()}<p class="local-feedback" id="av-feedback" role="status">${esc(feedback)}</p></div>`;
     root.style.colorScheme=state.appearance==='system'?'light dark':state.appearance;
   }
   /** Navigate without discarding the previously inspected derivation artifact.
@@ -1239,8 +1564,11 @@
    */
   function navigate(page){
     if(!pages[page])return;
+    reportCitation='';
     creating=false;state.page=page;
-    if(['verification','expert-audit'].includes(page)&&state.activeId){
+    if(page==='verification'&&!state.activeId&&selectedDocument()?.paperVerification){
+      history.replaceState(null,'','?'+new URLSearchParams({view:page,project:project.id,paper:selectedDocument().id}));
+    }else if(['verification','expert-audit'].includes(page)&&state.activeId){
       const query=new URLSearchParams({view:page,project:project.id,run:state.activeId});
       const version=argumentVersions.get(project.irKeys?.[state.activeId]);
       if(version)query.set('version',version);
@@ -1416,8 +1744,8 @@
     root.querySelector('#rt-artifact-content').innerHTML=state.detail==='preview'?preview(artifact[3]):state.detail==='details'?details(artifact):sources();
     renderCatalog();
     renderMath();
-    const sheet=root.querySelector('.pdf-sheet'),doc=selectedDocument();
-    if(sheet&&doc)drawOriginalPage(sheet,doc.id,sourcePages.get(doc.id)||1,project.id);
+    const sheet=root.querySelector('.pdf-sheet'),doc=reportPreviewDocument();
+    if(sheet&&doc)drawOriginalPage(sheet,doc.id,documentPage(doc),project.id);
     if(window.lucide)window.lucide.createIcons({attrs:{width:16,height:16}});
     requestAnimationFrame(drawGraphs);
   }
@@ -1674,12 +2002,53 @@
     if(button.dataset.moduleAction==='start-derivation'){
       const ir=irViews.get(irIdentity(project,state.activeId))?.ir;if(ir)fetchArgument(ir,true,edition);return;
     }
-    if(button.dataset.turn){const doc=selectedDocument();sourcePages.set(doc.id,Math.max(1,Math.min(doc.units.length,(sourcePages.get(doc.id)||1)+Number(button.dataset.turn))));render();return;}
+    if(button.dataset.turn){const doc=reportPreviewDocument();if(doc){sourcePages.set(doc.id,Math.max(1,Math.min(doc.units.length,documentPage(doc)+Number(button.dataset.turn))));render();}return;}
     if(button.dataset.moduleAction==='openai-settings'){connectionDialog();return;}
     if(button.dataset.moduleAction==='retry-preparation'){loadIR(project,state.activeId,true);return;}
     if(button.dataset.moduleAction==='export-ir'){downloadIR();return;}
     if(button.dataset.moduleAction==='generate-msa'){generateDraft();return;}
-    if(button.dataset.cite){showSource(button.dataset.cite);return;}
+    if(button.dataset.moduleAction==='recheck-paper'){
+      const owner=project,doc=selectedDocument();
+      if(doc&&!paperChecks.has(doc)){
+        try{
+          const file=await originalPdf(doc.id,undefined,owner.id);
+          if(!file)throw Error('Re-import the original PDF to check the certificate again.');
+          await checkPaperCertificate(owner,doc,file);
+        }catch(error){
+          const message=root.querySelector('#av-feedback');
+          if(message)message.textContent=error.message;
+        }
+      }
+      return;
+    }
+    if(button.dataset.cite){
+      const ref=button.dataset.cite,hit=citation(ref);
+      if(state.page==='verification'&&hit){
+        reportCitation=ref;
+        let offset=0;
+        for(const [i,text] of hit.doc.units.entries()){
+          if(hit.start<offset+text.length+1){sourcePages.set(hit.doc.id,i+1);break;}
+          offset+=text.length+1;
+        }
+        render();root.querySelector('[data-report-excerpt]')?.focus();
+      }else showSource(ref);
+      return;
+    }
+    if(button.dataset.projectReport){
+      const owner=projects.find(item=>item.id===button.dataset.projectReport);
+      if(owner){
+        openProject(owner);
+        if(button.dataset.paperReport){
+          owner.selectedDocument=button.dataset.paperReport;
+          const doc=selectedDocument();
+          sourcePages.set(doc.id,doc.paperVerification.claim.page);
+        }
+        selectRun(Number(button.dataset.reportRun||0));navigate('verification');
+        state.verificationTab=button.dataset.reportTab||'status';
+        render();remember();
+      }
+      return;
+    }
     if(button.dataset.editMsa){const section=button.closest('[data-msa-field]');setSourceMode(section,section.querySelector('textarea').hidden);return;}
     if(button.dataset.assign){
       const viewer=root.querySelector('#source-text'),key=button.dataset.assign;
@@ -1781,6 +2150,7 @@
       else{view.pairIndex=Number(field.value);view.lemma=view.graph.connections[view.pairIndex].forward;view.selected=view.graph.connections[view.pairIndex].backward;}
       syncArgumentLink(edition,view.selected);render();root.querySelector(goal?'[data-goal-picker]':'[data-route-picker]')?.focus({preventScroll:true});return;
     }
+    if(field.id==='av-paper-upload'&&field.files?.[0]){importPaperProject(field.files[0]);return;}
     if(field.id==='av-file'&&field.files?.[0]){importFile(field.files[0]);return;}
     if(field.id==='paper-target'){
       const review=state.paperReview,index=Number(field.value);
@@ -1813,9 +2183,14 @@
   /** Optional deep link to a locally stored project and immutable run. */
   let argumentStart=null;
   const targetParams=new URLSearchParams(location.search);
+  if(targetParams.get('view')==='verification'&&targetParams.has('paper')){
+    const target=projects.find(item=>item.id===targetParams.get('project'));
+    const doc=target?.documents?.find(item=>item.id===targetParams.get('paper')&&item.paperVerification);
+    if(doc){openProject(target);target.selectedDocument=doc.id;selectRun(0);navigate('verification');}
+  }
   if(['ir','msa','run','proof-details','derivation','derivation-record','verification','expert-audit','overview'].includes(targetParams.get('view'))){
     const target=projects.find(p=>p.id===targetParams.get('project')||p.name===targetParams.get('project'));
-    if(target){openProject(target);const run=Number(targetParams.get('run'));if(recordFor(run).id===run&&run>0){selectRun(run);const key=target.irKeys?.[run],version=Number(targetParams.get('version'))||2;
+    if(target&&!targetParams.has('paper')){openProject(target);const run=Number(targetParams.get('run'));if(recordFor(run).id===run&&run>0){selectRun(run);const key=target.irKeys?.[run],version=Number(targetParams.get('version'))||2;
       if(key){if(targetParams.has('version')&&Number.isSafeInteger(version)&&version>0)argumentVersions.set(key,version);argumentStart={key,version,step:targetParams.get('step'),lemma:targetParams.get('lemma'),goal:targetParams.get('goal'),pairIndex:targetParams.has('route')?Number(targetParams.get('route')):null};}
       state.runTab=({'derivation-record':'derivation','proof-details':'proof-details',ir:'ir'})[targetParams.get('view')]||'summary';state.modelTab='model';navigate(({msa:'modeling',derivation:'derivation',verification:'verification','expert-audit':'expert-audit',overview:'overview'})[targetParams.get('view')]||'runs');}}
   }

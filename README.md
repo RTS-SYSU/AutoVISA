@@ -4,7 +4,7 @@ AutoVISA 是面向实时系统研究者的本地证明工作台。给它一篇�
 
 ## 快速开始
 
-安装 Node.js 和 Git，然后启动 `dev` 版工作台：
+安装 Git 和 Node.js，然后在终端运行：
 
 ```sh
 git clone --branch dev https://github.com/RTS-SYSU/AutoVISA.git
@@ -12,16 +12,25 @@ cd AutoVISA
 node tools/serve-prototype.cjs
 ```
 
-打开 [本地工作台](http://127.0.0.1:8769/)，点击 **New project**。仅浏览界面需要 Node.js；自动抽取与推导需要在 **OpenAI settings** 配置模型，实际证明还需安装下方的 Rocq 工具链。
+打开 [本地工作台](http://127.0.0.1:8769/)，保持终端运行。如果 8769 已被占用，可加 `--port 8773` 指定备用端口。[打开备用端口](http://127.0.0.1:8773/)
 
-## 第一次运行
+## 导入自己的论文
 
-1. 在 **Documents** 上传 PDF、Markdown、TXT 或 DOCX，也可以手动录入。核对带出处的草稿，选定一个目标并点击 **Confirm MSA**。
-2. 在 **Derivation** 启动推导。选择一个反向子目标，查看哪些正向引理支持它，以及还缺哪些条件。
-3. 在 **Proof** 选择 **Formal model** 检查定义。通过后，从 **Lemmas & subgoals** 选择要检查的节点，或在 **More actions** 中启动完整证明。
-4. 查看最终结果。**Final theorem · Verified by Rocq** 表示最终命题通过了编译和内核检查。若阶段显示 **Needs clarification**，展开 **Review model issues** 查看需要处理的定义。**Run details** 提供该次尝试的原始记录。
+1. 首页点击 **Choose paper PDF**，选择有可复制文字的 PDF。工作台会以文件名创建项目。也可通过 **Create project manually** 新建项目，在 **Documents** 导入 Markdown、TXT、DOCX 或手动录入。
+2. 点击 **Extract draft** 生成带出处的草稿。使用自动抽取与推导时，先在 **OpenAI settings** 配置 API Key，或在启动前设置 `OPENAI_API_KEY`。核对模型、假设、分析方法和验证目标，然后点击 **Confirm MSA**。
+3. 在 **Derivation** 启动推导，查看支持所选目标的引理和仍需满足的条件。
+4. 在 **Proof** 中用 **Formal model** 检查定义。通过后，从 **Lemmas & subgoals** 选择节点，或从 **More actions** 启动完整证明。这条路线需要下文的 Rocq 工具链。
+5. **Final theorem · Verified by Rocq** 表示当前形式命题通过了编译和内核检查。若显示 **Needs clarification**，打开 **Review model issues** 查看待处理的定义。**Run details** 提供检查记录，**Expert audit** 可进一步审查模型忠实性、调度语义和目标覆盖。
 
-**Expert audit** 可进一步审查模型忠实性、调度语义与目标覆盖。运行审计时可选择维度和轮数。
+## 用公开论文复跑验证
+
+样例使用作者公开的 POET 证书，无需 OpenAI API Key。AutoVISA 通过文件 SHA-256 匹配已核对的出版版本。
+
+1. 准备 **Rocq 9.0 和 Prosa 0.6 refinements**，然后启动工作台。[安装工具链与命令行复跑](proofs/papers/poet-2022/README.md)
+2. 保存出版社提供的 PDF，在首页点击 **Choose paper PDF** 导入。[ECRTS 2022 原版论文 PDF](https://drops.dagstuhl.de/storage/00lipics/lipics-vol231-ecrts2022/LIPIcs.ECRTS.2022.19/LIPIcs.ECRTS.2022.19.pdf)
+3. 等待报告显示 **Published claim verified**。在 **Exact Rocq theorem** 和 **Checker log** 查看命题与内核检查记录。报告定位到第 11 页 Listing 2，验证任务 2 在论文所列假设下的 **60 ms 响应时间上界**与 **100 ms 截止时间**。
+
+如果导入后进入普通草稿流程，核对是否选中了出版社原版 PDF。若显示 **Certificate check failed**，展开 **Checker log** 定位问题，从报告中重跑检查。当前自动证书复核覆盖上述一条声明，其它论文使用普通导入流程。
 
 ## 内置 Skills
 
@@ -39,7 +48,8 @@ node tools/serve-prototype.cjs
 | 使用目的 | 依赖与入口 |
 | --- | --- |
 | 本地网页 | Node.js；Windows 也可运行 `.\start-prototype.ps1` |
-| Rocq 检查 | Python、opam、匹配版本的 Rocq；Windows 通过 WSL 调用。先核对发行版、opam 根目录和 switch。[工具链配置](configs/toolchain.json) |
+| 普通论文的 Rocq 检查 | Python、opam、匹配版本的 Rocq；Windows 通过 WSL 调用。先核对发行版、opam 根目录和 switch。[工具链配置](configs/toolchain.json) |
+| POET 样例证书复核 | Rocq 9.0 与 Prosa 0.6 refinements，支持 Windows 原生 Rocq。[安装说明](proofs/papers/poet-2022/README.md) |
 | 后端 MSA 工作台 | Windows、WSL、Python、PostgreSQL 和 Poppler。运行 `.\start-workbench.ps1` 后打开 [MSA 工作台](http://127.0.0.1:8765/msa)。[运行时合同](docs/README.md) |
 
 项目列表和工作区状态存于浏览器，本机 `artifacts/` 保存运行证据和自定义 Skill。调用外部模型时，相应输入会发给配置的服务。仓库发布平台源码、内置 Skill 和运行配置，本地论文、凭据与研究记录保存在各自的工作环境。

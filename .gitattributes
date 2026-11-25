@@ -2,3 +2,4 @@
 docs/contracts/*.md text eol=lf
 configs/*.json text eol=lf
 proofs/*.v text eol=lf
+proofs/papers/**/*.v text eol=lf
