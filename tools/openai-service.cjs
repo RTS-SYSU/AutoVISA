@@ -156,7 +156,9 @@ const schema={type:'object',additionalProperties:false,properties:Object.fromEnt
 async function translateIR(instructions,input,schema,name='analysis_ir',environment=saved){
   const payload={model:environment.model,store:false,instructions,input:JSON.stringify(input),
     text:{format:{type:'json_schema',name,strict:true,schema}}};
-  if(['forward_steps','backward_steps','skill_alignment'].includes(name))payload.stream=true;
+  // Formalization and reviews can take as long as DAG construction. Process early
+  // stream events while waiting for the final schema-validated response.
+  if(['forward_steps','backward_steps','skill_alignment','formal_context','formal_lemmas'].includes(name)||name.startsWith('audit_'))payload.stream=true;
   if(environment.effort!=='default')payload.reasoning={effort:environment.effort};
   const result=await openai('/responses',payload);
   if(result.status!=='completed')throw Error('The model did not complete the requested analysis.');

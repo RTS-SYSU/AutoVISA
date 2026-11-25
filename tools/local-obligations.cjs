@@ -143,7 +143,7 @@ function ledger({key,project,run,version}){
     ...graph.connections.flatMap((c,route)=>[{id:c.forward,role:c.branch||c.title},...(c.supports||[])].map(s=>({from:s.id,to:c.backward,role:s.role,route})))
   ]:[];
   const structure={sources:ir.items.map(r=>({id:r.id,text:r.source,ref:r.ref})),targets:ir.items.filter(r=>r.section==='goal').map(r=>({id:r.id,title:r.statement.title})),
-    lemmas:graph?[...graph.forward,...graph.backward].map(n=>({id:n.id,title:n.title,formula:n.formula,premises:n.premises||[],sources:n.sources})):[],dependencies};
+    lemmas:graph?[...graph.forward,...graph.backward].map(n=>({id:n.id,title:n.title,formula:n.formula,premises:n.premises||[],sources:n.sources})):[],dependencies,roots:graph?graph.backward.filter(n=>!n.parents.length).map(n=>n.id):[],modelChecked:Boolean(graph?.formalContext?.typecheck?.checked)};
   return {version:selected,editions,receipts,recordedChecks,structure,work:pendingWork(ir,graph,receipts)};
 }
 module.exports={handle,ledger,pendingWork,runChecker};
