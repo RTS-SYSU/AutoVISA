@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Starts the isolated clickable UI prototype on loopback.
+Starts the AutoVISA workspace and its local OpenAI connection.
 .PARAMETER Port
 Local port, separate from the real workbench service.
 .EXAMPLE
@@ -8,6 +8,6 @@ Local port, separate from the real workbench service.
 #>
 [CmdletBinding()]
 param([ValidateRange(1,65535)][int]$Port = 8769)
-# prototypeEntry points to the local static server; no backend is started.
+# The loopback server hosts both the workspace and its model settings.
 $prototypeEntry = Join-Path $PSScriptRoot 'tools/serve-prototype.cjs'
 & node $prototypeEntry --port $Port

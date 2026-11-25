@@ -23,6 +23,8 @@ __pycache__/
 /check.ps1
 /check-*.ps1
 /tools/check_*.py
+!/tools/check_argument.py
+!/tools/check_local_order.py
 /tools/w02_env.sh
 /tools/probe_prosa_msa.py
 /proofs/Examples.v

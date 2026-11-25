@@ -1,0 +1,174 @@
+{
+  "version": "0.6",
+  "entries": [
+    {
+      "name": "JobTask",
+      "qualified": "prosa.model.task.concept.JobTask",
+      "module": "model/task/concept",
+      "kind": "Class",
+      "aliases": [
+        "job to task",
+        "jobs of a task",
+        "sequence of jobs",
+        "jobs released",
+        "jobs it generates"
+      ],
+      "declaration": "Class JobTask (Job : JobType) (Task : TaskType) := job_task : Job -> Task.",
+      "line": 19,
+      "sha256": "7a1e962028340a19dcfdc9ea39da27d21067551ec40569486f8748e6d554e49b"
+    },
+    {
+      "name": "TaskDeadline",
+      "qualified": "prosa.model.task.concept.TaskDeadline",
+      "module": "model/task/concept",
+      "kind": "Class",
+      "aliases": [
+        "relative deadline",
+        "constrained deadline"
+      ],
+      "declaration": "Class TaskDeadline (Task : TaskType) := task_deadline : Task -> duration.",
+      "line": 23,
+      "sha256": "7a1e962028340a19dcfdc9ea39da27d21067551ec40569486f8748e6d554e49b"
+    },
+    {
+      "name": "TaskCost",
+      "qualified": "prosa.model.task.concept.TaskCost",
+      "module": "model/task/concept",
+      "kind": "Class",
+      "aliases": [
+        "worst-case execution",
+        "execution requirement",
+        "execution demand"
+      ],
+      "declaration": "Class TaskCost (Task : TaskType) := task_cost : Task -> duration.",
+      "line": 27,
+      "sha256": "7a1e962028340a19dcfdc9ea39da27d21067551ec40569486f8748e6d554e49b"
+    },
+    {
+      "name": "TaskSet",
+      "qualified": "prosa.model.task.concept.TaskSet",
+      "module": "model/task/concept",
+      "kind": "Definition",
+      "aliases": [
+        "finite set of tasks",
+        "task set",
+        "workload"
+      ],
+      "declaration": "Definition TaskSet := seq.",
+      "line": 130,
+      "sha256": "7a1e962028340a19dcfdc9ea39da27d21067551ec40569486f8748e6d554e49b"
+    },
+    {
+      "name": "valid_job_cost",
+      "qualified": "prosa.model.task.concept.valid_job_cost",
+      "module": "model/task/concept",
+      "kind": "Definition",
+      "aliases": [
+        "execution cost bound",
+        "requires at most",
+        "execution requirement"
+      ],
+      "declaration": "Definition valid_job_cost j :=\n      job_cost j <= task_cost (job_task j).",
+      "line": 72,
+      "sha256": "7a1e962028340a19dcfdc9ea39da27d21067551ec40569486f8748e6d554e49b"
+    },
+    {
+      "name": "SporadicModel",
+      "qualified": "prosa.model.task.arrival.sporadic.SporadicModel",
+      "module": "model/task/arrival/sporadic",
+      "kind": "Class",
+      "aliases": [
+        "sporadic",
+        "separation",
+        "inter-arrival"
+      ],
+      "declaration": "Class SporadicModel (Task : TaskType) :=\n  task_min_inter_arrival_time : Task -> duration.",
+      "line": 16,
+      "sha256": "e7d32c5f69ef6e6a0dea092f55b6f48ef1dcd0d1ab286a698cb889a16d1b96dc"
+    },
+    {
+      "name": "respects_sporadic_task_model",
+      "qualified": "prosa.model.task.arrival.sporadic.respects_sporadic_task_model",
+      "module": "model/task/arrival/sporadic",
+      "kind": "Definition",
+      "aliases": [
+        "sporadic",
+        "at least",
+        "release separation"
+      ],
+      "declaration": "Definition respects_sporadic_task_model (tsk : Task) :=\n    forall (j j' : Job),\n      \n      j <> j' ->\n      \n      arrives_in arr_seq j ->\n      arrives_in arr_seq j' ->\n      \n      job_task j = tsk ->\n      job_task j' = tsk ->\n      \n      job_arrival j <= job_arrival j' ->\n      \n\n      job_arrival j' >= job_arrival j + task_min_inter_arrival_time tsk.",
+      "line": 47,
+      "sha256": "e7d32c5f69ef6e6a0dea092f55b6f48ef1dcd0d1ab286a698cb889a16d1b96dc"
+    },
+    {
+      "name": "EDF",
+      "qualified": "prosa.model.priority.edf.EDF",
+      "module": "model/priority/edf",
+      "kind": "Instance",
+      "aliases": [
+        "edf",
+        "earliest deadline",
+        "absolute deadlines"
+      ],
+      "declaration": "Instance EDF (Job : JobType) `{JobDeadline Job} : JLFP_policy Job :=\n{\n  hep_job (j1 j2 : Job) := job_deadline j1 <= job_deadline j2\n}.",
+      "line": 9,
+      "sha256": "e6dca5559b0a43eda56718d29a479a8550d71aa410c0b57af206e3bd18376655"
+    },
+    {
+      "name": "job_deadline_from_task_deadline",
+      "qualified": "prosa.model.task.absolute_deadline.job_deadline_from_task_deadline",
+      "module": "model/task/absolute_deadline",
+      "kind": "Instance",
+      "aliases": [
+        "absolute deadline",
+        "after release",
+        "after arrival"
+      ],
+      "declaration": "Instance job_deadline_from_task_deadline (Job : JobType) (Task : TaskType)\n         `{TaskDeadline Task} `{JobArrival Job} `{JobTask Job Task} : JobDeadline Job :=\n  fun (j : Job) => job_arrival j + task_deadline (job_task j).",
+      "line": 9,
+      "sha256": "c8693bd33255ab6ee6a02620113c32f5ca4feccb04966ac0d4c81ec1eb1c527e"
+    },
+    {
+      "name": "task_demand_bound_function",
+      "qualified": "prosa.analysis.definitions.demand_bound_function.task_demand_bound_function",
+      "module": "analysis/definitions/demand_bound_function",
+      "kind": "Definition",
+      "aliases": [
+        "dbf",
+        "demand bound",
+        "demand-bound"
+      ],
+      "declaration": "Definition task_demand_bound_function (tsk : Task) (delta : duration) :=\n    let delta' := delta - (task_deadline tsk - 1) in\n      task_request_bound_function tsk delta'.",
+      "line": 14,
+      "sha256": "a26bcbb49cdadf81efbf8852d97889fa8dcac1cfe72682b53dd70b11d8a4841f"
+    },
+    {
+      "name": "total_demand_bound_function",
+      "qualified": "prosa.analysis.definitions.demand_bound_function.total_demand_bound_function",
+      "module": "analysis/definitions/demand_bound_function",
+      "kind": "Definition",
+      "aliases": [
+        "total demand",
+        "sum of demand",
+        "task-set demand"
+      ],
+      "declaration": "Definition total_demand_bound_function (ts : seq Task) (delta : duration) :=\n    \\sum_(tsk <- ts) task_demand_bound_function tsk delta.",
+      "line": 19,
+      "sha256": "a26bcbb49cdadf81efbf8852d97889fa8dcac1cfe72682b53dd70b11d8a4841f"
+    },
+    {
+      "name": "total_demand_within_le_total_dbf",
+      "qualified": "prosa.analysis.facts.model.dbf.total_demand_within_le_total_dbf",
+      "module": "analysis/facts/model/dbf",
+      "kind": "Lemma",
+      "aliases": [
+        "demand bound",
+        "total demand",
+        "dbf"
+      ],
+      "declaration": "Lemma total_demand_within_le_total_dbf :\n    forall (t : instant) (delta : duration),\n      total_demand_within t (t + delta) <= total_demand_bound_function ts delta.",
+      "line": 123,
+      "sha256": "c06555c4c564d810e7e56a02d1fb525a0fa880ed779da32a5e0a55c80bc7a11b"
+    }
+  ]
+}

@@ -5,9 +5,23 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <title>AutoVISA Workspace</title>
-<script defer src="https://unpkg.com/lucide@1.17.0/dist/umd/lucide.js" crossorigin="anonymous"></script>
-<style>body{margin:0}#rt-workspace{min-height:100vh}</style>
-<script id="av-katex" defer src="https://cdn.jsdelivr.net/npm/katex@0.19.1/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="/vendor/ui/lucide.js" crossorigin="anonymous"></script>
+<style>body{margin:0}#rt-workspace{min-height:100vh}#rt-workspace .proof-tree{margin:12px 0;min-width:0;text-align:left}
+#rt-workspace .proof-tree ul{list-style:none;margin:0;padding:0}
+#rt-workspace .proof-tree ul ul{margin:2px 0 7px 10px;padding-left:12px;border-left:1px solid #aab4ca}
+#rt-workspace .proof-tree ul.tree-matches{border-left-style:dashed}
+#rt-workspace .proof-tree li{margin:4px 0;position:relative}
+#rt-workspace .tree-step{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:5px;padding:3px 6px;border:0;border-radius:4px;background:transparent;color:inherit;text-align:left;max-width:100%;cursor:pointer;font:inherit}
+#rt-workspace .tree-step span{overflow-wrap:anywhere}
+#rt-workspace .tree-step b{color:#3746aa}
+#rt-workspace .tree-step.forward b{color:#196b5a}
+#rt-workspace .tree-step:hover,#rt-workspace .tree-step[aria-pressed=true]{background:#edf0fa}
+#rt-workspace .proof-tree small{font-size:.8em;color:#515f78}
+#rt-workspace .proof-tree li>small{display:block;margin-left:6px}
+#rt-workspace .lemma-register{margin-top:12px}
+#rt-workspace .proof-tree.near-network{font-size:.9em}
+</style>
+<script id="av-katex" defer src="/vendor/ui/katex.min.js" crossorigin="anonymous"></script>
 <style>
 #rt-workspace{--rt-bg:light-dark(#f6f7fa,#151b25);--rt-panel:light-dark(#ffffff,#1c2532);--rt-rail:light-dark(#f0f2f7,#18212e);--rt-ink:light-dark(#202d42,#edf2fb);--rt-muted:light-dark(#667286,#b0bed2);--rt-line:light-dark(#dce2eb,#3d495b);--rt-blue:light-dark(#354bc2,#adc0ff);--rt-soft:light-dark(#edf0ff,#283858);--rt-amber:light-dark(#80530e,#f1ca7d);--rt-warm:light-dark(#fff5e2,#383021);--rt-primary:light-dark(#354bc2,#adbfff);--rt-on-primary:light-dark(#ffffff,#18213a);color:var(--rt-ink);font:14px/1.5 Inter,'Segoe UI',sans-serif;background:var(--rt-bg);border:1px solid var(--rt-line);border-radius:12px;overflow:hidden;max-width:100%}
 #rt-workspace *{box-sizing:border-box}#rt-workspace [hidden]{display:none!important}#rt-workspace h1,#rt-workspace h2,#rt-workspace h3,#rt-workspace p{margin:0}#rt-workspace h1{font-size:21px;letter-spacing:-.025em;font-weight:600}#rt-workspace h2{font-size:17px;letter-spacing:-.015em;font-weight:600}#rt-workspace h3{font-size:14px;font-weight:600}#rt-workspace button,#rt-workspace input,#rt-workspace select{font:inherit;color:inherit}#rt-workspace button{cursor:pointer}#rt-workspace button:focus-visible,#rt-workspace select:focus-visible,#rt-workspace input:focus-visible,#rt-workspace summary:focus-visible{outline:3px solid var(--rt-blue);outline-offset:3px}#rt-workspace svg.lucide{width:16px;height:16px;flex-shrink:0;stroke-width:1.7}#rt-workspace .shell{display:grid;grid-template-columns:146px minmax(0,1fr)}#rt-workspace .rail{padding:19px 11px;background:var(--rt-rail);border-right:1px solid var(--rt-line);display:flex;flex-direction:column;gap:22px}#rt-workspace .brand{font-size:19px;font-weight:600;letter-spacing:-.02em;padding:0 9px}#rt-workspace .navgroup{display:grid;gap:5px}#rt-workspace .navrow{display:flex;align-items:center;gap:8px;padding:8px 9px;color:var(--rt-muted);border-radius:7px;font-size:12px;white-space:nowrap}#rt-workspace .navrow.active{background:var(--rt-panel);color:var(--rt-blue);font-weight:600}#rt-workspace .projectname{padding:16px 9px 8px;border-top:1px solid var(--rt-line);font-size:12px;font-weight:600}#rt-workspace .railfoot{margin-top:auto;display:grid;gap:5px}#rt-workspace .main{min-width:0}#rt-workspace .topbar{padding:13px 20px;border-bottom:1px solid var(--rt-line);background:var(--rt-panel);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}#rt-workspace .breadcrumb{font-size:12px;color:var(--rt-muted);display:flex;align-items:center;gap:9px;flex-wrap:wrap}#rt-workspace .breadcrumb strong{color:var(--rt-ink);font-weight:500}#rt-workspace .previewmark{font-size:11px;padding:3px 7px;border:1px solid var(--rt-line);border-radius:5px;color:var(--rt-muted)}#rt-workspace .pagehead{padding:19px 20px 15px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}#rt-workspace .headinggroup{display:grid;gap:4px}#rt-workspace .muted{color:var(--rt-muted)}#rt-workspace .small{font-size:12px}#rt-workspace .tiny{font-size:11px}#rt-workspace .toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#rt-workspace .control{border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:7px;min-height:34px;padding:6px 10px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:12px;white-space:nowrap}#rt-workspace .control:hover{background:var(--rt-soft)}#rt-workspace .control.primary{background:var(--rt-primary);color:var(--rt-on-primary);border-color:var(--rt-primary);font-weight:500}#rt-workspace .control.quiet{border-color:transparent;background:transparent;color:var(--rt-muted)}#rt-workspace .control.quiet:hover{background:var(--rt-soft);color:var(--rt-blue)}#rt-workspace .control.icon-only{width:34px;padding:7px}#rt-workspace select{background:var(--rt-panel);border:1px solid var(--rt-line);padding:6px 8px;min-height:34px;border-radius:7px;font-size:12px;max-width:100%}#rt-workspace .viewbar{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:0 20px;border-bottom:1px solid var(--rt-line);flex-wrap:wrap}#rt-workspace .viewtabs{display:flex;gap:18px}#rt-workspace .viewtab{padding:10px 1px;background:transparent;border:0;border-bottom:2px solid transparent;font-size:12px;color:var(--rt-muted)}#rt-workspace .viewtab[aria-pressed=true]{color:var(--rt-blue);border-bottom-color:var(--rt-blue);font-weight:600}#rt-workspace .viewtab:hover{color:var(--rt-blue)}#rt-workspace .route-meta{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--rt-muted)}#rt-workspace .notice{padding:10px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--rt-line);font-size:12px;background:var(--rt-warm);color:var(--rt-amber)}#rt-workspace .notice strong{font-weight:500}#rt-workspace .canvasarea{padding:16px 19px 13px}#rt-workspace .canvasmeta{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--rt-muted);font-size:11px;margin-bottom:14px}#rt-workspace .graph{position:relative;isolation:isolate;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(3,75px);gap:16px 18px;min-width:0}#rt-workspace .wires{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:visible}#rt-workspace .wires path{fill:none;stroke:var(--rt-line);stroke-width:1.6}#rt-workspace .wires path.relevant{stroke:var(--rt-blue);stroke-width:1.8}#rt-workspace .node{position:relative;background:var(--rt-panel);border:1px solid var(--rt-line);border-radius:9px;padding:9px 10px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;text-align:left;min-width:0;gap:3px}#rt-workspace .node strong{font-size:13px;font-weight:600}#rt-workspace .node:hover{border-color:var(--rt-blue)}#rt-workspace .node[aria-pressed=true]{border:2px solid var(--rt-blue);background:var(--rt-soft);padding:8px 9px}#rt-workspace .node .nodefooter{display:flex;gap:5px;align-items:center;flex-wrap:wrap;font-size:11px;color:var(--rt-muted)}#rt-workspace .node .stage-status{font-size:11px;color:var(--rt-muted)}#rt-workspace .node .stage-status.open{color:var(--rt-amber)}#rt-workspace .node:before,#rt-workspace .node:after{content:'';position:absolute;width:5px;height:5px;border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:50%;top:calc(50% - 3px)}#rt-workspace .node:before{left:-3px}#rt-workspace .node:after{right:-3px}#rt-workspace .flowcaption{font-size:11px;color:var(--rt-muted);margin-top:13px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}#rt-workspace .artifact-panel{background:var(--rt-panel);border-top:1px solid var(--rt-line)}#rt-workspace .stagehead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 19px;border-bottom:1px solid var(--rt-line);flex-wrap:wrap}#rt-workspace .stageheading{display:flex;align-items:center;gap:9px;flex-wrap:wrap}#rt-workspace .count{background:var(--rt-bg);color:var(--rt-muted);font-size:11px;padding:3px 7px;border-radius:5px}#rt-workspace .stagepicker{display:none}#rt-workspace .artifact-layout{display:grid;grid-template-columns:166px minmax(0,1fr)}#rt-workspace .artifact-list{padding:14px 10px;background:var(--rt-panel);border-right:1px solid var(--rt-line)}#rt-workspace .artifact-list-label{padding:0 8px 9px;font-size:11px;color:var(--rt-muted)}#rt-workspace .artifact-button{width:100%;border:0;background:transparent;border-radius:6px;padding:10px 8px;text-align:left;display:flex;gap:7px;align-items:flex-start;color:var(--rt-muted);font-size:12px;margin-bottom:4px}#rt-workspace .artifact-button svg{margin-top:1px}#rt-workspace .artifact-button[aria-pressed=true]{background:var(--rt-soft);color:var(--rt-blue);font-weight:500}#rt-workspace .artifact-button:hover{background:var(--rt-bg)}#rt-workspace .artifact-button[aria-pressed=true]:hover{background:var(--rt-soft)}#rt-workspace .artifact-body{padding:17px 20px;min-width:0}#rt-workspace .artifact-titlebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}#rt-workspace .artifact-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#rt-workspace .status{font-size:11px;border-radius:5px;padding:3px 7px;background:var(--rt-bg);color:var(--rt-muted);white-space:nowrap}#rt-workspace .status.open{background:var(--rt-warm);color:var(--rt-amber)}#rt-workspace .detailtabs{display:flex;gap:4px;align-items:center}#rt-workspace .detailtab{border:0;background:transparent;color:var(--rt-muted);padding:5px 8px;border-radius:5px;font-size:11px}#rt-workspace .detailtab[aria-pressed=true]{background:var(--rt-bg);color:var(--rt-ink);font-weight:500}#rt-workspace .detailtab:hover{background:var(--rt-soft)}#rt-workspace .artifact-caption{font-size:12px;color:var(--rt-muted);margin:8px 0 17px;max-width:65ch}#rt-workspace .artifact-content{min-height:180px}#rt-workspace .artifact-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:17px;padding-top:11px;border-top:1px solid var(--rt-line);font-size:11px;color:var(--rt-muted)}#rt-workspace .mini-graph{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(2,64px);gap:18px 17px;padding:0;margin:6px 0 12px}#rt-workspace .mini-graph .node{font-size:12px;padding:8px;gap:2px}#rt-workspace .mini-graph .node strong{font-size:12px;font-weight:500}#rt-workspace .mini-graph .node small{font-size:11px;color:var(--rt-muted)}#rt-workspace .mini-graph .node[aria-pressed=true]{padding:7px}#rt-workspace .claimline{padding:9px 11px;border-radius:6px;background:var(--rt-bg);font-size:12px;display:flex;gap:9px;align-items:flex-start}#rt-workspace .claimline strong{font-weight:500;white-space:nowrap}#rt-workspace .claimline span{color:var(--rt-muted)}#rt-workspace .artifact-content table{border-collapse:collapse;width:100%;font-size:12px}#rt-workspace .artifact-content th{text-align:left;font-weight:500;color:var(--rt-muted);padding:7px 9px;border-bottom:1px solid var(--rt-line)}#rt-workspace .artifact-content td{padding:10px 9px;border-bottom:1px solid var(--rt-line);vertical-align:top}#rt-workspace .artifact-content td:first-child{font-weight:500}#rt-workspace .formula{font-family:Cambria,Georgia,serif;font-size:20px;padding:17px;text-align:center;background:var(--rt-bg);border-radius:7px;margin-bottom:13px;overflow-wrap:anywhere}#rt-workspace .mathbox{border:1px solid var(--rt-line);border-radius:8px;background:var(--rt-bg);padding:14px;text-align:center}#rt-workspace .mathbox .math{font-family:Cambria,Georgia,serif;font-size:20px;margin-top:7px}#rt-workspace .mathbox p{font-size:12px;color:var(--rt-muted);margin-top:5px}#rt-workspace .twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:13px}#rt-workspace .bridge-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:11px;background:var(--rt-warm);color:var(--rt-amber);border-radius:6px;font-size:12px;margin-bottom:13px}#rt-workspace .pillrow{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}#rt-workspace .pill{font-size:11px;padding:5px 8px;border:1px solid var(--rt-line);border-radius:5px;color:var(--rt-muted)}#rt-workspace .tree{display:grid;gap:8px}#rt-workspace .treeroot{padding:10px 12px;background:var(--rt-soft);color:var(--rt-blue);border-radius:6px;font-size:12px;font-weight:500}#rt-workspace .treechildren{margin-left:17px;padding-left:16px;border-left:1px solid var(--rt-line);display:grid;gap:8px}#rt-workspace .treeleaf{padding:8px 10px;background:var(--rt-bg);font-size:12px;border-radius:5px;display:flex;justify-content:space-between;gap:8px}#rt-workspace .treeleaf span{color:var(--rt-muted);font-size:11px}#rt-workspace .source-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:13px;padding:12px 0;border-bottom:1px solid var(--rt-line);font-size:12px}#rt-workspace .source-row strong{font-weight:500}#rt-workspace .source-row p{color:var(--rt-muted)}#rt-workspace .source-row .origin{font-size:11px;color:var(--rt-muted)}#rt-workspace pre{font:12px/1.7 Consolas,monospace;background:var(--rt-bg);padding:15px;border-radius:7px;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}#rt-workspace .checkrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 1px;border-bottom:1px solid var(--rt-line);font-size:12px}#rt-workspace .checkrow span{color:var(--rt-muted)}#rt-workspace .blank{padding:23px 10px;text-align:center;color:var(--rt-muted);font-size:12px}#rt-workspace .blank strong{display:block;color:var(--rt-ink);font-weight:500;font-size:14px;margin-bottom:5px}#rt-workspace .catalog{padding:18px 20px;background:var(--rt-panel)}#rt-workspace .catalog-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:15px}#rt-workspace input{padding:8px 10px;border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:7px;font-size:12px;min-width:0;width:210px;max-width:100%}#rt-workspace .catalog-row{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 100px 70px;gap:15px;align-items:center;text-align:left;padding:10px 9px;border:0;border-bottom:1px solid var(--rt-line);background:none;font-size:12px}#rt-workspace .catalog-row:hover{background:var(--rt-soft)}#rt-workspace .catalog-row .filelabel{display:flex;gap:8px;align-items:center;min-width:0}#rt-workspace .catalog-row .kind{color:var(--rt-muted);font-size:11px}#rt-workspace .catalog-labels{color:var(--rt-muted);cursor:default}#rt-workspace .catalog-labels:hover{background:none}#rt-workspace .mobile-nav{display:none}#rt-workspace .mobile-nav summary{font-size:12px;cursor:pointer}#rt-workspace .mobile-nav p{padding-top:8px;font-size:12px;color:var(--rt-muted)}#rt-workspace .preview-footer{padding:11px 19px;border-top:1px solid var(--rt-line);font-size:11px;color:var(--rt-muted);display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}#rt-workspace .no-navigation .shell,#rt-workspace.no-navigation .shell,#rt-workspace.focused .shell{grid-template-columns:minmax(0,1fr)}#rt-workspace.no-navigation .rail,#rt-workspace.focused .rail{display:none}#rt-workspace.focused .canvasarea,#rt-workspace.focused .notice{display:none}#rt-workspace.focused .stagepicker{display:flex;gap:6px;align-items:center}#rt-workspace.focused .artifact-content{min-height:300px}#rt-workspace.focused .artifact-layout{grid-template-columns:190px minmax(0,1fr)}#rt-workspace .timeline{display:flex;align-items:center;gap:7px;padding:18px 4px 15px}#rt-workspace .timeline .end{font-size:12px;white-space:nowrap}#rt-workspace .timeline .interval{flex:1;min-width:60px;height:36px;border-bottom:1px solid var(--rt-muted);position:relative;text-align:center;font-family:Cambria,Georgia,serif;font-size:17px}#rt-workspace .timeline .interval:before,#rt-workspace .timeline .interval:after{content:'';position:absolute;bottom:-4px;width:1px;height:8px;background:var(--rt-muted)}#rt-workspace .timeline .interval:before{left:0}#rt-workspace .timeline .interval:after{right:0}
@@ -79,8 +93,207 @@
 #rt-workspace .av-reference{margin-top:7px;color:var(--rt-blue);font-size:13px}#rt-workspace .help-item[open]>.stack{padding-top:12px}#rt-workspace .field input[type="text"]{padding:8px 10px}
 #rt-workspace .rail-chevron{font:24px/1 'Segoe UI',sans-serif}#rt-workspace .navrow{font-size:14px}#rt-workspace .project-nav .navrow{font-size:13px;color:var(--rt-ink)}#rt-workspace .project-nav .navrow.active{color:var(--rt-blue)}
 #rt-workspace math{font-family:'Cambria Math',math,serif;color:var(--rt-ink)}#rt-workspace math[display="block"]{margin:0 auto}
+#rt-workspace .project-form{max-width:640px}#rt-workspace .project-form input{padding:10px 12px;border:1px solid var(--rt-line);border-radius:7px;background:var(--rt-panel)}#rt-workspace .project-entry h2,#rt-workspace .breadcrumb button{overflow-wrap:anywhere}
 </style>
-</head>
+<script src="./vendor/jszip/jszip.min.js"></script><script src="./document-reader.js"></script><script src="./argument-audit.js"></script><script src="./evidence-ledger.js"></script><script src="./derivation-view.js"></script><script src="./reasoning-skills.js"></script>
+<style>
+#rt-workspace #av-input-form{align-content:start;gap:16px}.scope-dialog{max-width:min(480px,85vw);border:1px solid #a5aaba;border-radius:10px;padding:22px;font:15px/1.55 system-ui}#rt-workspace .reuse-note{font-size:13px;border-left:2px solid var(--rt-line);padding-left:10px;margin:.35em 0 .6em 1.4em;color:var(--rt-muted)}#rt-workspace .reuse-note summary{cursor:pointer}#rt-workspace .reuse-note code{overflow-wrap:anywhere}#rt-workspace .msa-entry+.msa-entry{margin-top:.7em}#rt-workspace .ir-page{max-width:1000px}#rt-workspace .ir-section{display:grid;gap:10px}#rt-workspace .ir-item{border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:8px;padding:14px 18px;line-height:1.6}#rt-workspace .ir-item>div,#rt-workspace .ir-item>details{margin-top:6px}#rt-workspace .ir-item h3{font-size:15px}#rt-workspace .ir-item pre{white-space:pre-wrap}#rt-workspace .ir-declaration small{overflow-wrap:anywhere}#rt-workspace .ir-bound{border-left:3px solid var(--rt-blue);padding-left:10px}#rt-workspace .ir-item summary{cursor:pointer}#rt-workspace .source-editor{align-items:start}#rt-workspace .msa-field,#rt-workspace .msa-analysis{border:1px solid var(--rt-line);border-radius:9px;padding:16px;background:var(--rt-panel);min-width:0}#rt-workspace .msa-analysis>.msa-field{border:0;border-radius:0;padding:12px 0 0}#rt-workspace .msa-analysis>.msa-field+.msa-field{margin-top:14px;border-top:1px solid var(--rt-line)}#rt-workspace .msa-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}#rt-workspace .msa-heading h3,#rt-workspace .msa-analysis h3{margin:0}#rt-workspace .msa-field .av-reading{max-width:84ch;font-size:15px;line-height:1.65}#rt-workspace .msa-field .av-reading ul{margin:.5em 0;padding-inline-start:1.4em}#rt-workspace .msa-field .av-reading li{margin:.35em 0}#rt-workspace .msa-field textarea{width:100%;min-height:12rem;margin-top:.6em;font:14px/1.55 ui-monospace,monospace;box-sizing:border-box}#rt-workspace .msa-sources{margin-top:.6em}#rt-workspace .inline-cite{font-size:.85em}#rt-workspace .latex-block{overflow-x:auto}#rt-workspace .source-editor{display:grid;gap:18px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+#openai-dialog{background:Canvas;color:CanvasText;border:1px solid #98a2b3;border-radius:12px;padding:22px;width:min(440px,90vw);max-height:88vh;overflow:auto;font:14px/1.45 system-ui}#openai-dialog::backdrop{background:#10182866}#openai-dialog h2{margin:0 0 16px}#openai-dialog [hidden]{display:none!important}#openai-dialog form,#openai-dialog label{display:grid;gap:6px}#openai-dialog form{gap:12px}#openai-dialog input:not([type=checkbox]),#openai-dialog select{font:inherit;padding:7px;border:1px solid #9ba3b0;border-radius:5px}#openai-dialog label.remember-key,.connection-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}#openai-dialog button{font:inherit;padding:6px 10px;cursor:pointer}#openai-dialog [role=status]{margin:0}#rt-workspace .pdf-sheet{max-height:65vh;overflow:auto;background:#f1f3f5;border:1px solid #d5dbe0;padding:8px}#rt-workspace .pdf-sheet canvas{width:100%;height:auto}#rt-workspace .pdf-preview{display:grid;gap:8px}#rt-workspace .av-reading{line-height:1.65;overflow-wrap:anywhere}#rt-workspace .av-reading p{margin:.45em 0}#rt-workspace .av-plain{white-space:pre-wrap}#rt-workspace .stack>section>.av-reading{max-height:60vh;overflow:auto}#rt-workspace .source-editor>*{min-width:0}#rt-workspace textarea.source-text{width:100%;height:340px;white-space:pre-wrap;font:inherit;color:inherit}
+#rt-workspace .cite{padding:3px 0;background:none;border:0;color:var(--rt-blue);text-decoration:underline;text-align:left}
+.delete-confirm{max-width:min(440px,88vw);padding:22px;border:1px solid #adb5c4;border-radius:12px;background:Canvas;color:CanvasText;font:15px/1.55 system-ui}.delete-confirm::backdrop{background:#10182866}.delete-confirm h2{margin:0;overflow-wrap:anywhere}.delete-confirm footer{display:flex;justify-content:flex-end;gap:10px}.delete-confirm button{font:inherit;padding:6px 12px;border:1px solid #adb5c4;border-radius:7px;cursor:pointer}.delete-confirm [data-confirm]{color:white;background:#a32825;border-color:#a32825}.delete-confirm [role=status]:empty{display:none}#rt-workspace .delete-project{color:#aa3532}
+#rt-workspace .extract-notice{padding:10px 14px;margin:0 0 10px;border-left:3px solid var(--rt-blue);background:var(--rt-panel);overflow-wrap:anywhere}#rt-workspace .extract-notice[role=alert]{border-color:#b56b22}
+#source-dialog{width:min(620px,90vw);background:Canvas;color:CanvasText;border:1px solid GrayText;border-radius:10px;padding:20px}#source-dialog pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:60vh;overflow:auto}
+#rt-workspace .pane-switch{display:none}@media(max-width:740px){#rt-workspace .pane-switch{display:flex;gap:8px}#rt-workspace .source-editor[data-pane="source"] #av-input-form,#rt-workspace .source-editor[data-pane="inputs"]>section{display:none}#rt-workspace .source-editor{grid-template-columns:1fr}#rt-workspace textarea.source-text{height:190px}}
+#rt-workspace .arg-work{max-width:1700px}
+#rt-workspace .arg-layout{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(260px,1fr);gap:20px;align-items:start}
+#rt-workspace .arg-map{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto;gap:clamp(14px,2vw,36px);padding:18px;border:1px solid var(--rt-line);border-radius:8px;background:var(--rt-panel);align-items:start}
+#rt-workspace .arg-map .wires{z-index:0}
+#rt-workspace .arg-map .wires path{stroke:var(--rt-blue)}
+#rt-workspace .arg-lane{display:grid;gap:14px;align-content:start;z-index:1;pointer-events:none;min-width:0}
+#rt-workspace .arg-node{pointer-events:auto;min-width:0;width:100%;display:grid;gap:5px;text-align:left;border:1px solid var(--rt-line);border-radius:6px;background:var(--rt-panel);color:var(--rt-ink);padding:9px 11px;cursor:pointer;font:inherit;line-height:1.35;overflow-wrap:anywhere}
+#rt-workspace .arg-node small,#rt-workspace .arg-detail>small{font-size:11px;font-weight:650;color:var(--rt-muted)}
+#rt-workspace .arg-node[data-status="open"] small{color:#855616}
+#rt-workspace .arg-node[data-status="aligned"] small{color:#14675b}
+#rt-workspace .arg-node[data-near="true"]{border-color:var(--rt-blue)}
+#rt-workspace .arg-node[aria-pressed="true"]{box-shadow:inset 3px 0 var(--rt-blue);background:var(--rt-soft)}
+#rt-workspace .arg-node:hover,#rt-workspace .arg-node:focus-visible{outline:2px solid var(--rt-blue);outline-offset:1px}
+#rt-workspace .arg-detail{background:var(--rt-panel);border:1px solid var(--rt-line);border-radius:8px;padding:18px;min-width:0;overflow-wrap:anywhere}
+#rt-workspace .arg-return{display:none}
+@media(max-width:1150px){#rt-workspace .arg-return{display:inline-flex;margin-top:16px}}
+#rt-workspace .arg-detail h3{margin:6px 0 14px}
+#rt-workspace .arg-detail h4{margin:18px 0 7px}
+#rt-workspace .arg-neighbors{display:grid;justify-items:start;gap:5px}
+#rt-workspace .arg-detail .cite{white-space:normal;text-align:left}
+#rt-workspace .arg-source{padding:7px 0;border-top:1px solid var(--rt-line)}
+#rt-workspace .arg-source summary{cursor:pointer}
+#rt-workspace .arg-formula{overflow-x:auto;padding:5px;max-width:100%}
+@media(max-width:1150px){#rt-workspace .arg-layout{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:620px){#rt-workspace .arg-map{padding:10px;gap:8px}#rt-workspace .arg-node{padding:6px;font-size:12px}#rt-workspace .arg-lane h3{font-size:13px}}
+#rt-workspace .dag-head,#rt-workspace .dag-record article header,#rt-workspace .dag-pair header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#rt-workspace .dag-head{margin:0 0 18px}#rt-workspace .dag-head h2{margin-bottom:3px}
+#rt-workspace .dag-versions,#rt-workspace .dag-tabs{display:flex;align-items:center;gap:6px}
+#rt-workspace .dag-versions [aria-pressed=true],#rt-workspace .dag-tabs [aria-pressed=true],#rt-workspace .dag-record nav [aria-pressed=true]{background:var(--rt-soft);color:var(--rt-blue)}
+#rt-workspace .dag-work{display:grid;grid-template-columns:minmax(0,2fr) minmax(280px,1fr);gap:16px;align-items:start}
+#rt-workspace .dag-twins{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#rt-workspace .dag-side,#rt-workspace #dag-inspector,#rt-workspace .dag-record article{background:var(--rt-panel);border:1px solid var(--rt-line);border-radius:7px;min-width:0;padding:16px}
+#rt-workspace .dag-side>p,#rt-workspace .dag-head span{color:var(--rt-muted);font-size:12px}
+#rt-workspace .dag-canvas{position:relative;padding:4px 19px}
+#rt-workspace .dag-canvas svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+#rt-workspace .dag-canvas path{fill:none;stroke:#8293ac;stroke-width:1.35}
+#rt-workspace .dag-canvas path.active{stroke:var(--rt-blue);stroke-width:2}
+#rt-workspace .dag-level{position:relative;display:grid;grid-auto-columns:minmax(0,1fr);grid-auto-flow:column;gap:5px}
+#rt-workspace .dag-level+.dag-level{margin-top:23px}
+#rt-workspace .dag-short{display:block;min-width:0;overflow-x:auto;line-height:1.5}
+#rt-workspace #dag-inspector{position:sticky;top:12px;max-height:calc(100vh - 30px);overflow:auto}
+#rt-workspace .dag-pair{padding:12px 0;border-top:1px solid var(--rt-line)}
+#rt-workspace .dag-pair dt,#rt-workspace .dag-pair header{font-size:12px;color:var(--rt-muted)}
+#rt-workspace .dag-pair dd{margin:4px 0 9px}
+#rt-workspace .dag-pair[data-match=Gap] header b{color:#855616}#rt-workspace .dag-pair[data-match=Matches] header b{color:#14675b}
+#rt-workspace .dag-record{display:grid;grid-template-columns:minmax(160px,1fr) minmax(0,3fr);gap:16px;margin-top:15px}
+#rt-workspace .dag-record .step-row{padding:9px 7px}#rt-workspace .dag-record article{overflow-wrap:anywhere}
+#rt-workspace .dag-record h4,#rt-workspace #dag-inspector h4{margin:14px 0 6px}
+#rt-workspace .dag-calculations li{padding:4px 0 12px}#rt-workspace .dag-calculations li+li{border-top:1px solid var(--rt-line)}
+#rt-workspace .dag-record .latex-block,#rt-workspace .dag-pair .latex-block{overflow-x:auto;text-align:left}
+#rt-workspace .dag-register{max-width:950px}#rt-workspace .dag-return{display:none}
+@media(max-width:1150px){#rt-workspace .dag-work{grid-template-columns:1fr}#rt-workspace #dag-inspector{position:static;max-height:none}#rt-workspace .dag-return{display:inline-flex}}
+@media(max-width:650px){#rt-workspace .dag-twins,#rt-workspace .dag-record{grid-template-columns:minmax(0,1fr)}#rt-workspace .dag-record nav{max-height:12rem;overflow:auto}}
+#rt-workspace .dag-options{display:grid;gap:4px;margin:6px 0 12px}
+#rt-workspace .dag-options .control{text-align:left;white-space:normal;justify-content:flex-start}
+#rt-workspace .dag-options [aria-pressed=true]{border-color:var(--rt-blue);background:var(--rt-soft)}
+#rt-workspace .skill-bar,.skill-dialog footer,.skill-dialog header{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+#rt-workspace .skill-bar{margin:8px 0 18px}#rt-workspace .skill-bar span{color:var(--rt-muted)}
+#rt-workspace .skill-library{max-width:1120px}
+#rt-workspace .skill-library .av-title{margin:4px 0 14px;display:flex;align-items:center;justify-content:space-between}
+#rt-workspace .skill-library h2{margin:0;font-size:17px}
+#rt-workspace .skill-library>.skill-grid+h2{margin:30px 0 14px}
+#rt-workspace .skill-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,215px),1fr));gap:12px}
+#rt-workspace .skill-card{display:flex;flex-direction:column;align-items:flex-start;min-width:0;min-height:148px;padding:18px;gap:4px;text-align:start;color:var(--rt-ink);background:var(--rt-panel);border:1px solid var(--rt-line);border-radius:12px;cursor:pointer;font:inherit}
+#rt-workspace .skill-card:hover{border-color:var(--rt-blue);background:var(--rt-soft)}
+#rt-workspace .skill-card:focus-visible{outline:2px solid var(--rt-blue);outline-offset:3px}
+#rt-workspace .skill-card-top{display:flex;align-items:center;justify-content:space-between;width:100%;margin-bottom:auto;padding-bottom:14px;color:var(--rt-muted)}
+#rt-workspace .skill-card-icon{color:var(--rt-blue)}
+#rt-workspace .skill-card-icon svg{width:24px;height:24px}
+#rt-workspace .skill-card strong{font-size:17px;line-height:1.25;overflow-wrap:anywhere}
+#rt-workspace .skill-card-stage,.skill-location{font-size:13px;color:var(--rt-muted)}
+.skill-dialog .skill-reading{font-size:15px;line-height:1.6;overflow-wrap:anywhere}
+.skill-dialog .skill-reading h3{margin:18px 0 4px;font-size:15px}
+.skill-dialog .skill-reading p{margin:5px 0 12px}
+@media(max-width:560px){#rt-workspace .skill-grid{grid-template-columns:1fr}#rt-workspace .skill-card{min-height:98px;padding:14px}#rt-workspace .skill-card-top{padding-bottom:6px}}
+
+.skill-dialog{width:min(600px,90vw);max-height:85vh;overflow:auto;background:Canvas;color:CanvasText;border:1px solid #a2aabd;border-radius:9px;padding:20px;font:14px/1.5 "Segoe UI",sans-serif}.skill-dialog::backdrop{background:#18253366}.skill-dialog header{justify-content:space-between}.skill-dialog h2{margin:0}.skill-dialog label{display:grid;gap:4px;margin:10px 0}.skill-dialog fieldset{margin:0;padding:0;border:0}.skill-dialog input,.skill-dialog textarea,.skill-dialog select,.skill-dialog button{font:inherit;color:inherit;background:Canvas;border:1px solid #98a2b3;border-radius:5px;padding:6px 9px}.skill-dialog textarea{resize:vertical}.skill-dialog button,.skill-dialog summary{cursor:pointer}.skill-dialog footer{margin-top:16px}.skill-dialog .trial-box{margin-top:12px}.skill-dialog .trial-output{max-height:34vh;overflow:auto}.skill-dialog [hidden]{display:none}.skill-status:empty{display:none}.skill-dialog small{color:#637187}.skill-dialog [disabled]{opacity:.75}
+#rt-workspace .focus-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr) minmax(165px,.58fr);align-items:start;gap:1px;background:var(--rt-line);border:1px solid var(--rt-line);border-radius:9px;overflow:hidden}
+#rt-workspace .focus-layout>section,#rt-workspace .focus-layout>aside{min-width:0;padding:clamp(16px,1.6vw,28px);background:var(--rt-panel);align-self:stretch}
+#rt-workspace .focus-layout h3{font-size:14px;margin:0 0 18px}#rt-workspace .focus-layout h2{font-size:18px;line-height:1.4;margin:14px 0}
+#rt-workspace .goal-picker{display:grid;gap:4px;max-width:100%}#rt-workspace .goal-picker span,.dependency-column small{font-size:12px;color:var(--rt-muted)}
+#rt-workspace .goal-picker select{width:100%;min-width:0;text-overflow:ellipsis;padding:7px;border:1px solid var(--rt-line);border-radius:5px;background:var(--rt-panel);color:var(--rt-ink)}
+#rt-workspace .lemma-options{display:flex;flex-wrap:wrap;gap:5px}#rt-workspace .lemma-options button{padding:5px 11px;border-radius:5px;font:inherit;cursor:pointer;color:var(--rt-ink);border:1px solid var(--rt-line);background:var(--rt-panel)}
+#rt-workspace .lemma-options [aria-pressed=true]{background:var(--rt-blue);border-color:var(--rt-blue);color:white}
+#rt-workspace .focus-layout details{padding:7px 0}#rt-workspace .focus-layout summary{cursor:pointer}
+#rt-workspace .focus-layout .latex-block,#rt-workspace .focus-layout pre{overflow-x:auto;max-width:100%;padding:5px 0}
+#rt-workspace .goal-math{margin:16px 0}#rt-workspace .align-label{margin-top:14px}
+#rt-workspace .align-label b{font-size:12px;color:#385d79}#rt-workspace .align-label [data-match=Gap]{color:#855616}#rt-workspace .align-label [data-match=Matches]{color:#14675b}
+#rt-workspace .local-check{margin-top:18px;border-top:1px solid var(--rt-line);padding-top:12px}
+@media(max-width:1000px){#rt-workspace .focus-layout{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}#rt-workspace .dependency-column{grid-column:1/-1}}
+@media(max-width:620px){#rt-workspace .focus-layout{grid-template-columns:minmax(0,1fr)}}
+#rt-workspace .workflow-controls{margin-bottom:14px}#rt-workspace .workflow-controls summary{cursor:pointer}#rt-workspace .align-label b{display:inline-block;margin-right:5px;padding:1px 6px;border-radius:4px;background:var(--rt-soft)}#rt-workspace .focus-layout>.dependency-column{text-align:center}#rt-workspace .proof-receipt{font-size:13px}
+#rt-workspace .network-scroll{min-width:0;overflow-x:auto}
+#rt-workspace .network-scroll svg{display:block;width:100%;height:auto;margin:auto}
+#rt-workspace .near-network svg{max-width:225px;min-width:140px}
+#rt-workspace .full-network svg{max-width:880px;min-width:610px}
+#rt-workspace .network-scroll .dep-edge{stroke:#6c7991;stroke-width:1.45;fill:none}
+#rt-workspace .map-link{stroke:#8495ac;stroke-dasharray:5 4;stroke-width:1.3;fill:none}
+#rt-workspace .map-link.active{stroke:#4356ce;stroke-width:2.4}
+#rt-workspace .map-node{cursor:pointer;outline:none}
+#rt-workspace .map-node circle{fill:var(--rt-panel);stroke:#8693a9;stroke-width:1.4}
+#rt-workspace .map-node.forward circle{fill:#eff8f6;stroke:#418177}
+#rt-workspace .map-node.active circle{fill:#394cca;stroke:#394cca}
+#rt-workspace .map-node.active.forward circle{fill:#22695f;stroke:#22695f}
+#rt-workspace .map-node:focus circle,#rt-workspace .map-node:hover circle{stroke:var(--rt-ink);stroke-width:3}
+#rt-workspace .map-id,#rt-workspace .map-heading{text-anchor:middle;fill:var(--rt-ink);font:600 11px system-ui}
+#rt-workspace .map-node.active .map-id{fill:white}
+#rt-workspace .map-title,#rt-workspace .map-heading{font:12px system-ui;fill:var(--rt-ink)}
+#rt-workspace .map-key,#rt-workspace .run-totals{display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px;font-size:12px}
+#rt-workspace .map-key{justify-content:center;color:var(--rt-muted);margin:10px 0}
+#rt-workspace .map-key span{white-space:nowrap}
+#rt-workspace .map-key i{display:inline-block;width:17px;vertical-align:middle;border-top:2px solid #78869d;margin-right:5px}
+#rt-workspace .map-key span+span i{border-top-style:dashed}
+#rt-workspace .run-overview{margin-top:16px;border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:9px;padding:clamp(14px,2vw,28px);min-width:0}
+#rt-workspace .run-overview header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap}
+#rt-workspace .run-overview h3{margin:0;font-size:16px}
+#rt-workspace .run-overview p{margin:3px 0 10px}
+#rt-workspace .run-totals{margin-bottom:10px;color:var(--rt-muted)}
+#rt-workspace .run-totals b{color:var(--rt-ink)}
+#rt-workspace .map-formats button,#rt-workspace .run-totals button{font:inherit;cursor:pointer;background:var(--rt-panel);color:var(--rt-ink);border:1px solid var(--rt-line);border-radius:5px;padding:4px 8px}
+#rt-workspace .map-formats button[aria-pressed=true],#rt-workspace .run-totals button[aria-pressed=true]{background:var(--rt-soft);border-color:var(--rt-blue)}
+#rt-workspace .map-node.muted{opacity:.42}
+@media(max-width:620px){
+  #rt-workspace .full-network{overflow:hidden}
+  #rt-workspace .full-network svg{min-width:0;max-width:none;width:210%;margin-left:-55%}
+  #rt-workspace .full-network .map-title{display:none}
+}
+#rt-workspace .map-formats{display:flex;gap:4px}
+#rt-workspace .paper-flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:16px}
+#rt-workspace .paper-flow button{position:relative;display:grid;text-align:left;gap:7px;padding:14px;color:var(--rt-ink);background:var(--rt-panel);border:1px solid var(--rt-line);border-radius:8px;cursor:pointer;font:inherit}
+#rt-workspace .paper-flow small{color:var(--rt-muted)}#rt-workspace .paper-flow button:focus-visible,#rt-workspace .paper-flow button:hover{border-color:var(--rt-blue)}
+#rt-workspace .help-item pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:26rem;overflow:auto}
+@media(min-width:1200px){#rt-workspace .paper-flow{grid-template-columns:repeat(4,minmax(0,1fr))}#rt-workspace .paper-flow button+button::before{content:'→';position:absolute;left:-15px;top:50%;transform:translateY(-50%);color:var(--rt-muted);pointer-events:none}}
+#rt-workspace .audit-summary{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 20px;background:var(--rt-panel);border:1px solid var(--rt-line);border-left:3px solid var(--rt-blue);border-radius:8px}
+#rt-workspace .audit-summary h3,#rt-workspace .audit-dimension h3{margin:0}
+#rt-workspace .audit-summary p,#rt-workspace .audit-dimension p{margin:6px 0}
+#rt-workspace .audit-dimensions{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px}
+#rt-workspace .audit-dimension{padding:16px;border:1px solid var(--rt-line);background:var(--rt-panel);border-radius:8px;min-width:0;overflow-wrap:anywhere}
+#rt-workspace .audit-dimension header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:5px}
+/* Make the paper review scannable at desktop and mobile widths. */
+#rt-workspace #av-module-page:has(#av-file, #av-input-form) .pagehead h1 {
+  font-size: clamp(1.75rem, 2.4vw, 2.125rem);
+  font-weight: 650;
+  line-height: 1.2;
+}
+#rt-workspace #av-input-form > h2 {
+  font-size: clamp(1.5rem, 2vw, 1.75rem);
+  line-height: 1.25;
+  font-weight: 650;
+  margin: 0;
+}
+#rt-workspace #av-input-form .msa-heading h3,
+#rt-workspace #av-input-form .msa-analysis > h3 {
+  font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--rt-blue);
+}
+#rt-workspace #av-input-form .msa-analysis .msa-heading h3 {
+  font-size: 1.1875rem;
+  color: var(--rt-ink);
+}
+#rt-workspace #av-input-form [data-msa-field="goal"] .msa-heading h3 {
+  font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+  color: light-dark(#14675b, #91decb);
+}
+#rt-workspace #av-input-form .msa-heading {
+  margin-block-end: 0.5rem;
+}
+
+#rt-workspace #av-input-form [data-msa-field="goal"] {
+  border-inline-start: 4px solid light-dark(#14675b, #91decb);
+}
+#rt-workspace #paper-target {
+  width: 100%; min-width: 0; box-sizing: border-box;
+  font: inherit; font-weight: 600; margin-block: .25rem .5rem;
+}
+#rt-workspace .review-details {border-top: 1px solid var(--rt-line); padding-top: .8rem;}
+#rt-workspace .review-details summary {cursor: pointer;}
+#rt-workspace .review-details details {margin: .75rem 0 .5rem 1rem;}
+#rt-workspace .review-details .av-reading {max-width: 78ch;}
+#rt-workspace .step-sentence {max-width:65ch;line-height:1.55;}
+#rt-workspace .step-reading .goal-math {overflow-x:auto;padding-block:.5rem;}
+#rt-workspace .reading-symbol {cursor:pointer;text-decoration:underline dotted;text-underline-offset:.18em;}
+#rt-workspace .reading-symbol:is(:hover,:focus-visible) {background:var(--rt-panel);color:var(--rt-blue);outline:1px solid currentColor;}
+.symbol-dialog h2 {margin:0;}
+.workflow-page {max-width:76rem;}
+.workflow-page .av-reading {max-width:78ch;}
+.workflow-page select {font:inherit;}
+</style></head>
 <body>
 <div id="rt-workspace" aria-label="AutoVISA research workspace">
   <div class="shell">
@@ -124,7 +337,7 @@
   /** @type {Array<Array<string>>} Directed artifact dependencies, not mathematical implications. */
   const flowEdges = [['context','forward'],['context','backward'],['forward','alignment'],['backward','alignment'],['alignment','bridges'],['bridges','proof'],['proof','check']];
   /** @type {Object} Presentation state: page and per-module views, route selection, local input drafts and display preferences. */
-  const state = {page:'projects',stage:'forward',artifact:0,detail:'preview',view:'workflow',route:'independent',focus:false,navHidden:false,query:'',claim:'workload',documentTab:'pdf',modelTab:'model',verificationTab:'status',resourceTab:'libraries',runTab:'summary',settingsTab:'general',latex:'A_j(r_j,d_j) \\ge C_j',inputDraft:{model:'',analysis:'',goal:''},appearance:'system'};
+  const state = {page:'projects',stage:'forward',artifact:0,detail:'preview',view:'workflow',route:'independent',focus:false,navHidden:false,query:'',claim:'workload',documentTab:'pdf',modelTab:'model',verificationTab:'status',resourceTab:'skills',runTab:'summary',settingsTab:'general',latex:'A_j(r_j,d_j) \\ge C_j',inputDraft:{model:'',assumptions:'',analysis:'',goal:''},appearance:'system'};
   /** @type {ResizeObserver|null} Observer keeping vector connectors attached to actual node positions. */
   let diagramObserver = null;
   /** @type {Object<string,Array<string>>} Page titles and navigation icons. */
@@ -134,32 +347,111 @@
     documents:['Documents','files'],
     modeling:['Modeling','sliders-horizontal'],
     derivation:['Derivation','workflow'],
-    verification:['Verification','shield-check'],
+    verification:['Proof','shield-check'],
+    'expert-audit':['Expert audit','shield-check'],
     runs:['Runs','history'],
     resources:['Resources','library'],
     settings:['Settings','settings'],
     help:['Help','circle-help']
   };
   /** @type {Array<string>} Modules scoped to the selected project, nested under Projects. */
-  const projectPages=['overview','documents','modeling','derivation','verification','runs'];
+  const projectPages=['overview','documents','modeling','derivation','verification','expert-audit','runs'];
   /** @type {string} Local notification text; never interpreted as backend confirmation. */
   let feedback='';
   /** @type {Object<string,string>} Reviewable fields shared by manual input, snapshots and comparisons. */
-  const inputFields={model:'Model',analysis:'Analysis',goal:'Goal'};
+  const inputFields={model:'System model',assumptions:'Assumptions',analysis:'Analysis method',goal:'Proof target'};
   /** @type {Object<string,string>} Optional paper locators attached to individual input fields. */
-  const referenceFields={modelRef:'Model reference',analysisRef:'Analysis reference',goalRef:'Goal reference'};
+  const referenceFields={modelRef:'Model reference',assumptionsRef:'Assumptions reference',analysisRef:'Analysis reference',goalRef:'Goal reference'};
   /** @type {Object} Fixed parent record; switching the diagram view never edits this record. */
   const exampleRun={id:3,parent:null,route:'independent',source:'case_11 scope',note:'',model:'Integer time. Independent sporadic tasks on one preemptive DM processor, with a fixed tie order and an empty initial system. Each job executes at most C, with 0 < C ≤ D ≤ T. No blocking, self-suspension or scheduling overhead.',analysis:'Accept when every task passes the iterative deadline test.',goal:'For every legal release trace, every job finishes by its deadline if the test accepts.'};
-  Object.assign(state,{records:[],draftRefs:{},activeId:3,draftParent:3,draftRoute:'independent',reviewing:false,draftStarted:false,draftNote:'',draftSource:'Manual input'});
+  Object.assign(state,{paperReview:null,records:[],draftRefs:{},activeId:3,draftParent:3,draftRoute:'prosa',reviewing:false,draftStarted:false,draftNote:'',draftSource:'Manual input'});
+  /** @type {Object} Defaults used to isolate drafts, selections and history on project switches. */
+  const defaults=structuredClone(state);
+  /** @type {Array<Object>} Each project owns its metadata and last workspace snapshot. */
+  let projects=[{id:'example',name:'case_11',description:'Deadline guarantee under DM scheduling',workspace:null}];
+  /** @type {Object} Active project, also used when opening project-level navigation. */
+  let project=projects[0];
+  /** @type {boolean} Creation is a separate view of the project directory. */
+  let creating=false;
+  /** @type {Object} Initial values for a project with no run yet. */
+  const blank={id:0,parent:null,route:'prosa',source:'Manual input',note:'',model:'',assumptions:'',analysis:'',goal:''};
+  /** @returns {boolean} Whether the project contains the illustrated case study. */
+  function isExample(){return project.id==='example';}
+  /** @param {Object} next Destination project. @returns {void} */
+  function openProject(next){
+    if(project!==next){
+      reading++;readStatus='';
+      project.workspace=structuredClone(state);project=next;
+      const appearance=state.appearance;
+      Object.assign(state,structuredClone(defaults),{activeId:isExample()?3:0,draftParent:isExample()?3:0,documentTab:'manual'});
+      restore(next.workspace&&{...next.workspace,designVersion:4});
+      state.appearance=appearance;
+    }
+    navigate('overview');
+  }
+  /** @returns {string} Project list or the project metadata form. */
+  function projectDirectory(){
+    if(creating)return `<form id="project-form" class="stack project-form"><label class="field">Project name<input name="projectName" required maxlength="100" autocomplete="off" placeholder="e.g. Sporadic task analysis"></label><label class="field">Description (optional)<textarea name="description" maxlength="500" placeholder="What will you analyze?"></textarea></label><div class="action-row"><button type="submit" class="control primary">Create project</button>${pageLink('projects','Cancel')}</div></form>`;
+    if (!projects.length) return '<p>No projects yet.</p>';
+    return projects.map(item=>`<div class="project-entry"><div><h2>${esc(item.name)}</h2>${item.description?`<p>${esc(item.description)}</p>`:''}</div><div class="action-row"><button class="control" type="button" data-project="${esc(item.id)}">Open project</button><button class="control delete-project" type="button" data-delete-project="${esc(item.id)}" aria-label="Delete ${esc(item.name)}">Delete</button></div></div>`).join('');
+  }
+  /** @param {string} id Immutable project ID. Deleted IDs keep stale tabs from restoring content. */
+  function wasDeleted(id){return localStorage.getItem('autovisa.removed.'+id)==='1';}
+
+  /** @param {Object} target Exact project selected in the directory. */
+  function confirmProjectDeletion(target){
+    if(!target)return;
+    const dialog=document.createElement('dialog');
+    dialog.className='delete-confirm';
+    dialog.setAttribute('aria-labelledby','delete-project-title');
+    dialog.innerHTML='<h2 id="delete-project-title"></h2><p>This permanently deletes the project’s imported copies, drafts, runs, proof evidence, audit results and logs.</p><p role="status" aria-live="polite"></p><footer><button type="button" data-cancel autofocus>Cancel</button><button type="button" data-confirm>Delete project</button></footer>';
+    dialog.querySelector('h2').textContent='Delete '+target.name+'?';
+    const cancel=dialog.querySelector('[data-cancel]'),confirm=dialog.querySelector('[data-confirm]');
+    cancel.onclick=()=>dialog.close();
+    dialog.oncancel=event=>{if(confirm.disabled)event.preventDefault();};
+    dialog.onclose=()=>dialog.remove();
+    confirm.onclick=async()=>{
+      confirm.disabled=cancel.disabled=true;
+      const status=dialog.querySelector('[role=status]');
+      status.textContent='Deleting project…';
+      try{
+        const result=await modelRequest('delete-project',{project:target.id});
+        if(result.deleted!==true)throw Error('Project deletion was not confirmed by the local service.');
+        const saved=JSON.parse(localStorage.getItem(storageKey));
+        const directory=saved?.projects||projects;
+        const copies=new Set([...(target.documents||[]),...(directory.find(p=>p.id===target.id)?.documents||[])].map(doc=>doc.id));
+        for(const other of directory)if(other.id!==target.id)for(const doc of other.documents||[])copies.delete(doc.id);
+        await clearProjectPdfs(target.id,copies);
+        localStorage.setItem('autovisa.removed.'+target.id,'1');
+        const latest=JSON.parse(localStorage.getItem(storageKey));
+        const remaining=(latest?.projects||projects).filter(item=>!wasDeleted(item.id));
+        const current=remaining.find(item=>item.id===(latest?.current||project.id))||remaining[0];
+        localStorage.setItem(storageKey,JSON.stringify({projects:remaining,current:current?.id||null}));
+        location.replace(location.pathname+'?view=projects');
+      }catch(error){
+        status.textContent=error.message+' You can retry deletion.';
+        confirm.disabled=cancel.disabled=false;
+      }
+    };
+    document.body.append(dialog);dialog.showModal();
+  }
+  // Drop transient proof caches and stop polling when another tab removes a project.
+  window.addEventListener('storage',event=>{
+    if(event.key?.startsWith('autovisa.removed.')&&projects.some(item=>'autovisa.removed.'+item.id===event.key)){
+      location.replace(location.pathname+'?view=projects');
+    }
+  });
+
   /** Return an immutable input snapshot by resolving the changes against its parent.
    * @param {number} id Run identifier.
    * @returns {Object} Frozen input, source and route for this record.
    */
   function recordFor(id){
-    if(id===3)return exampleRun;
+    if(isExample()&&id===3)return exampleRun;
+    if(!id)return blank;
     /** @type {Object} Stored changes for this run. */
     const entry=state.records.find(item=>item.id===id);
-    return entry?{...recordFor(entry.parent),...entry}:exampleRun;
+    return entry?{...recordFor(entry.parent),...entry}:blank;
   }
   /** @param {number} id Run number. @returns {string} Display name. */
   function runName(id){return 'Run '+String(id).padStart(2,'0');}
@@ -175,12 +467,13 @@
     /** @type {Object} Historical parent of the new working copy. */
     const parent=recordFor(state.activeId);
     state.draftParent=parent.id;state.draftRoute=parent.route;state.draftSource=parent.source;state.draftNote='';
-    state.inputDraft=Object.fromEntries(Object.keys(inputFields).map(key=>[key,parent[key]]));
+    state.paperReview=parent.paperReview?structuredClone(parent.paperReview):null;
+    state.inputDraft=Object.fromEntries(Object.keys(inputFields).map(key=>[key,parent[key]||'']));
     state.draftRefs=Object.fromEntries(Object.keys(referenceFields).map(key=>[key,parent[key]||'']));
     state.draftStarted=true;
   }
   /** @param {Object} parent Frozen parent. @param {Object} child Compared snapshot. @returns {Array<Array<string>>} Current parent-to-draft field changes without inferred analysis. */
-  function changesBetween(parent,child){return Object.entries({...inputFields,...referenceFields,route:'Route',source:'Source',note:'Revision note'}).filter(([key])=>(parent[key]||'')!==(child[key]||'')).map(([key,label])=>[label,key==='route'?routeName(parent[key]):parent[key]||'—',key==='route'?routeName(child[key]):child[key]||'—']);}
+  function changesBetween(parent,child){return Object.entries({...inputFields,...referenceFields,route:'Route',source:'Source',note:'Revision note'}).filter(([key])=>(parent[key]||'')!==(child[key]||'')).map(([key,label])=>[label,key==='route'?routeName(parent[key]):citation(parent[key])?.label||parent[key]||'—',key==='route'?routeName(child[key]):citation(child[key])?.label||child[key]||'—']);}
   /** @returns {Object} Input snapshot currently under review. */
   function workingCopy(){
     /** @type {Object<string,string>} Explicit empty locators remove inherited references after changing a paper. */
@@ -210,9 +503,9 @@
   /** Typeset newly rendered expressions; a malformed formula cannot disable navigation.
    * @returns {void}
    */
-  function renderMath(){
+  function renderMath(scope=root){
     if(!window.katex)return;
-    root.querySelectorAll('[data-tex]:not([data-typeset])').forEach(element=>{
+    (scope?.querySelectorAll?scope:root).querySelectorAll('[data-tex]:not([data-typeset])').forEach(element=>{
       try{
         window.katex.render(element.dataset.tex,element,{displayMode:element.dataset.display==='true',output:'mathml',throwOnError:true,trust:false,strict:'ignore'});
         element.dataset.typeset='true';
@@ -222,6 +515,7 @@
         element.insertAdjacentHTML('beforeend','<span class="section-note"> — Check LaTeX syntax</span>');
       }
     });
+    argumentReader.bindSymbols(scope?.querySelectorAll?scope:root);
   }
   /** Build a navigation control with the current page exposed to assistive technology.
    * @param {string} id Page identifier.
@@ -256,69 +550,634 @@
   function pageLink(page,label,primary=false){
     return `<button type="button" class="control ${primary?'primary':''}" data-page="${page}">${label}${icon('arrow-right')}</button>`;
   }
+
+  /** @type {number} Generation of the most recent local import. */
+  let reading=0;
+  /** @type {string} Reader progress or actionable error. */
+  let readStatus='';
+  /** @type {string} Visible side of the review editor on small screens. */
+  let inputPane='source';
+  /** @returns {Object|undefined} Active source inside this project. */
+  function selectedDocument(){return project.documents?.find(doc=>doc.id===project.selectedDocument);}
+  /** @param {string} ref Immutable document and selection offsets. @returns {Object|null} Citation details. */
+  function citation(ref){
+    const [id,a,b]=String(ref||'').split(':');
+    const doc=project.documents?.find(item=>item.id===id);
+    if(!doc||!b)return null;
+    const start=Number(a),end=Number(b);
+    let pos=0,first=1,last=1;
+    doc.units.forEach((text,i)=>{if(pos<=start)first=i+1;if(pos<end)last=i+1;pos+=text.length+1;});
+    return {doc,start,end,label:doc.name+' · '+doc.unit+' '+first+(last!==first?'–'+last:'')};
+  }
+  /** @param {string} ref Citation or legacy typed location. @param {boolean} flat Whether the caller already groups the source links. @returns {string} Clickable source label. */
+  function citeLink(ref,flat=false){
+    if(typeof ref==='string'&&ref.startsWith('msa:'))return (flat?'':'<details class="msa-sources"><summary>Sources ('+ref.slice(4).split('|').length+')</summary>')+ref.slice(4).split('|').map(pair=>{const [index,location]=pair.split('=');const item=citation(location);return item?`<button type="button" class="cite" data-cite="${esc(location)}" title="${esc(item.label)}">[${esc(index)}] ${esc(item.label.slice(item.doc.name.length+3))}</button>`:'';}).join(' ')+(flat?'':'</details>');
+    const hit=citation(ref);
+    return hit?`<button type="button" class="cite" data-cite="${esc(ref)}">${esc(hit.label)}</button>`:esc(ref||'');
+  }
+  /** @param {string} ref Saved citation to open without changing the workspace. */
+  function showSource(ref){
+    const hit=citation(ref);if(!hit)return;
+    const text=hit.doc.units.join('\n'),dialog=document.createElement('dialog');
+    dialog.id='source-dialog';
+    dialog.innerHTML=`<h2>${esc(hit.label)}</h2><pre>${esc(text.slice(0,hit.start))}<mark>${esc(text.slice(hit.start,hit.end))}</mark>${esc(text.slice(hit.end))}</pre><button type="button">Close</button>`;
+    document.body.append(dialog);dialog.querySelector('button').onclick=()=>dialog.close();
+    dialog.onclose=()=>dialog.remove();dialog.showModal();dialog.querySelector('mark').scrollIntoView({block:'center'});
+  }
+  /** @returns {string} Input chooser, document preview and editable fields. */
+  /** Render headings, paragraphs, lists, emphasis and delimited LaTeX without interpreting raw HTML.
+   * @param {string} source User-authored Markdown with optional inline and display math.
+   * @returns {string} Escaped reading view; the underlying source remains editable verbatim.
+   */
+  function markdownView(source,ref=''){
+    /** Numbered exact passages belonging to this field, independent of other MSA fields. */
+    const anchors=new Map(String(ref).startsWith('msa:')?ref.slice(4).split('|').map(pair=>pair.split('=')):[]);
+    const equations=[];
+    const token='\u0000';
+    const prose=String(source??'').replaceAll(token,'').replace(/\\\[([\s\S]*?)\\\]/g,(_,tex)=>'$$'+tex+'$$').replace(/\\\(([\s\S]*?)\\\)/g,(_,tex)=>'$'+tex+'$').replace(/\$\$([\s\S]+?)\$\$|\$([^\n$]+?)\$/g,(_,block,inline)=>{
+      const index=equations.push(math(block??inline,block!==undefined))-1;
+      return (block!==undefined?'\n\n':'')+token+index+token+(block!==undefined?'\n\n':'');
+    });
+    /** @param {string} line Plain Markdown prose with protected equation tokens. */
+    function inlineText(line){
+      return esc(line).replace(/\*\*([^*\n]+)\*\*/g,'<strong>$1</strong>').replace(/`([^`\n]+)`/g,'<code>$1</code>').replace(/\[(\d+)\](?=(?:\s*\[\d+\])*\s*$)/g, (label,index)=>{
+        const location=anchors.get(index),hit=location&&citation(location);
+        return hit?`<button type="button" class="cite inline-cite" data-cite="${esc(location)}" title="${esc(hit.label)}" aria-label="Source ${index}, ${esc(hit.label)}">${label}</button>`:label;
+      }).replace(/\u0000(\d+)\u0000/g,(_,index)=>equations[Number(index)]);
+    }
+    const output=[];let paragraph=[],items=[];
+    function flush(){if(paragraph.length)output.push('<p>'+inlineText(paragraph.join(' '))+'</p>');if(items.length)output.push('<ul>'+items.join('')+'</ul>');paragraph=[];items=[];}
+    for(const line of prose.split(/\r?\n/)){
+      const heading=line.match(/^#{1,6}\s+(.+)/),item=line.match(/^\s*[-*+]\s+(.+)/);
+      if(!line.trim()){flush();continue;}
+      if(heading){flush();output.push('<h3>'+inlineText(heading[1])+'</h3>');continue;}
+      if(item){if(paragraph.length)flush();items.push('<li>'+inlineText(item[1])+'</li>');continue;}
+      if(items.length)flush();paragraph.push(line.trim());
+    }
+    flush();return '<div class="av-reading">'+output.join('')+'</div>';
+  }
+
+  /** Remember each document's current page while switching between reading and editing. */
+  const sourcePages=new Map();
+  /** @param {Object} doc Local source document. @returns {string} Original-page reader or formatted text. */
+  function documentPreview(doc){
+    if(doc.unit!=='Page'){
+      if(/\.(md|markdown)$/i.test(doc.name))return markdownView(doc.units.join('\n'));
+      return '<div class="av-reading av-plain">'+doc.units.map(esc).join(doc.unit==='Paragraph'?'\n\n':'\n')+'</div>';
+    }
+    const current=sourcePages.get(doc.id)||1;
+    return `<div class="pdf-preview"><div class="action-row"><button class="control" type="button" data-turn="-1" ${current===1?'disabled':''}>Previous</button><strong>Page ${current} of ${doc.units.length}</strong><button class="control" type="button" data-turn="1" ${current===doc.units.length?'disabled':''}>Next</button></div><div class="pdf-sheet"><span role="status">Loading original page…</span><canvas hidden aria-label="Original PDF page ${current}" role="img"></canvas></div></div>`;
+  }
+  /** @type {boolean} Prevent duplicate provider requests and keep pending work bound to its source. */
+  const generating=new Set();
+  /** @param {object} doc Selected document. @returns {string} Action-local extraction feedback. */
+  function extractionNotice(doc){
+    if(generating.has(doc))return '<p class="extract-notice" role="status">Extracting contributions and locating source passages…</p>';
+    return doc?.extractionError?'<p class="extract-notice" role="alert"><strong>Extraction stopped.</strong> '+esc(doc.extractionError)+'</p>':'';
+  }
+  /** @param {string} route Local API action. @param {Object} [payload] Posted request body. */
+  async function modelRequest(route,payload){
+    const response=await fetch('/api/openai/'+route,{method:payload?'POST':'GET',headers:payload?{'Content-Type':'application/json'}:{},body:payload?JSON.stringify(payload):undefined});
+    const result=await response.json().catch(()=>({error:'Restart the local AutoVISA service to enable OpenAI settings.'}));
+    if(!response.ok||result.error)throw Error(result.error||'Local service unavailable.');
+    return result;
+  }
+  /** Open connection settings without losing the current project or document.
+   * @returns {Promise<void>} Resolves after loading the current connection state.
+   */
+  async function connectionDialog(){
+    if(document.querySelector('#openai-dialog'))return;
+    const dialog=document.createElement('dialog');
+    dialog.id='openai-dialog';dialog.setAttribute('aria-labelledby','connection-title');
+    dialog.innerHTML='<h2 id="connection-title">OpenAI connection</h2><p role="status">Loading settings…</p><button type="button" data-close>Close</button>';
+    document.body.append(dialog);dialog.onclose=()=>dialog.remove();dialog.showModal();
+    dialog.onclick=event=>{if(event.target.closest('[data-close]'))dialog.close();};
+    try{
+      let config=await modelRequest('settings');
+      if(!dialog.isConnected)return;
+      dialog.innerHTML=`<h2 id="connection-title">OpenAI connection</h2><form><label>API key<input type="password" name="key" autocomplete="off" spellcheck="false" placeholder="Enter your key"></label><span data-key-status></span>${config.canRemember?'<label class="remember-key"><input type="checkbox" name="keep"> Remember new key on this Windows account</label>':''}<label>Model ID<input name="model" list="api-models" required value="${esc(config.model)}"></label><datalist id="api-models"></datalist><label data-catalog hidden>Available models<select data-available></select></label><label>Reasoning effort<select name="effort">${['default','none','minimal','low','medium','high','xhigh'].map(e=>'<option '+(e===config.effort?'selected':'')+'>'+e+'</option>').join('')}</select></label><details><summary>Organization and project</summary><label>Organization ID (optional)<input name="org" value="${esc(config.organization)}"></label><label>OpenAI project ID (optional)<input name="projectId" value="${esc(config.project)}"></label></details><div class="connection-actions"><button type="submit">Save connection</button><button type="button" data-check>Test model access</button><button type="button" data-models>List models</button></div><p role="status" aria-live="polite"></p><div class="connection-actions"><button type="button" data-close>Done</button><button type="button" data-forget>Forget saved key</button></div></form>`;
+      const form=dialog.querySelector('form'),controls=form.elements,status=form.querySelector('[role=status]');
+      function keyStatus(){
+        form.querySelector('[data-key-status]').textContent=({session:'Key available for this service session.',windows:'Key saved with Windows encryption.',environment:'Using the OPENAI_API_KEY environment variable.'})[config.keySource]||'No key configured.';
+        form.querySelector('[data-forget]').hidden=!['session','windows'].includes(config.keySource);
+        controls.key.placeholder=config.keySource?'Enter a replacement key':'Enter your OpenAI API key';
+      }
+      keyStatus();
+      /** @param {string} action Save form values, optionally check model access or retrieve IDs. */
+      async function applyConnection(action){
+        if(!form.reportValidity())return;
+        const buttons=Array.from(form.querySelectorAll('button'));
+        buttons.forEach(b=>b.disabled=true);status.textContent='Connecting…';
+        try{
+          config=await modelRequest('settings',{key:controls.key.value,remember:Boolean(controls.keep?.checked),model:controls.model.value.trim(),effort:controls.effort.value,organization:controls.org.value.trim(),project:controls.projectId.value.trim(),clear:action==='forget'});
+          controls.key.value='';keyStatus();
+          if(action==='test'){await modelRequest('test',{});status.textContent='Model access confirmed · '+config.model;}
+          else if(action==='models'){
+            const {models}=await modelRequest('models',{});
+            form.querySelector('datalist').replaceChildren(...models.map(id=>new Option(id,id)));
+            const select=form.querySelector('[data-available]');select.replaceChildren(new Option('Choose a model…',''),...models.map(id=>new Option(id,id)));
+            select.onchange=()=>{if(select.value)controls.model.value=select.value;};form.querySelector('[data-catalog]').hidden=false;
+            status.textContent=models.length+' models available. Select a model, then save the connection.';select.focus();
+          }else status.textContent=action==='forget'?'Saved key removed.':'Connection saved.';
+        }catch(error){status.textContent=error.message;}
+        finally{buttons.forEach(b=>b.disabled=false);}
+      }
+      form.onsubmit=event=>{event.preventDefault();applyConnection('save');};
+      form.querySelector('[data-check]').onclick=()=>applyConnection('test');
+      form.querySelector('[data-models]').onclick=()=>applyConnection('models');
+      form.querySelector('[data-forget]').onclick=()=>applyConnection('forget');
+    }catch(error){dialog.querySelector('[role=status]').textContent=error.message;}
+  }
+  /** @param {Blob} file Original PDF. @returns {Promise<string>} Provider-ready data URL. */
+  function pdfData(file){return new Promise((resolve,reject)=>{
+    const reader=new FileReader();reader.onload=()=>resolve('data:application/pdf;base64,'+String(reader.result).split(',')[1]);reader.onerror=()=>reject(Error('Could not read the original PDF.'));reader.readAsDataURL(file);
+  });}
+  /** @param {object} doc Original document. @param {object[]} items Source-grounded extracted statements. */
+  function citedText(doc,items){
+    const references=[];
+    /** @param {number[]} span Source offsets within this document. @returns {string} Reusable citation number. */
+    function link(span){
+      const locator=doc.id+':'+span[0]+':'+span[1];
+      let index=references.findIndex(pair=>pair.endsWith('='+locator));
+      if(index<0){index=references.length;references.push((index+1)+'='+locator);}
+      return '['+(index+1)+']';
+    }
+    const text=items.map(item=>{
+      const citations=[];
+      if(item.basis)citations.push(link(item.basis));
+      if(item.anchor)citations.push(link(item.anchor));
+      return '- '+item.markdown+' '+([...new Set(citations)].join(' ')||'[verify source]');
+    }).join('\n\n');
+    return {text,ref:references.length?'msa:'+references.join('|'):''};
+  }
+
+  /** @returns {string} Choice of proof root and read-only supporting observations for this draft. */
+  function paperChoices(){
+    const review=state.paperReview;
+    if(!review)return '';
+    const options=[['primary_target','Main targets'],['secondary_target','Other formal results']].map(([kind,label])=>{
+      const rows=review.targets.map((t,i)=>t.kind===kind?`<option value="${i}" ${i===review.index?'selected':''}>${esc(t.title)}</option>`:'').join('');
+      return rows?'<optgroup label="'+label+'">'+rows+'</optgroup>':'';
+    }).join('');
+    return options?`<select id="paper-target" aria-label="Target for this run"><option value="-1" ${review.index===-1?'selected':''}>Enter a target manually</option>${options}</select>`:'<p>No formal target identified. Enter a target using Edit source.</p>';
+  }
+
+  /** @returns {string} Secondary reading material and source links, grouped outside the review steps. */
+  function reviewDetails(){
+    const notes=state.paperReview?.notes||[];
+    const observations=['evaluation','example'].map(kind=>{
+      const entries=notes.filter(row=>row.kind===kind);
+      return entries.length?`<details><summary>${kind==='example'?'Worked examples':'Evaluation'} (${entries.length})</summary>${entries.map(row=>markdownView(row.text,row.ref)+(row.ref&&!row.ref.startsWith('msa:')?citeLink(row.ref):'')).join('')}</details>`:'';
+    }).join('');
+    const sources=Object.entries(inputFields).map(([key,title])=>{
+      const links=citeLink(state.draftRefs[key+'Ref'],true);
+      return links?`<div><strong>${esc(title)}</strong> ${links}</div>`:'';
+    }).join('');
+    const matches=state.draftRoute==='prosa'&&Object.values(state.inputDraft).some(Boolean)?'<div data-review-matches></div>':'';
+    return observations||sources||matches?`<details class="review-details"><summary>Review details</summary>${observations}${sources?'<details><summary>Source passages</summary>'+sources+'</details>':''}${matches}</details>`:'';
+  }
+
+  /** Generate one editable draft tied to the document and project where generation started. */
+  async function generateDraft(){
+    const doc=selectedDocument(),owner=project,ticket=reading;
+    if(!doc||generating.has(doc))return;
+    if(state.draftStarted&&Object.values(state.inputDraft).some(Boolean)&&!window.confirm('Replace the current editable MSA draft?'))return;
+    const originalDraft=JSON.stringify(state.inputDraft),generationTab=state.documentTab;
+    generating.add(doc);delete doc.extractionError;readStatus='';render();
+    const current=()=>owner===project&&ticket===reading&&doc.id===selectedDocument()?.id&&state.page==='documents';
+    let ready=false;
+    try{
+      const connection=await modelRequest('settings');
+      if(!current()){doc.extractionError='Input selection changed before the request was sent. Retry when ready.';return;}
+      if(!connection.keySource){doc.extractionError='Save a model connection, then try again.';await connectionDialog();return;}
+      const payload={units:doc.units};
+      if(doc.unit==='Page'){
+        const pdf=await originalPdf(doc.id,undefined,owner.id);
+        if(!pdf)throw Error('Choose this PDF again to include its original equations and pages.');
+        payload.pdf=await pdfData(pdf);
+      }
+      const result=await modelRequest('draft',payload);
+      if(!current()||generationTab!==state.documentTab||JSON.stringify(state.inputDraft)!==originalDraft){
+        if(generating.has(doc))doc.extractionError='The input selection or draft changed during extraction. Select the document and retry to generate a new draft.';
+        return;
+      }
+      startInput();state.draftRefs={};
+      for(const section of Object.keys(inputFields)){
+        const field=citedText(doc,result.fields[section]||[]);
+        state.inputDraft[section]=field.text;
+        state.draftRefs[section+'Ref']=field.ref;
+      }
+      state.paperReview=null;
+      if(Array.isArray(result.targets)){
+        const targets=result.targets.map(item=>({kind:item.kind,title:item.title,...citedText(doc,[item])}));
+        state.paperReview={targets,index:targets.findIndex(t=>t.kind==='primary_target'),manual:{text:'',ref:''},
+          notes:(result.notes||[]).map(item=>({kind:item.kind,...citedText(doc,[item])}))};
+      }
+      state.draftSource='OpenAI · '+result.model+(result.targetSkill?' · '+result.targetSkill:'')+(result.skill?' · '+result.skill:'');state.documentTab='extract';inputPane='inputs';
+      readStatus=['model','analysis','goal'].every(key=>state.inputDraft[key])?'Draft ready for review.':'Draft ready. Complete the empty sections during review.';
+      ready=true;
+      if(!remember())readStatus+=' Browser storage is full; this draft is available in this tab.';
+    }catch(error){doc.extractionError=error.message||'The request failed. Please retry.';}
+    finally{
+      generating.delete(doc);
+      if(doc.extractionError&&projects.includes(owner))remember();
+      render();
+      if(current()){
+        const target=root.querySelector(ready?'#av-input-form h2':'[data-extract-feedback] [role=alert]');
+        if(target){target.tabIndex=-1;target.focus({preventScroll:true});target.scrollIntoView({block:'nearest'});}
+      }
+    }
+  }
+
+  /** @returns {string} Input chooser, document preview and editable fields. */
+  /** @type {Map<string, Promise<Object>>} Cache local matches for exact section text and route. */
+  const reuseCache=new Map();
+  /** @param {Object} row One source-bound statement. @param {boolean} editable Whether a user can propose a changed scope. */
+  function reuseUnder(row,editable){
+    const bound=row.bindings||[],more=(row.candidates||[]).filter(q=>!bound.some(b=>b.reference===q));
+    if(!bound.length&&!more.length)return '';
+    const dbf=more.some(q=>q.endsWith('.task_demand_bound_function'));
+    return `<aside class="reuse-note">${bound.map(b=>`<div><strong>Prosa component</strong> · ${esc(b.meaning)} <code>${esc(b.projection)}</code></div>`).join('')}
+      ${more.length?`<details><summary>Prosa · ${more.length} candidate${more.length===1?'':'s'} · paper wording retained</summary>
+      <ul>${more.map(q=>`<li><code>${esc(q)}</code></li>`).join('')}</ul>
+      ${dbf?'<p>The library shifts the request bound in discrete time. Equivalence to this paper’s formula requires matching the time domain and interval endpoints.</p>':''}
+      ${dbf&&editable&&!/integer (?:time|ticks)|discrete[- ]time/i.test(Object.values(state.inputDraft).join(' '))?'<button type="button" class="control" data-module-action="scope-option">Consider integer-time scope</button>':''}</details>`:''}</aside>`;
+  }
+  /** @param {Object[]} rows MSA statements in source order. @param {string} ref Numbered citations for the section. @param {boolean} editable Whether this is a draft. */
+  function annotatedRows(rows,ref,editable){
+    return rows.map(row=>'<div class="msa-entry">'+markdownView(row.source,ref)+reuseUnder(row,editable)+'</div>').join('');
+  }
+  /** Add per-statement matches without replacing a focused editor or sending data to a model. */
+  async function annotateDraft(){
+    const panel=root.querySelector('[data-review-matches]');
+    if(!panel)return;
+    const sections=await Promise.all(Object.entries(inputFields).map(async ([key,title])=>{
+      const text=state.inputDraft[key],ref=state.draftRefs[key+'Ref']||'';
+      if(!text)return '';
+      const payload={section:key,text,ref,route:'prosa'},cacheKey=JSON.stringify(payload);
+      if(!reuseCache.has(cacheKey)){
+        if(reuseCache.size>=32)reuseCache.delete(reuseCache.keys().next().value);
+        reuseCache.set(cacheKey,modelRequest('reuse-preview',payload));
+      }
+      try{
+        const result=await reuseCache.get(cacheKey);
+        const rows=result.items.map(row=>{
+          const match=reuseUnder(row,true);
+          return match?markdownView(row.source,ref)+match:'';
+        }).join('');
+        return rows?'<h4>'+esc(title)+'</h4>'+rows:'';
+      }catch{
+        reuseCache.delete(cacheKey);
+        return '<p>'+esc(title)+' · Preview unavailable.</p>';
+      }
+    }));
+    if(panel.isConnected){
+      panel.innerHTML='<details><summary>Prosa matches</summary>'+(sections.join('')||'<p>No candidates found.</p>')+'</details>';
+      renderMath();
+    }
+  }
+  /** Ask for consent only when a reader elects to narrow the mathematical time domain. */
+  function chooseTimeScope(){
+    const dialog=document.createElement('dialog');dialog.className='scope-dialog';
+    dialog.innerHTML='<h2>Change the time domain?</h2><p>The current draft keeps the paper’s scope. The proposed variant restricts job releases, deadlines and analysis intervals to nonnegative integer ticks. This excludes non-integer instances. The DBF correspondence will still need checking.</p><div class="action-row"><button type="button" class="control" value="keep">Keep paper scope</button><button type="button" class="control" value="change">Apply restriction</button></div>';
+    document.body.append(dialog);dialog.onclose=()=>dialog.remove();
+    dialog.onclick=e=>{const button=e.target.closest('button');if(!button)return;
+      if(button.value==='change'){
+        startInput();let text=state.inputDraft.assumptions||'';const ref=state.draftRefs.assumptionsRef||'';
+        // Keep an existing flat document locator attached only to the original statements.
+        if(text&&citation(ref)&&!ref.startsWith('msa:')){
+          const parts=text.split(/\n(?=\s*[-*] )/).filter(p=>p.trim());
+          text=parts.map((p,i)=>p+' ['+(i+1)+']').join('\n');
+          state.draftRefs.assumptionsRef='msa:'+parts.map((_,i)=>(i+1)+'='+ref).join('|');
+        }
+        state.inputDraft.assumptions=(text.trim()?text.trim()+'\n\n':'')+'- **User-selected scope:** Job releases, deadlines and analysis intervals are restricted to nonnegative integer ticks.';
+        remember();render();
+      }
+      dialog.close();
+    };dialog.showModal();dialog.querySelector('button').focus();
+  }
+  /** Build a rendered draft field with a reversible source editor.
+   * @param {string} key Stable MSA field key. @param {string} title Section or subsection heading.
+   * @param {boolean} manual Whether an empty manual field should open ready for typing.
+   */
+  function reviewField(key,title,manual){
+    const value=state.inputDraft[key]||'',ref=state.draftRefs[key+'Ref'],editing=manual&&!value;
+    return `<section class="msa-field" data-msa-field="${key}"><div class="msa-heading"><h3>${title}</h3><button class="control" type="button" data-edit-msa="${key}" aria-controls="msa-source-${key}" aria-expanded="${editing}">${editing?'Preview':'Edit source'}</button></div>${key==='goal'?paperChoices():''}<div data-msa-reading ${editing?'hidden':''}>${value?markdownView(value,ref):'<p>'+ (key==='assumptions'?'No assumptions recorded separately.':'No text yet.')+'</p>'}</div><textarea id="msa-source-${key}" aria-label="${esc(inputFields[key])} source" data-input-field="${key}" name="${key}" ${editing?'':'hidden'}>${esc(value)}</textarea></section>`;
+  }
+  /** @param {HTMLElement} section Field whose source visibility is changing. @param {boolean} editing Whether to focus its editor. */
+  function setSourceMode(section,editing){
+    const editor=section.querySelector('textarea'),preview=section.querySelector('[data-msa-reading]'),button=section.querySelector('[data-edit-msa]');
+    editor.hidden=!editing;preview.hidden=editing;button.textContent=editing?'Preview':'Edit source';button.setAttribute('aria-expanded',String(editing));
+    if(editing){editor.focus();return;}
+    preview.innerHTML=editor.value.trim()?markdownView(editor.value,state.draftRefs[editor.name+'Ref']):'<p>No text yet.</p>';
+    renderMath();annotateDraft();button.focus({preventScroll:true});
+  }
+  function inputPage(){
+    const doc=selectedDocument(),manual=state.documentTab==='manual',editing=manual||state.documentTab==='extract';
+    const choices=`<div class="action-row">${actionButton('import-mode','Import document',!manual)}${actionButton('manual-mode','Enter manually',manual)}</div>`;
+    const picker=doc?`<label class="field">Source document<select id="source-choice">${project.documents.map(d=>`<option value="${esc(d.id)}" ${doc.id===d.id?'selected':''}>${esc(d.name)}</option>`).join('')}</select></label>`:'';
+    const source=doc&&!manual?`<section class="stack">${picker}<h2>Document preview</h2>${documentPreview(doc)}<details ${editing&&doc.unit!=='Page'?'open':''}><summary>${editing?'Select a source passage':'Source text'}</summary><textarea aria-label="Source text" id="source-text" class="source-text" readonly>${esc(doc.units.join('\n'))}</textarea>${editing?`<div class="action-row">${Object.entries(inputFields).map(([key,label])=>`<button class="control" type="button" data-assign="${key}">Use as ${label.toLowerCase()}</button>`).join('')}</div>`:''}</details></section>`:'';
+    const fields=`<div id="av-input-form" class="stack"><h2>${state.draftSource.startsWith('OpenAI ·')?'Review MSA draft':'Analysis inputs'}</h2>${reviewField('goal','Target for this run',manual)}${reviewField('model','M · System model',manual)}${reviewField('assumptions','S · Assumptions',manual)}<section class="msa-analysis"><h3>A · Analysis</h3>${reviewField('analysis','Analysis method',manual)}</section><label class="field av-picker">Proof route<select id="av-draft-route"><option value="prosa" ${state.draftRoute==='prosa'?'selected':''}>Prefer Prosa reuse</option><option value="independent" ${state.draftRoute==='independent'?'selected':''}>Independent</option></select></label>${state.draftParent?'<label class="field">Revision note (optional)<textarea id="av-revision-note" maxlength="350">'+esc(state.draftNote)+'</textarea></label>':''}<div class="action-row">${actionButton('freeze','Confirm MSA',true)}${state.draftStarted?actionButton('discard','Discard draft'):''}</div>${reviewDetails()}</div>`;
+    return `<div class="stack">${choices}${!manual?`<label class="field">Choose a document · PDF, Markdown, TXT or DOCX<input id="av-file" type="file" accept=".pdf,.md,.markdown,.txt,.docx"></label><span role="status">${esc(readStatus)}</span>`:''}${editing?`${manual?'':`<div class="pane-switch">${actionButton('source-pane','Source',inputPane==='source')}${actionButton('inputs-pane','Inputs',inputPane==='inputs')}</div>`}<div class="${manual?'stack':'source-editor'}" data-pane="${inputPane}">${source}${fields}</div>`:`${source}${doc?`<div data-extract-feedback>${extractionNotice(doc)}<div class="action-row"><button type="button" class="control primary" data-module-action="generate-msa" ${generating.has(doc)?'disabled':''}>${generating.has(doc)?'Generating…':doc.extractionError?'Retry extraction':doc.unit==='Page'?'Extract paper contributions':'Generate MSA draft'}</button>${actionButton('extract','Select passages manually')}${actionButton('openai-settings','OpenAI settings')}</div></div>`:actionButton('openai-settings','OpenAI settings')}`}</div>`;
+  }
+  /** @param {File} file New local source, saved before the user can assign excerpts. */
+  async function importFile(file){
+    const owner=project,ticket=++reading;readStatus='Reading '+file.name+'…';render();
+    try{
+      const doc=await readInputDocument(file);
+      if(ticket!==reading||project!==owner)return;
+      const existing=doc.unit==='Page'&&project.documents?.find(previous=>previous.unit==='Page'&&previous.name===doc.name&&previous.units.length===doc.units.length&&previous.units.every((text,index)=>text===doc.units[index]));
+      if(existing)doc.id=existing.id;
+      if(doc.unit==='Page')await originalPdf(doc.id,file,owner.id);
+      if(ticket!==reading||project!==owner)return;
+      const previous=project.selectedDocument;
+      if(!existing)(project.documents??=[]).push(doc);project.selectedDocument=doc.id;
+      if(!remember()){if(!existing)project.documents.pop();project.selectedDocument=previous;throw Error('Browser storage is full. Choose a shorter document or enter inputs manually.');}
+      state.documentTab='pdf';readStatus='';remember();
+    }catch(error){if(ticket===reading)readStatus=error.message||'Could not read this document.';}
+    if(ticket===reading&&project===owner)render();
+  }
   /** Render the selected module using example records and local-only controls.
    * @returns {string} Module body with no invented checker receipts or source locations.
    */
+  /** @type {Map<string,Object>} Active jobs and results keyed by project and immutable run. */
+  const irViews=new Map();
+  /** @param {Object} owner Project record. @param {number} run Frozen run ID. */
+  function irIdentity(owner,run){return JSON.stringify([owner.id,run]);}
+  /** @param {Object} row IR statement. @param {string} value Readable relation with local formula references. */
+  /** @param {Object} formula Stored IR expression. Reconstruct the exact display from the notation tree. */
+  function irTex(formula){
+    function emit(n){if(typeof n==='string')return n;const body=n.args.map(emit).join('');return n.op==='group'?'{'+body+(n.closed?'}':''):body;}
+    return formula.notation?emit(formula.notation):formula.tex;
+  }
+  function irValue(row,value){
+    return String(value||'').split(/(\[f\d+\])/g).map(part=>{
+      const expr=row.expressions.find(f=>'['+f.id+']'===part);
+      return expr?math(irTex(expr),false):esc(part);
+    }).join('');
+  }
+  /** @param {Object} row IR statement. @param {Object} ir Saved artifact and local declaration records. */
+  function irStatement(row,ir){
+    const s=row.statement,bindings=row.bindings,source=citation(row.ref);
+    const refs=new Set(bindings.map(b=>b.reference));
+    const candidates=row.candidates.filter(q=>!refs.has(q));
+    const dbfCandidate=candidates.some(q=>q.endsWith('.task_demand_bound_function'));
+    function libraryDetails(q){
+      const entry=ir.catalog.entries.find(e=>e.qualified===q);
+      return entry?`<details class="ir-declaration"><summary>${esc(entry.name)}</summary><p>Prosa ${esc(ir.catalog.version)} · ${esc(entry.module)}.v · line ${entry.line}</p><pre>${esc(entry.declaration)}</pre><small>Source SHA-256 · ${esc(entry.sha256)}</small></details>`:'';
+    }
+    const formulas=row.expressions.filter(f=>f.display||/(?:=|\\(?:le|ge|frac|sum|max|min|forall|implies|Rightarrow|leq|geq)\b|[≤≥<>])/.test(f.tex));
+    return `<article class="ir-item"><div class="msa-heading"><h3>${esc(s.title||row.id)}</h3>${source?`<button type="button" class="cite" data-cite="${esc(row.ref)}" title="${esc(source.label)}">${esc(source.label.slice(source.doc.name.length+3))} ↗</button>`:row.ref?citeLink(row.ref):'<span>Frozen MSA</span>'}</div>
+      <div class="ir-proposition">${[s.quantifier,s.subject,s.relation,s.object].filter(Boolean).map(v=>irValue(row,v)).join(' ')}</div>
+      ${s.condition?`<div><strong>Applies when</strong> · ${irValue(row,s.condition)}</div>`:''}
+      ${formulas.map(f=>math(irTex(f),true)).join('')}
+      ${bindings.map(b=>`<div class="ir-bound"><strong>Prosa interface</strong> · ${esc(b.meaning)} <code>${esc(b.type)}</code> ${libraryDetails(b.reference)}</div>`).join('')}
+      ${s.issue?`<p class="ir-question"><strong>Check interpretation</strong> · ${esc(s.issue)}</p>`:''}
+      ${row.expressions.some(f=>!f.tree)?'<p>Original notation retained where algebraic conversion is unconfirmed.</p>':''}
+      <details><summary>MSA wording &amp; mapping</summary>${markdownView(row.source)}<p>Representation · ${bindings.length?'Paper statement with a Prosa component':'Paper statement'}</p>
+        ${candidates.length?`<p>Library candidates · correspondence still open</p>${dbfCandidate?'<p>Prosa defines demand by shifting the request bound. Check the time domain and interval endpoints before identifying it with the paper’s formula.</p>':''}${candidates.map(libraryDetails).join('')}`:''}
+        ${s.uses.length?`<dl>${s.uses.map(id=>ir.symbols.find(sym=>sym.id===id)).filter(Boolean).map(sym=>`<dt>${esc(sym.label)} · ${esc(sym.sort)}</dt><dd>${esc(sym.meaning)}</dd>`).join('')}</dl>`:''}</details>
+    </article>`;
+  }
+  /** @param {Object} active Confirmed run. @returns {string} Background preparation state and recovery, if needed. */
+  function runReadiness(active){
+    const view=irViews.get(irIdentity(project,active.id));
+    if(view?.error)return `<p role="alert">Inputs saved. ${esc(view.error)}</p>${actionButton('retry-preparation','Retry preparation')}`;
+    return `<p role="status"><strong>${view?.ir?'Inputs ready':'Preparing confirmed inputs…'}</strong></p>`;
+  }
+  /** @param {Object} active Saved MSA. @param {string} key Section with its historical reuse decisions. */
+  function savedSection(active,key){
+    const ir=irViews.get(irIdentity(project,active.id))?.ir;
+    if(!ir||!active[key])return markdownView(active[key]||'',active[key+'Ref']);
+    return annotatedRows(ir.items.filter(row=>row.section===key),active[key+'Ref'],false);
+  }
+  /** @param {Object} active Selected immutable run. @returns {string} Build entry or unified M/S/A reading view. */
+  function irPage(active){
+    const view=irViews.get(irIdentity(project,active.id)),key=project.irKeys?.[active.id];
+    if(!view?.ir)return '<div class="stack"><h2>Analysis IR</h2>'+runReadiness(active)+'</div>';
+    const ir=view.ir,direct=ir.items.reduce((n,row)=>n+row.bindings.length,0);
+    return `<div class="stack ir-page"><div><h2>Analysis IR · ${runName(active.id)}</h2><p>${ir.items.length} reviewed statements · ${direct} Prosa component reference${direct===1?'':'s'} · ${ir.route==='prosa'?'Prosa '+esc(ir.catalog.version)+' ('+ir.catalog.size+' indexed declarations)':'Independent route'}</p></div>
+    <div class="action-row"><button type="button" class="control" data-module-action="export-ir">Download IR</button>${pageLink('modeling','Inspect inputs')}</div>
+    ${[['M · System model',['model']],['S · Applicability conditions',['assumptions']],['A · Analysis & intended guarantee',['analysis','goal']]].map(([label,keys])=>{
+      const rows=ir.items.filter(row=>keys.includes(row.section));
+      return `<section class="ir-section"><h2>${label}</h2>${rows.length?rows.map(row=>irStatement(row,ir)).join(''):'<p>No conditions recorded separately in this frozen MSA.</p>'}</section>`;
+    }).join('')}</div>`;
+  }
+  /** @param {Object} owner Project record. @param {number} run Frozen record. @param {boolean} build Start or retry an explicit build. */
+  async function loadIR(owner,run,build){
+    const id=irIdentity(owner,run),cached=irViews.get(id);
+    if(cached?.busy||cached?.ir)return;
+    const active=recordFor(run),view={busy:true,message:'Searching the local catalog and reading the frozen MSA…'};
+    const visible=()=>owner===project&&run===state.activeId&&['modeling','runs','derivation','overview'].includes(state.page);
+    irViews.set(id,view);if(visible())render();
+    try{
+      let key=owner.irKeys?.[run];
+      if(build){
+        const fields=Object.fromEntries(Object.keys(inputFields).map(k=>[k,{text:active[k]||'',ref:active[k+'Ref']||''}]));
+        const started=await modelRequest('build-ir',{project:owner.id,run,route:active.route,fields});
+        key=started.key;(owner.irKeys??={})[run]=key;remember();
+      }
+      while(key){
+        const result=await modelRequest('ir-status',{key});
+        if(result.stage==='ready'){if(result.ir.project!==owner.id||result.ir.run!==run)throw Error('Saved IR belongs to a different run.');view.ir=result.ir;break;}
+        if(result.stage!=='mapping')throw Error(result.error||'IR unavailable. Retry from the frozen inputs.');
+        view.message='Mapping '+result.count+' statements into symbols, formulas and conditions…';
+        if(visible()&&!view.announced){view.announced=true;render();}
+        await new Promise(resolve=>setTimeout(resolve,2500));
+      }
+    }catch(error){view.error=error.message;}
+    finally{view.busy=false;if(visible())render();}
+  }
+  /** Save the exact readable artifact as structured JSON. */
+  function downloadIR(){
+    const ir=irViews.get(irIdentity(project,state.activeId))?.ir;if(!ir)return;
+    const items=ir.items.map(row=>{
+      const hit=citation(row.ref);
+      const sourceLocation=hit?{documentId:hit.doc.id,document:hit.doc.name,location:hit.label,start:hit.start,end:hit.end,quote:hit.doc.units.join('\n').slice(hit.start,hit.end)}:null;
+      return {...row,sourceLocation};
+    });
+    const url=URL.createObjectURL(new Blob([JSON.stringify({...ir,items},null,2)],{type:'application/json'}));
+    const a=document.createElement('a');a.href=url;a.download='analysis-ir-run-'+ir.run+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  }
+
+  /** UI state indexed by the immutable run key, independent of the selected tab. */
+  const reasoningViews=new Map();
+
+  /** Retrieve a saved argument or explicitly launch one generation.
+   * @param {object} ir Confirmed project/run snapshot. @param {boolean} start Whether the user clicked Start.
+   */
+  async function fetchArgument(ir,start=false,version=2){
+    const key=ir.key,id=argumentKey(key,version),previous=reasoningViews.get(id);
+    if(previous?.busy||previous?.graph)return;
+    const view={stage:start?'running':'loading',busy:true};
+    reasoningViews.set(id,view);
+    const visible=()=>project.id===ir.project&&state.activeId===ir.run&&['derivation','runs','overview'].includes(state.page);
+    if(visible())render();
+    try{
+      let result=await modelRequest(start?'start-derivation':'derivation-status',{key,project:ir.project,run:ir.run,version});
+      view.versions=result.versions||[];
+      if(!argumentVersions.has(key)&&view.versions.at(-1)>version&&visible()){
+        argumentVersions.set(key,view.versions.at(-1));render();
+      }
+      while(result.stage==='running'){
+        view.stage='running';
+        if(visible()&&!view.announced){view.announced=true;render();}
+        await new Promise(resolve=>setTimeout(resolve,2000));
+        result=await modelRequest('derivation-status',{key,version});
+      }
+      view.versions=result.versions||view.versions;
+      if(result.stage==='failed')throw Error(result.message||'Derivation interrupted.');
+      if(result.stage==='ready'){
+        const g=result.graph;
+        if(g.version!==version||g.key!==key||g.project!==ir.project||g.run!==ir.run||g.inputHash!==ir.inputHash||g.route!==ir.route)throw Error('This result belongs to another input version.');
+        view.graph=g;
+        if(argumentStart?.key===key&&argumentStart.version===version){view.selected=argumentStart.step;view.lemma=argumentStart.lemma;view.pairIndex=argumentStart.pairIndex;view.goalContext=argumentStart.goal;argumentStart=null;}
+      }
+      view.stage=result.stage;
+    }catch(error){view.stage='failed';view.error=error.message;}
+    finally{view.busy=false;if(visible())render();}
+  }
+
+  /** View records for separate input and argument versions. */
+  const argumentVersions=new Map();
+  const audit=createArgumentAudit({request:modelRequest,esc,refresh:()=>{if(['overview','verification','expert-audit','runs'].includes(state.page))render();}});
+  const ledger=createEvidenceLedger({audit,request:modelRequest,refresh:()=>{if(['verification','expert-audit','runs'].includes(state.page))render();},esc,markdownView,runName});
+  const argumentReader=createDerivationReader({esc,math,markdownView,citation,request:modelRequest,refresh:refreshEvidence});
+  /** Restore the exact expanded evidence when a background check finishes.
+   * @param {object} graph Graph owning the asynchronous receipt.
+   */
+  function refreshEvidence(graph){
+    ledger.invalidate(graph.key);
+    if(['verification','expert-audit','runs'].includes(state.page)&&project.irKeys?.[state.activeId]===graph.key){render();return;}
+    const ctx=skillContext();if(state.page!=='derivation'||ctx?.graph!==graph)return;
+    const opened=new Set(Array.from(root.querySelectorAll('[data-disclosure][open]'),el=>el.dataset.disclosure));
+    const setupOpen=root.querySelector('.workflow-controls')?.open;
+    render();for(const el of root.querySelectorAll('[data-disclosure]'))if(opened.has(el.dataset.disclosure))el.open=true;
+    const params=new URLSearchParams(location.search),jump=params.get('evidence');
+    if(jump&&/^local(-[0-9]+)*$/.test(jump)&&params.get('view')==='derivation'){
+      const parts=jump.split('-');let selector='local',el=root.querySelector('[data-disclosure="local"]');
+      if(el){el.open=true;for(let i=1;i<parts.length;i++){selector='open-'+parts.slice(1,i+1).join('-');el=root.querySelector('[data-disclosure="'+selector+'"]');if(!el)break;el.open=true;}
+        if(el){el.scrollIntoView({block:'nearest'});const url=new URL(location.href);url.searchParams.delete('evidence');history.replaceState(null,'',url);}}
+    }
+    if(setupOpen&&root.querySelector('.workflow-controls'))root.querySelector('.workflow-controls').open=true;
+  }
+  /** @param {string} key Immutable IR key. @param {number} version Argument edition. */
+  function argumentKey(key,version){return version===2?key:key+'@'+version;}
+  /** Resolve the visible skill configuration against exactly one local run. */
+  function skillContext(){
+    const run=state.activeId,key=project.irKeys?.[run];
+    if(!key)return null;
+    const version=argumentVersions.get(key)||2;
+    return {owner:project,run,key,graph:reasoningViews.get(argumentKey(key,version))?.graph,persist:remember};
+  }
+  /** @param {object} ctx Project and frozen run. @param {number} version Completed argument edition. @param {string} step Optional trial focus. */
+  function openSkillRecord(ctx,version,step,workspace=false){
+    if(project!==ctx.owner)openProject(ctx.owner);
+    selectRun(ctx.run);argumentVersions.set(ctx.key,version);
+    const cached=reasoningViews.get(argumentKey(ctx.key,version));
+    if(cached?.graph){if(step)cached.selected=step;}else{
+      reasoningViews.delete(argumentKey(ctx.key,version));argumentStart={key:ctx.key,version,step};
+    }
+    for(const [id,view] of reasoningViews)if(view.graph?.key===ctx.key)view.versions=[...new Set([...(view.versions||[]),version])].sort((a,b)=>a-b);
+    navigate(workspace?'derivation':'runs');state.runTab='derivation';syncArgumentLink(version,step);render();remember();
+  }
+  const skillUI=createReasoningSkills({request:modelRequest,esc,render,context:skillContext,openRecord:openSkillRecord,markdown:markdownView,math,typeset:renderMath,
+    listRuns:()=>projects.flatMap(owner=>Object.entries(owner.irKeys||{}).map(([id,key])=>({owner,run:Number(id),key,label:owner.name+' · '+runName(Number(id))})))});
+  /** Keep a selected result shareable within the local workspace.
+   * @param {number} version Historical argument version. @param {string} [step] Frozen step ID.
+   */
+  function syncArgumentLink(version,step){
+    const url=new URL(location.href);
+    url.search=new URLSearchParams({view:state.page==='runs'?'derivation-record':'derivation',project:project.name,run:String(state.activeId),version:String(version)});
+    if(step)url.searchParams.set('step',step);
+    const view=reasoningViews.get(argumentKey(project.irKeys?.[state.activeId],version));
+    if(view?.lemma)url.searchParams.set('lemma',view.lemma);
+    if(view?.goalContext)url.searchParams.set('goal',view.goalContext);
+    if(Number.isInteger(view?.pairIndex))url.searchParams.set('route',String(view.pairIndex));
+    history.replaceState(null,'',url);
+  }
+  /** @param {object} active Selected run. @param {boolean} detail Open the complete run record. */
+  function argumentPage(active,detail=false){
+    const ir=irViews.get(irIdentity(project,active.id))?.ir;
+    if(!ir)return runReadiness(active);
+    const version=argumentVersions.get(ir.key)||2,view=reasoningViews.get(argumentKey(ir.key,version));
+    const graph=view?.graph,versions=view?.versions||[];
+    const chooser=detail&&versions.length?'<span class="dag-versions">History '+versions.map(v=>'<button type="button" class="control" data-arg-version="'+v+'" aria-pressed="'+(v===version)+'">v'+v+'</button>').join('')+'</span>':'';
+    const heading='<header class="dag-head"><div><h2>'+runName(active.id)+' · '+(detail?'Derivation record':'Bidirectional derivation')+'</h2><span>v'+version+(version===1?' · Original outline':' · Detailed argument')+(graph?' · Unchecked':'')+'</span></div>'+chooser+'</header>';
+    const bar=(!detail&&version!==1&&view&&!view.busy)?skillUI.toolbar(skillContext()):'';
+    if(!graph){
+      const busy=!view||view.busy, running=view?.stage==='running';
+      return heading+'<p role="status">'+esc(view?.error||(running?'Preparing the detailed argument…':busy?'Opening run…':'Confirmed inputs are ready.'))+'</p>'+(view?.error?actionButton('retry-argument-read','Retry'):bar||(!busy?pageLink('derivation','Open derivation',true):''));
+    }
+    return heading+(bar?'<details class="workflow-controls"><summary>Reasoning setup</summary>'+bar+'</details>':'')+(detail?skillUI.evidence(graph)+argumentReader.record(graph,view,ir):argumentReader.diagram(graph,view,ir)+'<div class="action-row">'+pageLink('verification','Review proof obligations →',true)+'</div>');
+  }
   function moduleBody(){
     /** @type {Object} Run selected across project modules. */
     const active=recordFor(state.activeId);
     /** @type {boolean} Only the seeded example contains derivation artifacts. */
-    const hasArtifacts=active.id===exampleRun.id;
+    const hasArtifacts=isExample()&&active.id===exampleRun.id;
     /** @type {string} Reusable navigation from a project to its corresponding record. */
     const openRun=recordLink(active.id,runName(active.id));
-    if(state.page==='projects')return `<div class="project-entry"><div><h2>case_11</h2><p>Deadline guarantee under DM scheduling</p></div>${pageLink('overview','Open project',true)}</div>`;
+    const currentKey=project.irKeys?.[active.id];
+    const argument=reasoningViews.get(argumentKey(currentKey,argumentVersions.get(currentKey)||2));
+    const argumentStatus=argument?.graph?'Argument available':argument?.stage==='running'?'Deriving…':argument?.stage==='failed'?'Retry available':'Awaiting derivation';
+    if(state.page==='projects')return projectDirectory();
+    if(state.page==='expert-audit')return ledger.page(project,active.id,argumentVersions.get(currentKey),true);
+    if(!active.id&&projectPages.includes(state.page)&&state.page!=='documents'&&!(state.page==='modeling'&&state.reviewing)){
+      return `<div class="stack"><div><h2>${esc(project.name)}</h2><p class="av-statement">${esc(project.description)}</p></div><div class="av-next"><div><h3>${state.draftStarted?'Input draft':'No inputs yet'}</h3><p>Import a paper or enter its model, assumptions and analysis.</p></div>${pageLink('documents',state.draftStarted?'Resume inputs':'Add inputs',true)}</div></div>`;
+    }
+    if(state.page==='overview'&&!hasArtifacts){
+      const ir=irViews.get(irIdentity(project,active.id));
+      const graph=argument?.graph;
+      const report=graph?audit.current({key:currentKey,version:graph.version,project:project.id,run:active.id}):null;
+      const reviewStatus=report?.reviews?.length?report.reviews.length+' reviews':report?.audit?.stage==='running'?'Reviewing':'Awaiting review';
+      const proofStatus=report?.rounds?.at(-1)?.find(x=>x.id==='target_claim')?.checked?'Formal target checked':graph?graph.connections.length+' routes':'Awaiting candidates';
+      const title=report?.reviews?.length?'Inspect reviews and remaining work':report?.stage==='running'?report.phase:graph?'Construct and review the argument':ir?.error?'Input preparation needs attention':ir?.ir?'Ready for derivation':'Preparing confirmed inputs';
+      const destination=graph?'verification':ir?.ir?'derivation':'modeling';
+      const label=graph?'Open proof':ir?.ir?'Open derivation':'Inspect inputs';
+      const flow=[['Analysis IR','runs',graph?.formalContext?.typecheck?.checked?'Type-checked':ir?.ir?'Readable IR ready':'Preparing'],['Bidirectional reasoning','derivation',graph?'Two DAGs':'From model & goal'],['Proof','verification',proofStatus],['Expert audit','expert-audit',reviewStatus]];
+      return '<div class="stack"><h2>'+esc(runName(active.id))+'</h2><div class="paper-flow">'+flow.map(([name,dest,status],i)=>'<button type="button" data-page="'+dest+'" '+(i===0?'data-tab-field="runTab" data-tab-value="ir"':'')+'><span>'+esc(name)+'</span><small>'+esc(status)+'</small></button>').join('')+'</div><div class="av-next"><h3>'+title+'</h3>'+pageLink(destination,label,true)+'</div><details><summary>Confirmed target</summary>'+markdownView(active.goal,active.goalRef)+'</details></div>';
+
+    }
     if(state.page==='overview')return `<div class="stack"><div><h2>${hasArtifacts?'Deadline guarantee':'Current goal'}</h2><p class="av-statement">${esc(active.goal)}</p></div>
-      <div class="av-next"><div><h3>${hasArtifacts?'Available service → job completion':'Inputs frozen'}</h3><p>${hasArtifacts?'One scheduling bridge is open.':esc(runName(active.id))+' · Derivation pending'}</p></div>${hasArtifacts?stageLink('alignment','Review gap',true):pageLink('runs','Inspect run',true)}</div>
-      <section><h3>Current record</h3><div class="run-row">${openRun}<span>${routeName(active.route)}</span><span class="status">${hasArtifacts?'Draft proof':'Inputs only'}</span></div></section><div class="action-row">${pageLink('documents','Open inputs')}</div></div>`;
-    if(state.page==='documents')return `${moduleTabs('documentTab',[['pdf','Paper PDF'],['manual','Manual input']])}
-      ${state.documentTab==='pdf'?`<div class="stack"><div class="upload-zone">${icon('file-up')}<label class="field">Choose a PDF reference<input id="av-pdf" type="file" accept=".pdf,application/pdf"></label></div>
-      <div class="av-next"><div><h3 id="av-pdf-name">${state.draftSource.startsWith('PDF · ')?esc(state.draftSource.slice(6)):'Paper reference'}</h3><p>Enter the model, analysis and goal from the paper.</p></div>${actionButton('enter-fields','Enter fields',true)}</div></div>`:
-      `<div id="av-input-form" class="stack" role="group" aria-label="Inputs for review"><div class="av-title"><h2>Input draft</h2><span class="status">From ${runName(state.draftStarted?state.draftParent:state.activeId)}</span></div>${Object.entries(inputFields).map(([key,label])=>`<label class="field">${label}<textarea name="${key}" data-input-field="${key}" required maxlength="1800" placeholder="${({model:'Tasks, arrivals and scheduling assumptions',analysis:'Test or bound to analyze',goal:'Guarantee to prove'})[key]}">${esc(state.inputDraft[key])}</textarea></label>`).join('')}
-      ${state.draftSource.startsWith('PDF · ')?`<details class="help-item"><summary>Paper references</summary><div class="stack">${Object.entries(referenceFields).map(([key,label])=>`<label class="field">${label}<input type="text" data-reference="${key}" maxlength="120" value="${esc(state.draftRefs[key]||'')}" placeholder="Page, section or figure"></label>`).join('')}</div></details>`:''}
-      <div class="action-row">${actionButton('review','Review inputs',true)}${Object.values(state.inputDraft).every(value=>!value)?actionButton('example-input','Use case_11 inputs'):''}<button type="button" class="control" data-module-action="discard" ${state.draftStarted?'':'hidden'}>Discard draft</button></div></div>`}`;
+      <div class="av-next"><div><h3>${hasArtifacts?'Available service → job completion':'Inputs frozen'}</h3><p>${hasArtifacts?'One scheduling bridge is open.':esc(runName(active.id))+' · '+argumentStatus}</p></div>${hasArtifacts?stageLink('alignment','Review gap',true):pageLink('derivation','Open derivation',true)}</div>
+      <section><h3>Current record</h3><div class="run-row">${openRun}<span>${routeName(active.route)}</span><span class="status">${hasArtifacts?'Draft proof':argumentStatus}</span></div></section><div class="action-row">${pageLink('documents','Open inputs')}</div></div>`;
+    if(state.page==='documents')return inputPage();
     if(state.page==='modeling'){
-      if(state.reviewing){
-        /** @type {Array<Array<string>>} Explicit field changes to approve before a new run. */
-        const differences=changesBetween(recordFor(state.draftParent),workingCopy());
-        return `<div class="stack"><div class="av-title"><h2>Review inputs</h2><span class="status">From ${runName(state.draftParent)}</span></div><dl class="av-fields">${Object.entries(inputFields).map(([key,label])=>`<dt>${label}</dt><dd>${esc(state.inputDraft[key])}${state.draftRefs[key+'Ref']?`<div class="av-reference">${esc(state.draftRefs[key+'Ref'])}</div>`:''}</dd>`).join('')}</dl>
-        <div class="split"><label class="field">Proof route<select id="av-draft-route"><option value="independent" ${state.draftRoute==='independent'?'selected':''}>Independent</option><option value="prosa" ${state.draftRoute==='prosa'?'selected':''}>Prosa reuse</option></select></label><div><h3>Source</h3>${esc(state.draftSource)}</div></div>
-        <label class="field">Revision note (optional)<textarea id="av-revision-note" maxlength="350" placeholder="What should change in the next run?">${esc(state.draftNote)}</textarea></label>
-        <details class="help-item"><summary>Changes from ${runName(state.draftParent)}</summary><div class="artifact-content" id="av-draft-diff">${differences.length?table(['Field','Before','After'],differences):'Same inputs and route'}</div></details>
-        <div class="action-row">${actionButton('freeze','Freeze & create run',true)}${actionButton('enter-fields','Edit fields')}</div></div>`;
-      }
       /** @type {string} Baseline visuals and standalone formula editor for the selected field. */
       const field=state.modelTab;
-      return `${moduleTabs('modelTab',Object.entries(inputFields))}<div class="stack"><div class="av-title"><h2>${({model:'Scheduling model',analysis:'Analysis method',goal:'Selected guarantee'})[field]}</h2>${openRun}</div>
-      <div class="artifact-content">${hasArtifacts&&field==='model'?preview('context'):hasArtifacts&&field==='goal'?preview('target'):`<p class="av-statement">${esc(active[field])}</p>`}</div>
-      ${active[field+'Ref']?`<div class="source-row"><strong>Source</strong><span>${esc(active.source.replace(/^PDF · /,''))} · ${esc(active[field+'Ref'])}</span></div>`:''}
+      return `${hasArtifacts?'':runReadiness(active)}${moduleTabs('modelTab',Object.entries(inputFields))}<div class="stack"><div class="av-title"><h2>${({model:'System model',assumptions:'Assumptions',analysis:'Analysis method',goal:'Proof target'})[field]}</h2>${openRun}</div>
+      <div class="artifact-content">${hasArtifacts&&field==='model'?preview('context'):hasArtifacts&&field==='goal'?preview('target'):savedSection(active,field)}</div>
+      ${active[field+'Ref']?`<div class="source-row"><strong>Source</strong><span>${citeLink(active[field+'Ref'])}</span></div>`:''}
       ${hasArtifacts&&field==='model'?`<details class="help-item"><summary>All assumptions</summary><div class="artifact-content">${preview('scope')}</div></details>`:''}
       ${field==='goal'?`<details class="help-item"><summary>Formula scratchpad</summary><label class="field">LaTeX source<textarea id="av-latex" maxlength="1000" spellcheck="false">${esc(state.latex)}</textarea></label><div id="av-latex-preview" class="formula">${math(state.latex,true)}</div></details>`:''}
       <div class="action-row">${hasArtifacts?stageLink('context','Inspect derivation',true):pageLink('derivation','Open derivation',true)}${actionButton('revise',state.draftStarted?'Resume input draft':'Revise inputs')}</div></div>`;
     }
-    if(state.page==='derivation')return `<div class="stack"><h2>${runName(active.id)} · Inputs ready</h2><div class="tree"><div class="treeroot">Frozen context</div><div class="treechildren"><div class="treeleaf">Forward and backward derivation <span>Pending</span></div></div></div><p class="av-statement">${esc(active.goal)}</p><div class="action-row">${pageLink('modeling','Inspect inputs',true)}${pageLink('runs','View run')}</div></div>`;
+    if(state.page==='derivation')return argumentPage(active);
     if(state.page==='verification'){
-      if(!hasArtifacts)return `<h2>${runName(active.id)} · Not checked</h2><p class="av-statement">No proof source for this run.</p><div class="action-row">${pageLink('derivation','Inspect derivation',true)}</div>`;
+      if(!hasArtifacts)return ledger.page(project,active.id,argumentVersions.get(currentKey));
       return `${moduleTabs('verificationTab',[['status','Results'],['obligations','Open obligations'],['audit','Audit'],['log','Checker log']])}<div class="stack"><div class="av-title"><h2>${({status:'Proof status',obligations:'Open obligations',audit:'Audit',log:'Checker log'})[state.verificationTab]}</h2>${openRun}</div><div class="artifact-content">${state.verificationTab==='obligations'?
         [['backward',0,'Job completion','Goal tree'],['bridges',0,'Scheduling bridge','Bridge candidate'],['forward',1,'Available-service bound','Bound candidates']].map(([stage,output,title,label])=>`<button type="button" class="step-row" data-open-stage="${stage}" data-open-output="${output}"><strong>${title}</strong><span class="av-trailing">${label} ${icon('arrow-right')}</span></button>`).join(''):preview(({status:'check',audit:'audit',log:'log'})[state.verificationTab])}</div>${state.verificationTab==='status'?`<div class="action-row"><button type="button" class="control primary" data-tab-field="verificationTab" data-tab-value="obligations">Inspect open obligations</button></div>`:''}</div>`;
     }
     if(state.page==='runs'){
       /** @type {Array<Object>} Selectable records in most-recent-first order. */
-      const runs=[exampleRun,...state.records].reverse();
+      const runs=(isExample()?[exampleRun,...state.records]:[...state.records]).reverse();
       /** @type {Object|null} Immutable historical parent, when one exists. */
       const parent=active.parent===null?null:recordFor(active.parent);
       /** @type {Array<Array<string>>} User-visible snapshot, derivation and evidence differences. */
       const differences=parent?changesBetween(parent,active):[];
-      if(parent?.id===3)differences.push(['Derivation','7 example stages','Pending'],['Open obligations','Scheduling bridge','Not generated']);
-      return `<div class="stack"><label class="field av-picker">Run<select id="av-run-select">${runs.map(run=>`<option value="${run.id}" ${run.id===active.id?'selected':''}>${runName(run.id)} · ${run.id===3?'Example':'Saved inputs'}</option>`).join('')}</select></label>
-      ${moduleTabs('runTab',[['summary','Summary'],['versions','Versions'],['usage','Usage'],['compare','Compare']])}<div class="artifact-content">${state.runTab==='compare'?parent?`<div class="av-title"><h2>${runName(parent.id)} → ${runName(active.id)}</h2></div>${differences.length?table(['Field',runName(parent.id),runName(active.id)],differences):'<p>Matching inputs and route.</p>'}<details class="help-item"><summary>Evidence & usage</summary>${table(['Measure',runName(parent.id),runName(active.id)],[['Rocq receipt','None','None'],['Model calls','0','0'],['Budget','Unset','Unset']])}</details><div class="action-row">${recordLink(parent.id,'Open parent record')}${recordLink(active.id,'Open child record')}</div>`:
-      `<h2>No parent for ${runName(active.id)}</h2><div class="action-row">${state.records.length?recordLink(state.records.at(-1).id,'Compare latest revision','compare'):actionButton('revise','Create a revision',true)}</div>`:
-      state.runTab==='versions'?table(['Record','Binding'],[['Run',runName(active.id)],['Parent',parent?runName(parent.id):'—'],['Input version',hasArtifacts?'Context v2':runName(active.id)+' snapshot'],['Proof route',routeName(active.route)],['Source',active.source]]):
-      state.runTab==='usage'?table(['Measure','Budget','Used'],[['Model calls','Unset','0'],['Rocq checks','Unset','0'],['Cost','Unset','0']]):
-      `<h2>${runName(active.id)}</h2><p class="av-statement">${esc(active.goal)}</p><div class="checkrow"><strong>Route</strong><span>${routeName(active.route)}</span></div><div class="checkrow"><strong>Derivation</strong><span>${hasArtifacts?'Scheduling bridge open':'Pending'}</span></div>${active.note?`<div class="checkrow"><strong>Revision note</strong><span>${esc(active.note)}</span></div>`:''}<div class="action-row">${pageLink('derivation',hasArtifacts?'Open workflow':'Open frozen context',true)}${actionButton('revise',state.draftStarted?'Resume input draft':'Revise inputs')}</div>`}</div></div>`;
+      if(isExample()&&parent?.id===3)differences.push(['Derivation','7 example stages','Pending'],['Open obligations','Scheduling bridge','Not generated']);
+      return `<div class="stack"><label class="field av-picker">Run<select id="av-run-select">${runs.map(run=>`<option value="${run.id}" ${run.id===active.id?'selected':''}>${runName(run.id)} · ${isExample()&&run.id===3?'Example':'Saved inputs'}</option>`).join('')}</select></label>
+      ${moduleTabs('runTab',[['summary','Summary'],...(!hasArtifacts?[['derivation','Derivation'],['proof-details','Proof & audit'],['ir','Analysis IR']]:[]),['versions','Versions'],['usage','Usage'],['compare','Compare']])}<div class="artifact-content">${state.runTab==='compare'?parent?`<div class="av-title"><h2>${runName(parent.id)} → ${runName(active.id)}</h2></div>${differences.length?table(['Field',runName(parent.id),runName(active.id)],differences):'<p>Matching inputs and route.</p>'}<details class="help-item"><summary>Evidence & usage</summary>${table(['Measure',runName(parent.id),runName(active.id)],[['Recorded Rocq checks',ledger.usage(project,parent.id,argumentVersions.get(project.irKeys?.[parent.id])),ledger.usage(project,active.id,argumentVersions.get(currentKey))],['Model calls','Unmetered','Not metered'],['Budget','Unset','Unset']])}</details><div class="action-row">${recordLink(parent.id,'Open parent record')}${recordLink(active.id,'Open child record')}</div>`:
+      `<h2>No parent for ${runName(active.id)}</h2><div class="action-row">${state.records.at(-1)?.parent?recordLink(state.records.at(-1).id,'Compare latest revision','compare'):actionButton('revise','Create a revision',true)}</div>`:
+      state.runTab==='proof-details'&&!hasArtifacts?ledger.page(project,active.id,argumentVersions.get(currentKey),false,true):state.runTab==='derivation'&&!hasArtifacts?argumentPage(active,true):state.runTab==='ir'&&!hasArtifacts?irPage(active):state.runTab==='versions'?table(['Record','Binding'],[['Run',runName(active.id)],['Parent',parent?runName(parent.id):'—'],['Input version',hasArtifacts?'Context v2':runName(active.id)+' snapshot'],['Proof route',routeName(active.route)],['Source',active.source]]):
+      state.runTab==='usage'?table(['Measure','Budget','Used'],[['Model calls','Unset','Not metered'],['Recorded Rocq checks','Unset',hasArtifacts?'Example':ledger.usage(project,active.id,argumentVersions.get(currentKey))],['Cost','Unset','Unmetered']]):
+      `<h2>${runName(active.id)}</h2>${hasArtifacts?'':runReadiness(active)}${markdownView(active.goal,active.goalRef)}<div class="checkrow"><strong>Route</strong><span>${routeName(active.route)}</span></div><div class="checkrow"><strong>Derivation</strong><span>${hasArtifacts?'Scheduling bridge open':argumentStatus}</span></div>${active.note?`<div class="checkrow"><strong>Revision note</strong><span>${esc(active.note)}</span></div>`:''}<div class="action-row">${(hasArtifacts?pageLink('derivation','Open workflow',true):pageLink('derivation','Open derivation',true))}${hasArtifacts?'':pageLink('verification','View evidence')}${actionButton('revise',state.draftStarted?'Resume input draft':'Revise inputs')}</div>`}</div></div>`;
     }
-    if(state.page==='resources')return `${moduleTabs('resourceTab',[['libraries','Proof libraries'],['models','Model templates']])}${state.resourceTab==='libraries'?`<div class="resource-row"><div><h2>Prosa</h2><p>Scheduling models, lemmas and analysis theorems</p></div>${actionButton('prosa','Explore example route',true)}</div><details class="help-item"><summary>Reuse requirements</summary><p>Match the model, discharge the premises, then check the proof and its dependencies in Rocq.</p></details>`:`<div class="resource-row"><div><h2>Single-processor DM</h2><p>Integer time · Sporadic tasks · Preemptive scheduling</p></div>${recordLink(3,'Open example model','modeling')}</div>`}`;
-    if(state.page==='settings')return `${moduleTabs('settingsTab',[['general','General'],['models','Model service'],['proof','Proof tools']])}<div class="artifact-content">${state.settingsTab==='general'?`<label class="field av-picker">Appearance<select id="av-appearance">${[['system','Follow system'],['light','Light'],['dark','Dark']].map(([value,label])=>`<option value="${value}" ${state.appearance===value?'selected':''}>${label}</option>`).join('')}</select></label>`:state.settingsTab==='models'?table(['Model service','Configuration'],[['Provider','OpenAI'],['Requested model','GPT 6.1 sol · High'],['Connection','Offline']]):`${table(['Proof tool','Environment'],[['Rocq','Not configured'],['Prosa','Not pinned']])}<div class="action-row">${pageLink('resources','View proof libraries')}</div>`}</div>`;
-    return `<h2>Working with AutoVISA</h2>${[['How do I start?','Open a project, select Documents, enter the model, analysis and goal, then review the inputs.'],['How do I revise a run?','Choose Revise inputs, review the differences, then freeze a new run. Compare it with its parent in Runs.'],['Where is the evidence?','Select a workflow stage and an output. Verification links open obligations to their original artifacts.'],['What does this prototype run?','Inputs, snapshots and comparisons work locally. PDF extraction, model calls and Rocq execution are not connected.']].map(([question,answer])=>`<details class="help-item"><summary>${question}</summary><p>${answer}</p></details>`).join('')}`;
+    if(state.page==='resources'&&state.resourceTab==='skills')return moduleTabs('resourceTab',[['skills','Skills'],['libraries','Proof libraries'],['models','Model templates']])+skillUI.libraryPage();
+    if(state.page==='resources')return `${moduleTabs('resourceTab',[['skills','Skills'],['libraries','Proof libraries'],['models','Model templates']])}${state.resourceTab==='libraries'?`<div class="resource-row"><div><h2>Prosa</h2><p>Scheduling models, lemmas and analysis theorems</p></div>${projects.some(item=>item.id==='example')?actionButton('prosa','Explore example route',true):''}</div><details class="help-item"><summary>Reuse requirements</summary><p>Match the model, discharge the premises, then check the proof and its dependencies in Rocq.</p></details>`:`<div class="resource-row"><div><h2>Single-processor DM</h2><p>Integer time · Sporadic tasks · Preemptive scheduling</p></div>${projects.some(item=>item.id==='example')?recordLink(3,'Open example model','modeling'):''}</div>`}`;
+    if(state.page==='settings')return `${moduleTabs('settingsTab',[['general','General'],['models','Model service'],['proof','Proof tools']])}<div class="artifact-content">${state.settingsTab==='general'?`<label class="field av-picker">Appearance<select id="av-appearance">${[['system','Follow system'],['light','Light'],['dark','Dark']].map(([value,label])=>`<option value="${value}" ${state.appearance===value?'selected':''}>${label}</option>`).join('')}</select></label>`:state.settingsTab==='models'?`<h2>OpenAI</h2><p>Draft analysis inputs from a source document.</p>${actionButton('openai-settings','Configure OpenAI',true)}`:`${table(['Proof tool','Environment'],[['Rocq','Not configured'],['Prosa','Not pinned']])}<div class="action-row">${pageLink('resources','View proof libraries')}</div>`}</div>`;
+    return `<h2>Working with AutoVISA</h2>${[['How do I start?','Open a project, select Documents, review the model, assumptions and analysis, including the intended guarantee.'],['How do I revise a run?','Choose Revise inputs, review the differences, then freeze a new run. Compare it with its parent in Runs.'],['Where is the evidence?','Select a workflow stage and an output. Verification links open obligations to their original artifacts.'],['What does this prototype run?','Inputs, snapshots and comparisons work locally. Imported text, citations and snapshots stay in this browser. OpenAI can draft inputs from a selected document.']].map(([question,answer])=>`<details class="help-item"><summary>${question}</summary><p>${answer}</p></details>`).join('')}`;
   }
   /** Update shared navigation, breadcrumbs and the selected module.
    * @returns {void}
@@ -331,12 +1190,12 @@
     root.querySelector('#av-navigation').innerHTML=navigation;
     root.querySelector('#av-utilities').innerHTML=navButton('settings')+navButton('help');
     root.querySelector('#av-mobile-links').innerHTML=navigation+navButton('settings')+navButton('help');
-    root.querySelector('#av-breadcrumb').innerHTML=projectOpen?`<button type="button" data-page="projects">Projects</button><span>/</span><button type="button" data-page="overview">case_11</button><span>/</span><strong>${pages[state.page][0]}</strong>`:`<strong>${pages[state.page][0]}</strong>`;
+    root.querySelector('#av-breadcrumb').innerHTML=projectOpen?`<button type="button" data-page="projects">Projects</button><span>/</span><button type="button" data-page="overview">${esc(project.name)}</button><span>/</span><strong>${pages[state.page][0]}</strong>`:`<strong>${pages[state.page][0]}</strong>`;
     /** @type {boolean} Only the example record has a graph to inspect. */
-    const showGraph=state.page==='derivation'&&state.activeId===exampleRun.id;
+    const showGraph=state.page==='derivation'&&isExample()&&state.activeId===exampleRun.id;
     root.querySelector('#av-derivation-page').hidden=!showGraph;
     root.querySelector('#av-module-page').hidden=showGraph;
-    root.querySelector('#av-module-page').innerHTML=showGraph?'':`<div class="pagehead"><h1>${pages[state.page][0]}</h1></div><div class="page-content">${moduleBody()}<p class="local-feedback" id="av-feedback" role="status">${esc(feedback)}</p></div>`;
+    root.querySelector('#av-module-page').innerHTML=showGraph?'':`<div class="pagehead"><h1>${creating?'New project':state.page==='documents'?'Add inputs':state.page==='runs'?'Run details':pages[state.page][0]}</h1>${state.page==='projects'&&!creating?actionButton('new-project','New project',true):''}</div><div class="page-content">${moduleBody()}<p class="local-feedback" id="av-feedback" role="status">${esc(feedback)}</p></div>`;
     root.style.colorScheme=state.appearance==='system'?'light dark':state.appearance;
   }
   /** Navigate without discarding the previously inspected derivation artifact.
@@ -345,7 +1204,13 @@
    */
   function navigate(page){
     if(!pages[page])return;
-    state.page=page;
+    creating=false;state.page=page;
+    if(['verification','expert-audit'].includes(page)&&state.activeId){
+      const query=new URLSearchParams({view:page,project:project.id,run:state.activeId});
+      const version=argumentVersions.get(project.irKeys?.[state.activeId]);
+      if(version)query.set('version',version);
+      history.replaceState(null,'','?'+query);
+    }
     feedback='';
     root.querySelector('.mobile-nav').open=false;
   }
@@ -429,6 +1294,7 @@
    * @returns {void}
    */
   function drawGraphs(){
+
     root.querySelectorAll('.graph').forEach(container=>{
       /** @type {SVGElement} Connector layer for the current graph. */
       const svg=container.querySelector('.wires');
@@ -477,7 +1343,17 @@
     /** @type {Array<string>} Selected artifact descriptor. */
     const artifact=stage.outputs[state.artifact]||stage.outputs[0];
     renderModule();
-    root.classList.toggle('focused',state.page==='derivation'&&state.activeId===3&&state.focus&&state.view==='workflow');
+    if(state.page==='documents')annotateDraft();
+    if((state.page!=='runs'||project.irKeys?.[state.activeId])&&['runs','modeling','derivation','overview'].includes(state.page)&&state.activeId&&!(isExample()&&state.activeId===exampleRun.id)&&!irViews.has(irIdentity(project,state.activeId))){
+      const owner=project,run=state.activeId;
+      queueMicrotask(()=>{if(owner===project&&run===state.activeId)loadIR(owner,run,!owner.irKeys?.[run]);});
+    }
+    if(['derivation','runs','overview'].includes(state.page)){
+      const ir=irViews.get(irIdentity(project,state.activeId))?.ir;
+      const version=argumentVersions.get(ir?.key)||2,id=ir&&argumentKey(ir.key,version);
+      if(ir&&!reasoningViews.has(id))queueMicrotask(()=>{if(!reasoningViews.has(id))fetchArgument(ir,false,version);});
+    }
+    root.classList.toggle('focused',state.page==='derivation'&&isExample()&&state.activeId===3&&state.focus&&state.view==='workflow');
     root.classList.toggle('no-navigation',state.navHidden);
     root.querySelector('#rt-workflow-view').hidden=state.view!=='workflow';
     root.querySelector('#rt-catalog-view').hidden=state.view!=='artifacts';
@@ -505,6 +1381,8 @@
     root.querySelector('#rt-artifact-content').innerHTML=state.detail==='preview'?preview(artifact[3]):state.detail==='details'?details(artifact):sources();
     renderCatalog();
     renderMath();
+    const sheet=root.querySelector('.pdf-sheet'),doc=selectedDocument();
+    if(sheet&&doc)drawOriginalPage(sheet,doc.id,sourcePages.get(doc.id)||1,project.id);
     if(window.lucide)window.lucide.createIcons({attrs:{width:16,height:16}});
     requestAnimationFrame(drawGraphs);
   }
@@ -525,12 +1403,18 @@
    */
   function remember(announce=false){
     try{
-      localStorage.setItem(storageKey,JSON.stringify({...state,designVersion:4}));
+      project.workspace=structuredClone(state);
+      const persisted=JSON.parse(localStorage.getItem(storageKey));
+      const directory=new Map(projects.map(item=>[item.id,item]));
+      for(const item of persisted?.projects||[])if(!directory.has(item.id))directory.set(item.id,item);
+      localStorage.setItem(storageKey,JSON.stringify({projects:[...directory.values()].filter(item=>!wasDeleted(item.id)),current:project.id}));
       if(announce)root.querySelector('#av-feedback').textContent=runName(state.activeId)+' saved.';
+      return true;
     }catch{
       /** @type {HTMLElement|null} Current module's local storage status. */
       const message=root.querySelector('#av-feedback');
       if(message)message.textContent='This change is available in this tab only.';
+      return false;
     }
   }
   /** Restore only validated local state belonging to this revision.
@@ -543,34 +1427,39 @@
     if(stages[saved.stage])state.stage=saved.stage;
     if(Number.isInteger(saved.artifact)&&saved.artifact>=0&&saved.artifact<stages[state.stage].outputs.length)state.artifact=saved.artifact;
     /** @type {Object<string,Array<string>>} Persisted presentation fields and their allowed values. */
-    const choices={detail:['preview','details','sources'],view:['workflow','artifacts'],route:['independent','prosa'],documentTab:['pdf','manual'],modelTab:['model','analysis','goal'],verificationTab:['status','obligations','audit','log'],resourceTab:['libraries','models'],runTab:['summary','versions','usage','compare'],settingsTab:['general','models','proof'],appearance:['system','light','dark']};
+    const choices={detail:['preview','details','sources'],view:['workflow','artifacts'],route:['independent','prosa'],documentTab:['pdf','manual','extract'],modelTab:Object.keys(inputFields),verificationTab:['status','obligations','audit','log'],resourceTab:['skills','libraries','models'],runTab:['summary','proof-details','derivation','ir','versions','usage','compare'],settingsTab:['general','models','proof'],appearance:['system','light','dark']};
     Object.entries(choices).forEach(([field,values])=>{if(values.includes(saved[field]))state[field]=saved[field];});
     state.focus=saved.focus===true;state.navHidden=saved.navHidden===true;
     /** @type {Set<number>} Only earlier records can be referenced as parents. */
-    const ids=new Set([exampleRun.id]);
+    const first=isExample()?3:0;
+    const ids=new Set([first]);
     state.records=[];
     for(const entry of Array.isArray(saved.records)?saved.records:[]){
-      if(entry?.id!==state.records.length+4||!ids.has(entry.parent))break;
+      if(entry?.id!==state.records.length+first+1||!(entry.parent===null&&!isExample()&&!state.records.length||entry.parent!==0&&ids.has(entry.parent)))break;
       /** @type {Object} Rebuild a typed delta from known fields. */
       const record={id:entry.id,parent:entry.parent};
       for(const key of [...Object.keys(inputFields),...Object.keys(referenceFields),'source','note']){
-        if(typeof entry[key]==='string')record[key]=entry[key].slice(0,key==='note'?350:1800);
+        if(typeof entry[key]==='string')record[key]=key==='note'?entry[key].slice(0,350):entry[key];
       }
+      if(Object.hasOwn(entry,'paperReview'))record.paperReview=Array.isArray(entry.paperReview?.targets)&&Array.isArray(entry.paperReview.notes)?entry.paperReview:null;
       if(['independent','prosa'].includes(entry.route))record.route=entry.route;
       state.records.push(record);ids.add(record.id);
     }
-    state.activeId=ids.has(saved.activeId)?saved.activeId:exampleRun.id;
+    state.activeId=ids.has(saved.activeId)?saved.activeId:first;
     state.draftParent=ids.has(saved.draftParent)?saved.draftParent:state.activeId;
     state.draftRoute=['independent','prosa'].includes(saved.draftRoute)?saved.draftRoute:recordFor(state.draftParent).route;
     state.draftSource=typeof saved.draftSource==='string'?saved.draftSource.slice(0,300):'Manual input';
     state.draftNote=typeof saved.draftNote==='string'?saved.draftNote.slice(0,350):'';
-    state.draftRefs=Object.fromEntries(Object.keys(referenceFields).filter(key=>typeof saved.draftRefs?.[key]==='string').map(key=>[key,saved.draftRefs[key].slice(0,120)]));
+    state.draftRefs=Object.fromEntries(Object.keys(referenceFields).filter(key=>typeof saved.draftRefs?.[key]==='string').map(key=>[key,saved.draftRefs[key]]));
+    state.paperReview=saved.draftStarted&&Array.isArray(saved.paperReview?.targets)&&Array.isArray(saved.paperReview.notes)?saved.paperReview:null;
     state.draftStarted=saved.draftStarted===true||(saved.designVersion<4&&Object.values(saved.inputDraft||{}).some(Boolean));
-    state.reviewing=state.draftStarted&&saved.reviewing===true;
+    state.reviewing=false;
+    if(state.draftStarted&&saved.reviewing===true&&saved.page==='modeling'){state.page='documents';state.documentTab=selectedDocument()?'extract':'manual';}
+    if(state.draftStarted&&state.documentTab==='extract')inputPane='inputs';
     if(typeof saved.query==='string')state.query=saved.query.slice(0,100);
     if(typeof saved.claim==='string'&&/^[a-z]+$/.test(saved.claim))state.claim=saved.claim;
     if(typeof saved.latex==='string')state.latex=saved.latex.slice(0,1000);
-    ['model','analysis','goal'].forEach(field=>{if(typeof saved.inputDraft?.[field]==='string')state.inputDraft[field]=saved.inputDraft[field].slice(0,1800);});
+    Object.keys(inputFields).forEach(field=>{if(typeof saved.inputDraft?.[field]==='string')state.inputDraft[field]=saved.inputDraft[field];});
   }
   /** Select a stage while resetting only its artifact-specific view.
    * @param {string} stage Stage identifier.
@@ -583,47 +1472,184 @@
   /** Bind a new input draft to the selected record before the first edit. @returns {void} */
   function startInput(){
     if(state.draftStarted)return;
-    state.draftParent=state.activeId;state.draftRoute=recordFor(state.activeId).route;state.draftStarted=true;
+    state.draftParent=state.activeId;state.draftRoute=state.activeId?recordFor(state.activeId).route:state.draftRoute;state.draftStarted=true;
   }
   /** Clear the editor state once its contents have been frozen or discarded. @returns {void} */
   function clearDraft(){
-    state.inputDraft={model:'',analysis:'',goal:''};state.draftRefs={};state.draftNote='';state.draftSource='Manual input';state.draftStarted=false;state.reviewing=false;
+    state.paperReview=null;state.inputDraft={model:'',assumptions:'',analysis:'',goal:''};state.draftRefs={};state.draftNote='';state.draftSource='Manual input';state.draftStarted=false;state.reviewing=false;
   }
   /** Select a frozen run across the project modules. @param {number} id Run identifier. @returns {void} */
   function selectRun(id){state.activeId=id;state.reviewing=false;state.focus=false;state.route=recordFor(id).route;}
   /** Open the editable form without mutating the existing frozen record. @returns {void} */
-  function editFields(){state.reviewing=false;state.documentTab='manual';navigate('documents');}
+  function editFields(){state.reviewing=false;state.documentTab=selectedDocument()&&state.documentTab!=='manual'?'extract':'manual';navigate('documents');}
   /** Commit only the changed fields and open the comparison with their parent. @returns {void} */
   function freezeDraft(){
     /** @type {Object} Immutable input record that supplied the baseline. */
     const parent=recordFor(state.draftParent);
     /** @type {Object} Unique child identifier and its explicit parent. */
-    const record={id:(state.records.at(-1)?.id||3)+1,parent:parent.id};
+    const record={id:(state.records.at(-1)?.id||(isExample()?3:0))+1,parent:parent.id||null};
     for(const [key,value] of Object.entries(workingCopy()))if(value!==(parent[key]||''))record[key]=value;
-    state.records.push(record);clearDraft();selectRun(record.id);state.runTab='compare';navigate('runs');
-  }
-  /** Refresh only the diff so the route picker and note retain keyboard focus. @returns {void} */
-  function updateDraftDiff(){
-    /** @type {Array<Array<string>>} Exact parent and draft values for changed fields. */
-    const differences=changesBetween(recordFor(state.draftParent),workingCopy());
-    root.querySelector('#av-draft-diff').innerHTML=differences.length?table(['Field','Before','After'],differences):'Same inputs and route';
-    renderMath();
+    // Keep alternate targets and paper observations with the run for later revisions.
+    record.paperReview=state.paperReview?structuredClone(state.paperReview):null;
+    state.records.push(record);clearDraft();selectRun(record.id);state.runTab='summary';state.modelTab='model';navigate('modeling');
   }
   /** Validate three editable fields and open a review. @returns {boolean} Whether review opened. */
   function reviewInputs(){
     for(const field of root.querySelectorAll('#av-input-form [data-input-field]')){
-      if(!field.value.trim()){
+      if(field.name!=='assumptions'&&!field.value.trim()){
+        setSourceMode(field.closest('[data-msa-field]'),true);
         feedback='Enter the '+field.name+' before review.';
         field.setAttribute('aria-invalid','true');field.focus();root.querySelector('#av-feedback').textContent=feedback;return false;
       }
       state.inputDraft[field.name]=field.value.trim();
     }
-    startInput();state.reviewing=true;navigate('modeling');return true;
+    startInput();return true;
   }
-  root.addEventListener('click',event=>{
+  root.addEventListener('submit',event=>{
+    if(event.target.id!=='project-form')return;
+    event.preventDefault();
+    /** @type {HTMLInputElement} User-facing project name, unique in this browser. */
+    const field=event.target.elements.projectName;
+    const name=field.value.trim();
+    if(!name||projects.some(item=>item.name.toLowerCase()===name.toLowerCase())){
+      field.setCustomValidity(name?'A project with this name already exists.':'Enter a project name.');
+      field.reportValidity();return;
+    }
+    /** @type {Object} New project uses an immutable ID independent of the display name. */
+    const next={id:crypto.randomUUID(),name,description:event.target.elements.description.value.trim(),workspace:null};
+    projects.unshift(next);openProject(next);navigate('documents');state.documentTab='pdf';render();remember();
+  });
+  root.addEventListener('keydown',event=>{
+    if((event.key==='Enter'||event.key===' ')&&event.target.matches('[data-map-lemma],[data-map-goal]')){
+      event.preventDefault();event.target.dispatchEvent(new MouseEvent('click',{bubbles:true}));
+    }
+  });
+  root.addEventListener('click',async event=>{
+    /** Activate graph nodes through their native pointer and keyboard events. */
+    const mapped=event.target.closest('[data-map-goal],[data-map-lemma]');
+    if(mapped){
+      const key=project.irKeys?.[state.activeId],version=argumentVersions.get(key)||2;
+      const view=reasoningViews.get(argumentKey(key,version));if(!view?.graph)return;
+      const graph=view.graph,lemma=mapped.dataset.mapLemma;
+      const focus=argumentReader.focusOf(graph,view);
+      const whole=!!mapped.closest('.full-network');
+      const filtered=whole&&view.networkFilter&&view.networkFilter!=='All';
+      const related=graph.connections.filter(link=>lemma?link.forward===lemma&&(!mapped.dataset.context||link.backward===mapped.dataset.context):link.backward===mapped.dataset.mapGoal);
+      const eligible=filtered?related.filter(link=>(({aligned:'Matches',open:'Gap'})[link.status]||link.status)===view.networkFilter):related;
+      const available=eligible.length?eligible:related;
+      const route=available.find(link=>link.backward===focus.target.id&&link.forward===focus.pair?.forward)||available.find(link=>link.backward===focus.target.id)||available[0];
+      const target=mapped.dataset.mapGoal||route?.backward;
+      if(filtered&&!eligible.length)view.networkFilter='All';
+      if(!target){
+        view.selected=lemma;view.section='forward';view.goalContext=focus.target.id;view.pairIndex=null;
+        navigate('runs');state.runTab='derivation';syncArgumentLink(version,lemma);render();remember();
+        root.querySelector('#arg-record')?.focus();return;
+      }
+      view.selected=target;view.lemma=lemma||null;
+      if(target!==focus.target.id||lemma!==focus.pair?.forward)view.pairIndex=null;
+      if(filtered&&eligible.length){view.lemma=route.forward;view.pairIndex=graph.connections.indexOf(route);}
+      syncArgumentLink(version,target);render();
+      if(whole){const picker=root.querySelector('[data-goal-picker]');picker?.focus({preventScroll:true});picker?.scrollIntoView({block:'nearest'});}
+      else root.querySelector('.near-network '+(lemma?'[data-map-lemma]':'[data-map-goal]')+'[aria-pressed=true]')?.focus({preventScroll:true});
+      return;
+    }
     /** @type {HTMLButtonElement|null} Action selected with a pointer or keyboard. */
-    const button=event.target.closest('button');if(!button)return;
+    const button=event.target.closest('button');if(!button||button.type==='submit')return;
+    const argKey=project.irKeys?.[state.activeId], edition=argumentVersions.get(argKey)||2;
+    if(button.hasAttribute('data-reload-audit')){ledger.invalidate(argKey);if(argKey&&button.dataset.version)void audit.load({project:project.id,run:state.activeId,key:argKey,version:Number(button.dataset.version)});render();return;}
+    if(button.dataset.workflow||button.dataset.workflowSettings){
+      const bound={key:argKey,version:Number(button.dataset.version),project:project.id,run:state.activeId};
+      if(button.dataset.workflow)void audit.load(bound,button.dataset.workflow);
+      else audit.configure(bound,button.dataset.workflowSettings).catch(error=>{
+        const note=document.createElement('p');note.textContent=error.message;button.after(note);
+      });
+      return;
+    }
+    if(button.dataset.refineArgument){
+      const ctx={key:argKey,owner:project,run:state.activeId};
+      button.disabled=true;
+      try{
+        const job=await modelRequest('run-skills',{key:argKey,project:project.id,run:ctx.run,parent:Number(button.dataset.refineArgument),fromReview:true});
+        let progress;
+        do{await new Promise(ok=>setTimeout(ok,1500));progress=await modelRequest('skill-progress',{id:job.id});}while(progress.stage==='running');
+        if(progress.stage!=='ready')throw Error(progress.message||'Refinement interrupted.');
+        if(project===ctx.owner&&state.activeId===ctx.run)openSkillRecord(ctx,progress.version,undefined,true);
+      }catch(e){const msg=document.createElement('p');msg.textContent=e.message;button.after(msg);button.disabled=false;}
+      return;
+    }
+    if(button.hasAttribute('data-reload-evidence')){ledger.invalidate(argKey);render();return;}
+    if(button.dataset.mapFormat){
+      const view=reasoningViews.get(argumentKey(argKey,edition));if(!view?.graph)return;
+      view.mapFormat=button.dataset.mapFormat;render();
+      root.querySelector('[data-map-format][aria-pressed=true]')?.focus({preventScroll:true});return;
+    }
+    if(button.dataset.networkFilter){
+      const view=reasoningViews.get(argumentKey(argKey,edition));if(!view?.graph)return;
+      view.networkFilter=button.dataset.networkFilter;render();
+      root.querySelector('.run-totals [aria-pressed=true]')?.focus({preventScroll:true});return;
+    }
+    if(button.hasAttribute('data-show-overview')){const section=root.querySelector('#run-graph-overview');section?.focus({preventScroll:true});section?.scrollIntoView({block:'start'});return;}
+    if(button.dataset.skillAction){void skillUI.handle(button.dataset.skillAction,button.dataset.skillId);return;}
+    if(button.dataset.moduleAction==='retry-argument-read'){reasoningViews.delete(argumentKey(argKey,edition));render();return;}
+    if(button.dataset.lemma||button.dataset.localCheck!==undefined){
+      const view=reasoningViews.get(argumentKey(argKey,edition));if(!view?.graph)return;
+      if(button.dataset.localCheck!==undefined){
+        const trail=button.dataset.trail?button.dataset.trail.split(',').map(Number):[];
+        void argumentReader.loadCheck(view.graph,Number(button.dataset.localCheck),true,trail);return;
+      }
+      view.selected=argumentReader.focusOf(view.graph,view).target.id;view.lemma=button.dataset.lemma||null;view.pairIndex=null;
+      syncArgumentLink(edition,view.selected);render();root.querySelector('.lemma-options [aria-pressed=true]')?.focus({preventScroll:true});return;
+    }
+    if(button.dataset.argPair!==undefined){
+      const view=reasoningViews.get(argumentKey(argKey,edition));
+      if(view?.graph){view.pairIndex=Number(button.dataset.argPair);render();root.querySelector('.dag-options [aria-pressed="true"]')?.focus({preventScroll:true});}
+      return;
+    }
+    if(button.dataset.argVersion){
+      const v=Number(button.dataset.argVersion);
+      argumentVersions.set(argKey,v);
+      syncArgumentLink(v);render();return;
+    }
+    if(button.dataset.argSection||button.dataset.argTarget||button.dataset.dagNode){
+      const view=reasoningViews.get(argumentKey(argKey,edition)),g=view?.graph;
+      if(!g)return;
+      const section=button.dataset.argSection,target=button.dataset.argTarget;
+      if(section){
+        view.section=section;
+        if(section!=='alignment'&&!g[section].some(s=>s.id===view.selected))view.selected=g[section][0].id;
+      }else{
+        if(state.page==='derivation')view.goalContext=argumentReader.focusOf(g,view).target.id;
+        view.selected=button.dataset.argId||button.dataset.dagNode;view.pairIndex=null;
+        view.section=g.forward.some(s=>s.id===view.selected)?'forward':'backward';
+        if(target==='detail'){navigate('runs');state.runTab='derivation';}
+        if(target==='map')navigate('derivation');
+      }
+      syncArgumentLink(edition,view.selected);render();remember();
+      const dest=target==='detail'?root.querySelector('#arg-record'):target==='map'?root.querySelector('[data-goal-picker]'):button.dataset.dagNode?root.querySelector('#dag-inspector'):null;
+      if(dest){dest.focus({preventScroll:true});if(target||matchMedia('(max-width:1150px)').matches)dest.scrollIntoView({block:'nearest'});}
+      return;
+    }
+    if(button.dataset.moduleAction==='start-derivation'){
+      const ir=irViews.get(irIdentity(project,state.activeId))?.ir;if(ir)fetchArgument(ir,true,edition);return;
+    }
+    if(button.dataset.turn){const doc=selectedDocument();sourcePages.set(doc.id,Math.max(1,Math.min(doc.units.length,(sourcePages.get(doc.id)||1)+Number(button.dataset.turn))));render();return;}
+    if(button.dataset.moduleAction==='openai-settings'){connectionDialog();return;}
+    if(button.dataset.moduleAction==='retry-preparation'){loadIR(project,state.activeId,true);return;}
+    if(button.dataset.moduleAction==='export-ir'){downloadIR();return;}
+    if(button.dataset.moduleAction==='generate-msa'){generateDraft();return;}
+    if(button.dataset.cite){showSource(button.dataset.cite);return;}
+    if(button.dataset.editMsa){const section=button.closest('[data-msa-field]');setSourceMode(section,section.querySelector('textarea').hidden);return;}
+    if(button.dataset.assign){
+      const viewer=root.querySelector('#source-text'),key=button.dataset.assign;
+      const start=viewer.selectionStart,end=viewer.selectionEnd,quote=viewer.value.slice(start,end);
+      if(!quote.trim()||quote.length>1800){root.querySelector('#av-feedback').textContent='Select a passage of 1–1800 characters.';return;}
+      startInput();state.inputDraft[key]=quote;state.draftRefs[key+'Ref']=selectedDocument().id+':'+start+':'+end;
+      state.draftSource='Document excerpts';inputPane='inputs';render();remember();setSourceMode(root.querySelector('[data-msa-field="'+key+'"]'),true);return;
+    }
+    if(button.dataset.deleteProject){confirmProjectDeletion(projects.find(item=>item.id===button.dataset.deleteProject));return;}
+    if(button.dataset.project)openProject(projects.find(item=>item.id===button.dataset.project));
     if(button.dataset.page){
+      if(button.dataset.record&&state.page==='resources')openProject(projects.find(item=>item.id==='example'));
       if(button.dataset.record){selectRun(Number(button.dataset.record));state.runTab=button.dataset.page==='compare'?'compare':'summary';state.modelTab='model';}
       if(button.dataset.page==='modeling')state.reviewing=false;
       navigate(button.dataset.page==='compare'?'runs':button.dataset.page);
@@ -631,14 +1657,26 @@
     if(button.dataset.tabField){state[button.dataset.tabField]=button.dataset.tabValue;feedback='';}
     if(button.dataset.openStage){if(state.page!=='derivation')state.route=recordFor(state.activeId).route;navigate('derivation');selectStage(button.dataset.openStage,Number(button.dataset.openOutput||0));state.view='workflow';state.focus=false;}
     switch(button.dataset.moduleAction){
-      case 'review':if(!reviewInputs())return;break;
-      case 'prosa':selectRun(3);state.route='prosa';navigate('derivation');selectStage('proof');state.view='workflow';break;
+      case 'import-mode':state.documentTab='pdf';break;
+      case 'manual-mode':state.documentTab='manual';reading++;readStatus='';break;
+      case 'extract':state.documentTab='extract';inputPane='source';break;
+      case 'source-pane':inputPane='source';break;
+      case 'inputs-pane':inputPane='inputs';break;
+      case 'scope-option':chooseTimeScope();return;
+      case 'new-project':creating=true;break;
+      case 'prosa':openProject(projects.find(item=>item.id==='example'));selectRun(3);state.route='prosa';navigate('derivation');selectStage('proof');state.view='workflow';break;
       case 'revise':prepareDraft();editFields();break;
       case 'enter-fields':editFields();break;
       case 'example-input':
-        startInput();state.inputDraft=Object.fromEntries(Object.keys(inputFields).map(key=>[key,exampleRun[key]]));state.draftSource=exampleRun.source;state.draftRefs={};break;
+        startInput();state.paperReview=null;state.inputDraft=Object.fromEntries(Object.keys(inputFields).map(key=>[key,exampleRun[key]||'']));state.draftSource=exampleRun.source;state.draftRefs={};break;
       case 'discard':clearDraft();editFields();break;
-      case 'freeze':freezeDraft();break;
+      case 'freeze':{
+        /** @type {Object} Restore the review if storage cannot commit its input snapshot. */
+        if(!reviewInputs())return;
+        const draft=structuredClone(state);freezeDraft();
+        if(!remember()){Object.assign(state,draft);project.workspace=structuredClone(draft);feedback='Could not save these inputs. Browser storage is full or unavailable.';render();return;}
+        break;
+      }
     }
     if(button.dataset.stage)selectStage(button.dataset.stage);
     if(button.dataset.output!==undefined){state.artifact=Number(button.dataset.output);state.detail='preview';}
@@ -654,9 +1692,10 @@
     const openMobileDetail=Boolean(button.dataset.stage||button.dataset.catalogStage||button.dataset.openStage||button.dataset.action==='gap')&&window.matchMedia('(max-width:600px)').matches;
     if(openMobileDetail)state.focus=true;
     render();remember(button.dataset.moduleAction==='freeze');
-    if(button.dataset.moduleAction==='review')root.querySelector('#av-draft-route').focus({preventScroll:true});
-    if(['enter-fields','revise','example-input','discard'].includes(button.dataset.moduleAction))root.querySelector('[name="model"]').focus({preventScroll:true});
-    if(button.dataset.moduleAction==='freeze')root.querySelector('#av-run-select').focus({preventScroll:true});
+    if(creating)root.querySelector('[name=projectName]').focus();
+
+    if(['enter-fields','revise','example-input','discard'].includes(button.dataset.moduleAction))root.querySelector('[data-edit-msa="model"]').focus({preventScroll:true});
+    if(button.dataset.moduleAction==='freeze')loadIR(project,state.activeId,true);
     // Recreated artifact controls retain keyboard focus after their content changes.
     if(button.dataset.output!==undefined)root.querySelector(`[data-output="${state.artifact}"]`)?.focus({preventScroll:true});
     if(button.dataset.claim)root.querySelector(`[data-claim="${state.claim}"]`)?.focus({preventScroll:true});
@@ -673,13 +1712,14 @@
   root.addEventListener('input',event=>{
     /** @type {HTMLInputElement|HTMLTextAreaElement} Editable local preview field. */
     const field=event.target;
+    if(field.name==='projectName')field.setCustomValidity('');
     if(field.dataset.inputField){
       startInput();state.inputDraft[field.dataset.inputField]=field.value;field.removeAttribute('aria-invalid');field.removeAttribute('aria-describedby');
       feedback='';root.querySelector('#av-feedback').textContent='';
-      root.querySelector('[data-module-action="example-input"]')?.remove();root.querySelector('[data-module-action="discard"]').hidden=false;remember();
+      remember();
     }
     if(field.dataset.reference){state.draftRefs[field.dataset.reference]=field.value.trim();remember();}
-    if(field.id==='av-revision-note'){state.draftNote=field.value;updateDraftDiff();remember();}
+    if(field.id==='av-revision-note'){state.draftNote=field.value;remember();}
     if(field.id==='av-latex'){
       state.latex=field.value;
       root.querySelector('#av-latex-preview').innerHTML=math(state.latex,true);
@@ -689,15 +1729,27 @@
   root.addEventListener('change',event=>{
     /** @type {HTMLInputElement|HTMLSelectElement} File or preference control. */
     const field=event.target;
-    if(field.id==='av-pdf'){
-      /** @type {File|undefined} The reference name is saved with its manually entered fields. */
-      const file=field.files?.[0];if(!file)return;
-      /** @type {string} Replacing a paper invalidates locators tied to the previous reference. */
-      const source='PDF · '+file.name.slice(0,250);startInput();
-      if(source!==state.draftSource)state.draftRefs=Object.fromEntries(Object.keys(referenceFields).map(key=>[key,'']));
-      state.draftSource=source;root.querySelector('#av-pdf-name').textContent=file.name;remember();
+    if(field.hasAttribute('data-audit-limit')){
+      audit.options({key:project.irKeys[state.activeId],version:Number(field.dataset.version)}).limit=Number(field.value);return;
     }
-    if(field.id==='av-draft-route'){state.draftRoute=field.value;updateDraftDiff();remember();}
+    if(field.matches('[data-goal-picker],[data-route-picker]')){
+      const key=project.irKeys?.[state.activeId],edition=argumentVersions.get(key)||2,view=reasoningViews.get(argumentKey(key,edition));if(!view?.graph)return;
+      const goal=field.hasAttribute('data-goal-picker');
+      if(goal){view.selected=field.value;view.lemma=null;view.pairIndex=null;}
+      else{view.pairIndex=Number(field.value);view.lemma=view.graph.connections[view.pairIndex].forward;view.selected=view.graph.connections[view.pairIndex].backward;}
+      syncArgumentLink(edition,view.selected);render();root.querySelector(goal?'[data-goal-picker]':'[data-route-picker]')?.focus({preventScroll:true});return;
+    }
+    if(field.id==='av-file'&&field.files?.[0]){importFile(field.files[0]);return;}
+    if(field.id==='paper-target'){
+      const review=state.paperReview,index=Number(field.value);
+      const previous=review.targets[review.index]||review.manual;
+      Object.assign(previous,{text:state.inputDraft.goal,ref:state.draftRefs.goalRef||''});
+      const next=review.targets[index]||review.manual;
+      review.index=index;state.inputDraft.goal=next.text;state.draftRefs.goalRef=next.ref;
+      remember();render();root.querySelector('#paper-target')?.focus();return;
+    }
+    if(field.id==='source-choice'){project.selectedDocument=field.value;reading++;readStatus='';render();remember();return;}
+    if(field.id==='av-draft-route'){startInput();state.draftRoute=field.value;remember();render();}
     if(field.id==='av-run-select'){selectRun(Number(field.value));render();remember();root.querySelector('#av-run-select').focus({preventScroll:true});}
     if(field.id==='av-appearance'){state.appearance=field.value;render();remember();root.querySelector('#av-appearance').focus();}
   });
@@ -707,7 +1759,27 @@
   root.addEventListener('keydown',event=>{if(event.key==='Escape'&&state.page==='derivation'&&state.focus){state.focus=false;render();remember();root.querySelector('[data-action="focus"]').focus();}});
   /** @type {string} Origin-local storage for the standalone AutoVISA workspace. */
   const storageKey='autovisa.workspace.v4';
-  try{restore(JSON.parse(localStorage.getItem(storageKey)));}catch{/* A fresh tab can run without storage. */}
+  try{
+    /** @type {Object|null} Older single-project saves belong to the seeded case study. */
+    const saved=JSON.parse(localStorage.getItem(storageKey));
+    if(Array.isArray(saved?.projects)){
+      projects=saved.projects.filter(item=>!wasDeleted(item.id));project=projects.find(item=>item.id===saved.current)||projects[0]||{id:null};
+      if(projects.length!==saved.projects.length)localStorage.setItem(storageKey,JSON.stringify({projects,current:project.id}));
+      restore(project.workspace&&{...project.workspace,designVersion:4});
+    }else restore(saved);
+  }catch{/* A fresh tab can run without storage. */}
+  /** Optional deep link to a locally stored project and immutable run. */
+  let argumentStart=null;
+  const targetParams=new URLSearchParams(location.search);
+  if(['ir','msa','run','proof-details','derivation','derivation-record','verification','expert-audit','overview'].includes(targetParams.get('view'))){
+    const target=projects.find(p=>p.id===targetParams.get('project')||p.name===targetParams.get('project'));
+    if(target){openProject(target);const run=Number(targetParams.get('run'));if(recordFor(run).id===run&&run>0){selectRun(run);const key=target.irKeys?.[run],version=Number(targetParams.get('version'))||2;
+      if(key){if(targetParams.has('version')&&Number.isSafeInteger(version)&&version>0)argumentVersions.set(key,version);argumentStart={key,version,step:targetParams.get('step'),lemma:targetParams.get('lemma'),goal:targetParams.get('goal'),pairIndex:targetParams.has('route')?Number(targetParams.get('route')):null};}
+      state.runTab=({'derivation-record':'derivation','proof-details':'proof-details',ir:'ir'})[targetParams.get('view')]||'summary';state.modelTab='model';navigate(({msa:'modeling',derivation:'derivation',verification:'verification','expert-audit':'expert-audit',overview:'overview'})[targetParams.get('view')]||'runs');}}
+  }
+  if(targetParams.get('view')==='projects'||(targetParams.has('project')&&!projects.some(item=>item.id===targetParams.get('project')||item.name===targetParams.get('project'))))navigate('projects');
+  if(targetParams.get('view')==='skills'){navigate('resources');state.resourceTab='skills';}
+  if(new URLSearchParams(location.search).get('start')==='new'){navigate('projects');creating=true;history.replaceState(null,'',location.pathname);}
   root.querySelector('#rt-search').value=state.query;
   render();
   window.addEventListener('DOMContentLoaded',()=>{
