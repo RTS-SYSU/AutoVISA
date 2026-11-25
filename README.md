@@ -1,41 +1,45 @@
 # AutoVISA
 
-AutoVISA 是一个面向实时系统研究者的本地工作台。可以从论文或手动输入开始，选定一项调度保证，查看从模型推出的引理、从目标拆出的子目标，以及 Rocq 对最终命题的检查结果。
+AutoVISA 是面向实时系统研究者的本地证明工作台。给它一篇调度论文，或直接输入系统模型、分析方法和目标，就可以沿着一项调度保证，追踪它依赖哪些引理、哪些条件尚待补足，以及最终命题是否通过 Rocq 检查。
 
-## 启动工作台
+## 快速开始
 
-安装 Node.js，在仓库根目录运行：
+安装 Node.js 和 Git，然后启动 `dev` 版工作台：
 
 ```sh
+git clone --branch dev https://github.com/RTS-SYSU/AutoVISA.git
+cd AutoVISA
 node tools/serve-prototype.cjs
 ```
 
-打开 [本地工作台](http://127.0.0.1:8769/)，选择 **New project**。Windows 用户也可运行 `.\start-prototype.ps1`。服务绑定本机回环地址。浏览界面只需 Node.js；自动抽取和推理需要在 **OpenAI settings** 配置可访问的模型，机器证明还需要本地检查环境。
+打开 [本地工作台](http://127.0.0.1:8769/)，点击 **New project**。仅浏览界面需要 Node.js；自动抽取与推导需要在 **OpenAI settings** 配置模型，实际证明还需安装下方的 Rocq 工具链。
 
-## 从论文到证明
+## 第一次运行
 
-1. **Documents**　上传 PDF、Markdown、TXT、DOCX，或手动输入。审核模型、假设和分析方法，选择本次要证明的目标，点击 **Confirm MSA**。
-2. **Derivation**　从确认的输入启动双向推导。选择一个反向子目标（B），查看支持它的正向引理（F）、对齐关系和缺口。
-3. **Proof**　点击 **Check formal model** 检查模型。模型通过后，可从依赖图选择节点逐项检查，或点击 **Run full proof automatically** 运行整条路线。
-4. **Expert audit**　选择审查维度和轮数，检查模型忠实性、调度语义及目标覆盖。**Run details** 保留各次尝试的诊断、证明义务和检查输出。
+1. 在 **Documents** 上传 PDF、Markdown、TXT 或 DOCX，也可以手动录入。核对带出处的草稿，选定一个目标并点击 **Confirm MSA**。
+2. 在 **Derivation** 启动推导。选择一个反向子目标，查看哪些正向引理支持它，以及还缺哪些条件。
+3. 在 **Proof** 选择 **Formal model** 检查定义。通过后，从 **Lemmas & subgoals** 选择要检查的节点，或在 **More actions** 中启动完整证明。
+4. 查看最终结果。**Final theorem · Verified by Rocq** 表示最终命题通过了编译和内核检查。若阶段显示 **Needs clarification**，展开 **Review model issues** 查看需要处理的定义。**Run details** 提供该次尝试的原始记录。
 
-## 如何读 Proof 页
+**Expert audit** 可进一步审查模型忠实性、调度语义与目标覆盖。运行审计时可选择维度和轮数。
 
-状态区显示当前尝试所处的阶段、最新一轮检查过的义务数，以及 **Final theorem** 的结果。
+## 内置 Skills
 
-| 状态 | 含义及下一步 |
+在工作台的 **Resources** 中可阅读内置 Skill。下表链接到平台实际加载的指令；已有运行保留当时选用的版本。
+
+| 阶段 | 仓库中的内容 |
 | --- | --- |
-| **Proof in progress** | 尝试正在运行。页面自动更新当前阶段和计数。等待生成形式模型时，计数可以保持为零。 |
-| **Formal model checked** | 模型已通过类型检查。可以选择引理或启动完整证明。 |
-| **Selected checks complete** | 本次所选节点已检查完毕。可从依赖图继续检查最终定理。 |
-| **Proof stopped / Proof interrupted / Proof needs attention** | 本次尝试已停止或有未解决项。查看 **Next step** 和本次诊断，再决定修订输入或重试。 |
-| **Proof verified** | 最终命题已有 Rocq 编译和内核检查通过的记录。可打开 **Run details** 查看证据。 |
+| 提取论文贡献 | [Extract paper contributions](skills/extract-paper-contributions/SKILL.md) |
+| 选择证明目标 | [Select proof targets](skills/select-proof-targets/SKILL.md) |
+| 正向推导、反向推导、对齐 | [推理指令和版本](skills/builtin-reasoning.json)（`forward`、`backward`、`alignment`） |
+| 证明构造与专家审计 | [证明与审计指令](skills/builtin-reasoning.json)（`proof`、`fidelity`、`semantics`、`coverage`） |
 
-进度条按已返回检查结果的义务数计数，其中可能包含仍开放的义务。判断定理是否完成，请看 **Final theorem · Verified by Rocq**。
+## 运行环境
 
-## 检查环境和本地数据
+| 使用目的 | 依赖与入口 |
+| --- | --- |
+| 本地网页 | Node.js；Windows 也可运行 `.\start-prototype.ps1` |
+| Rocq 检查 | Python、opam、匹配版本的 Rocq；Windows 通过 WSL 调用。先核对发行版、opam 根目录和 switch。[工具链配置](configs/toolchain.json) |
+| 后端 MSA 工作台 | Windows、WSL、Python、PostgreSQL 和 Poppler。运行 `.\start-workbench.ps1` 后打开 [MSA 工作台](http://127.0.0.1:8765/msa)。[运行时合同](docs/README.md) |
 
-- **Rocq**　Windows 通过 WSL 调用 Python、opam 和 Rocq。检查前请核对工具链配置中的发行版、opam 根目录、switch 和软件包版本。Prosa 路线还需要与目标语义匹配的库和适配。见 [工具链配置](configs/toolchain.json)。
-- **后端工作台**　需要单独使用 Python、PostgreSQL、Poppler 和 WSL 后端时，在 PowerShell 执行 `.\start-workbench.ps1`，打开 [后端 MSA 工作台](http://127.0.0.1:8765/msa)。运行时读取的数学合同见 [docs](docs/README.md)。
-- **数据位置**　浏览器保存项目列表及工作区状态，本机 `artifacts/` 保存运行产物。OpenAI 连接设置保存在用户目录中，Windows 可选择加密保存密钥。使用外部模型时，相应输入会发送给所配置的服务。
-- **仓库内容**　仓库分发平台源码、配置和运行所需文档。本地研究项目、上传论文、运行日志、证明记录及凭据请保存在本机。
+项目列表和工作区状态存于浏览器，本机 `artifacts/` 保存运行证据和自定义 Skill。调用外部模型时，相应输入会发给配置的服务。仓库发布平台源码、内置 Skill 和运行配置，本地论文、凭据与研究记录保存在各自的工作环境。

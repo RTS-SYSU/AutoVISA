@@ -10,27 +10,15 @@ const skillFile=path.resolve(__dirname,'../artifacts/reasoning-skills/library.js
 const tasks=new Map();
 require('./project-cleanup.cjs').track(tasks, job => job.stage === 'running');
 const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
-const defaults=[
-  ['forward','Derive from model','Start with the confirmed model and assumptions. Derive useful bounds step by step. Identify the rule and required conditions for each mathematical transformation.'],
-  ['backward','Decompose the goal','Start with the quantified guarantee and its premises. Reduce it to sufficient subgoals. Distinguish joint premises, case splits and alternative routes.'],
-  ['alignment','Compare claims','Compare quantities, domains, quantifiers and strict inequalities. State the exact missing condition or witness. Mark conditional routes separately from direct matches.']
-].map(([stage,name,instructions])=>({id:'default-'+stage,version:1,stage,name,instructions,example:'',builtin:true}));
-// Version two keeps the original revisions resolvable in frozen workflows.
-const methods={"forward": {"when": "Derive a reusable consequence from confirmed model or service assumptions.", "method": "Fix the time domain, endpoints, units and quantified workload. Select one definition or compatible lemma. State its hypotheses before applying it. Show the actual substitutions and distinguish a bound on capacity from delivered service. When cancelling a factor, cite its sign. Branch when a boundary case changes strictness.", "acceptance": "Every bound names its interval, assumptions and origin. Leave an unestablished premise as a separate obligation.", "example": "From d>0 and a*d <= w <= d*b derive a<=b. Test equality before proposing a<b."}, "backward": {"when": "Reduce a target with fixed quantifiers and scope into sufficient obligations.", "method": "Preserve the target and its hypotheses verbatim in the root. Try a direct reduction or contrapositive. Identify joint, alternative and exhaustive case obligations. For each witness split existence, admissibility and use. For minima and maxima distinguish nonemptiness from attainment. Prioritize the branch whose failure prevents the parent goal.", "acceptance": "Explain how closing the children establishes the parent; record missing existence or domain lemmas without adding them to the model.", "example": "A witness satisfying a<rate<=b gives a<b. Its existence remains a different subgoal."}, "alignment": {"when": "Compare an available claim with a specific backward obligation.", "method": "Match subjects, units, time domains, interval endpoints, quantifier order, direction and strictness. Test the boundary case. Separate the local algebra from scheduler-specific premises. Suggest the smallest bridge obligation. For Prosa bindings check instantiation and all premises before claiming correspondence.", "acceptance": "Give separate links for distinct cases. Classify a missing premise as Conditional and an insufficient implication as Gap. Only a retained Rocq receipt may report a checked local lemma.", "example": "a<=b allows a=b. Report a Gap for a<b. A witness route is Conditional until existence is established."}};
-const currentDefaults=defaults.map(skill=>({...skill,version:2,...methods[skill.stage]}));
-/** Executable defaults available independently of the graph-generation stages. */
-const proofSkills=[
-  ['proof','Construct a proof','Translate lemmas in dependency order in the frozen context. Preserve premises, domains and units. Use joint support only after its prerequisites have been checked. Leave unavailable bridges open; never weaken a target to make it pass.'],
-  ['fidelity','Model fidelity','Compare parameters, definitions and assumptions with the frozen inputs. Flag missing or strengthened assumptions, vacuity and domain changes.'],
-  ['semantics','Scheduling semantics','Check release, execution, service, priority, interference and endpoint conventions wherever applicable. Identify unsupported bridges and direction errors.'],
-  ['coverage','Goal coverage','Compare the quantified formal conclusion to each selected guarantee. Identify omitted cases, jobs or transitions and scope restrictions.']
-].map(([stage,name,instructions])=>({stage,name,instructions,id:'default-'+stage,version:1,builtin:true}));
+/** @type {object[]} Published built-ins, including revisions referenced by older runs. */
+const builtinSkills=require('../skills/builtin-reasoning.json');
+const currentDefaults=builtinSkills.filter(skill=>stages.includes(skill.stage)&&skill.version===2);
 /** @returns {object[]} All published skill revisions, including the default methods. */
-function library(){return defaults.concat(currentDefaults,proofSkills,fs.existsSync(skillFile)?JSON.parse(fs.readFileSync(skillFile,'utf8')):[]);}
+function library(){return builtinSkills.concat(fs.existsSync(skillFile)?JSON.parse(fs.readFileSync(skillFile,'utf8')):[]);}
 function problem(message){throw Object.assign(new Error(message),{status:400});}
 /** @param {object} draft Editable Markdown method. @returns {object} Validated fields. */
 function fields(draft){
-  if(!draft||![...stages,...proofSkills.map(s=>s.stage)].includes(draft.stage)||!draft.name?.trim()||!draft.instructions?.trim())problem('Enter a name, stage and instructions.');
+  if(!draft||!builtinSkills.some(skill=>skill.stage===draft.stage)||!draft.name?.trim()||!draft.instructions?.trim())problem('Enter a name, stage and instructions.');
   return {stage:draft.stage,name:draft.name.trim(),instructions:draft.instructions.trim(),example:String(draft.example||'').trim(),...Object.fromEntries(['when','method','acceptance'].filter(k=>draft[k]?.trim()).map(k=>[k,draft[k].trim()]))};
 }
 /** @param {object} draft New skill or an edit with the revision originally opened. */

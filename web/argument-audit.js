@@ -67,7 +67,7 @@ function createArgumentAudit({request,esc,refresh}){
       return 'Checks are in progress. This page updates automatically.';
     }
     if(report.stage==='open'&&report.context?.unresolved?.length)
-      return 'Review the '+report.context.unresolved.length+' model clarification '+(report.context.unresolved.length===1?'item':'items')+' below to continue. Rocq checking has not started.';
+      return 'Review the '+report.context.unresolved.length+' model clarification '+(report.context.unresolved.length===1?'item':'items')+' in Formal model. Rocq checking has not started.';
     if(report.stage==='interrupted'||report.stage==='open')return report.issue?.split('\n')[0]||'Open the diagnostic below for this attempt.';
     if(report.stage==='ready'&&report.scope==='model')return 'Rocq checked the model. Choose a lemma or the final theorem to continue.';
     return '';
@@ -148,17 +148,26 @@ function createArgumentAudit({request,esc,refresh}){
     }).join('');
     return '<div class="proof-graph-scroll" aria-label="Proof dependency graph"><div class="proof-graph" style="width:'+width+'px;height:'+height+'px"><svg aria-hidden="true" width="'+width+'" height="'+height+'"><defs><marker id="proof-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L6 3 L0 6Z"/></marker></defs><g>'+paths+'</g></svg>'+buttons+'</div></div>';
   }
-  /** @param {object} r Current attempt. @param {object} d Frozen edition. */
-  function recovery(r,d){
-    if(!['open','interrupted'].includes(r.stage)&&!(r.stage==='ready'&&r.rounds?.at(-1)?.some(n=>!n.checked)))return '';
-    const issues=r.context?.unresolved||[],network=/OpenAI|network|proxy|connection/i.test(r.issue||''),model=!r.typecheck?.checked;
-    const advice=issues.length?'Review the flagged definitions against the selected theorem. Rebuild for that theorem if an issue concerns a different analysis. Revise inputs if an assumption or the guarantee must change.':
-      network?'Check the model connection, then retry this stage.':model?'Inspect the model diagnostic and correct the relevant definitions before trying again.':'Inspect the open obligation, then revise the supporting argument or retry its node.';
-    return '<section class="proof-recovery"><h3>Next step</h3><p role="alert">'+esc(advice)+'</p>'+
-      (issues.length?'<details><summary>Review model issues ('+issues.length+')</summary><ul>'+issues.map(issue=>'<li>'+esc(issue)+'</li>').join('')+'</ul></details>':'')+
-      '<div class="action-row">'+(network?'<button type="button" class="control" data-module-action="openai-settings">Check connection</button>':'')+
-      (model?'<button type="button" class="control" data-module-action="revise">Revise inputs</button>':nav('derivation','Inspect derivation'))+
-      '<a href="'+details(d,'blocker')+'">View diagnostic</a></div></section>';
+  /** Summarize this edition's model, local checks and final receipt independently.
+   * @param {object} report Current proof attempt.
+   * @param {boolean} ready Whether the bound formal context has passed Rocq.
+   * @param {Map} receipts Latest round's checks, keyed by node ID.
+   * @returns {object} Stage labels used in navigation and the selected panel.
+   */
+  function stageLabels(report,ready,receipts){
+    const running=report.stage==='running',operation=report.progress?.operation;
+    const stopped=['open','interrupted'].includes(report.stage);
+    const local=[...receipts.values()].filter(row=>row.id!=='target_claim');
+    const final=receipts.get('target_claim');
+    return {
+      model:ready?'Checked by Rocq':running?(operation==='check-model'?'Checking in Rocq':'Preparing model'):
+        stopped?(report.context?.unresolved?.length?'Needs clarification':'Stopped'):'Not started',
+      lemmas:running&&['prepare-statements','check-lemma'].includes(operation)?'In progress':
+        local.length?local.filter(row=>row.checked).length+' verified · '+local.filter(row=>!row.checked).length+' open':
+        ready?(stopped&&operation==='prepare-statements'?'Stopped':'Not started'):'Waiting for model',
+      final:running&&operation==='check-target'?'Checking in Rocq':final?(final.checked?'Verified by Rocq':'Open'):
+        stopped&&operation==='check-target'?'Stopped':ready?'Not checked':'Waiting for model'
+    };
   }
   /** @param {object} d Frozen edition. @param {object} structure Immutable proof topology. */
   function panel(d,structure){
@@ -172,22 +181,47 @@ function createArgumentAudit({request,esc,refresh}){
     const receipt=new Map((r.rounds?.at(-1)||[]).map(n=>[n.id,n])),node=dag.nodes.get(id);
     const tab=(key,title)=>'<button class="control" type="button" data-proof-stage="'+key+'" data-version="'+d.version+'" aria-pressed="'+(stage===key)+'">'+title+'</button>';
     const launch=(scope,label,primary=false)=>'<button type="button" class="control '+(primary?'primary':'')+'" data-workflow="proof" data-proof-scope="'+scope+'" data-proof-target="'+esc(id||'')+'" data-version="'+d.version+'" '+(busy?'disabled':'')+'>'+label+'</button>';
-    const tabs='<div class="action-row proof-stage-tabs" role="group" aria-label="Proof stages">'+tab('model','Formal model')+tab('lemmas','Lemmas & subgoals')+tab('final','Final theorem')+'</div>';
-    let content;
+    /** @type {object} The stage selected for inspection can differ from the running stage. */
+    const labels=stageLabels(r,ready,receipt);
+    const titles={model:'Formal model',lemmas:'Lemmas & subgoals',final:'Final theorem'};
+    const rail=Object.keys(titles).map(key=>tab(key,'<strong>'+titles[key]+'</strong><small>'+esc(labels[key])+'</small>')).join('');
+    const issues=r.context?.unresolved||[];
+    const blocked=['open','interrupted'].includes(r.stage);
+    const network=blocked&&/OpenAI|network|proxy|connection/i.test(r.issue||'');
+    const revise='<button type="button" class="control" data-module-action="revise">Revise inputs</button>';
+    let body='',action='',alternatives='';
     if(stage==='model'){
-      content='<h3>Formal model</h3><p>Define the model assumptions and selected theorem, then type-check them in Rocq.</p>'+
-        (ready?'<p>Model checked.</p>'+tab('lemmas','Choose a lemma'):launch('model',r.context?.unresolved?.length?'Rebuild for selected theorem':'Check formal model',true))+
-        '<div class="action-row">'+tab('final','View final theorem DAG')+'</div>';
+      if(ready){
+        body='<p>The model and theorem statement passed the Rocq type check.</p>';
+        action=tab('lemmas','Choose a lemma');
+      }else if(!busy&&blocked&&issues.length){
+        body='<p>Review the definitions needed for this theorem. Revise the inputs if an assumption must change.</p>';
+        action='<details class="stage-issues"><summary>Review model issues ('+issues.length+')</summary><ul>'+
+          issues.map(issue=>'<li>'+esc(issue)+'</li>').join('')+'</ul><div class="action-row">'+revise+launch('model','Rebuild for selected theorem')+'</div></details>';
+      }else if(!busy&&network){
+        body='<p>The connection stopped before the model check finished.</p>';
+        action='<button type="button" class="control primary" data-module-action="openai-settings">Check connection</button>';
+        alternatives=launch('model','Retry model');
+      }else{
+        body='<p>'+esc(busy?(r.stage==='running'?currentMessage(r):'The audit is running.'):'Check the model assumptions and theorem statement in Rocq.')+'</p>';
+        if(!busy)action=launch('model',blocked?'Retry model':'Check formal model',true);
+        if(blocked)alternatives=revise;
+      }
     }else{
       const deps=[...dag.parents.get(id)||[]],row=receipt.get(id);
       const status=row?(row.checked?'Verified':'Open'):ready?'Not checked':'Waiting for formal model';
-      content='<div class="proof-dag-layout"><section><h3>Proof DAG</h3><p>Arrows point from supporting steps to the claim they support.</p>'+plot(dag,id,receipt,d)+'</section><section class="proof-node"><h3>'+esc((id==='target_claim'?'Final theorem':id)+' · '+(node?.title||''))+'</h3><p>'+esc(status)+'</p>'+
-        (deps.length?'<p>Direct support · '+esc(deps.join(', '))+'</p>':'')+
-        (ready?launch('node',id==='target_claim'?'Check theorem with supporting steps':'Check selected node with support',true):tab('model','Open formal model'))+
-        (ready&&stage==='lemmas'?'<div class="action-row">'+launch('group','Check all lemmas & subgoals')+'</div>':'')+'</section></div>';
+      body='<div class="proof-dag-layout"><section>'+plot(dag,id,receipt,d)+'</section><section class="proof-node"><h4>'+esc((id==='target_claim'?'Final theorem':id)+' · '+(node?.title||''))+'</h4><p>'+esc(status)+'</p>'+
+        (deps.length?'<p>Direct support · '+esc(deps.join(', '))+'</p>':'')+'</section></div>';
+      if(!busy)action=!ready?tab('model','Open formal model'):id==='target_claim'&&row?.checked?
+        nav('expert-audit','Open expert audit'):launch('node',id==='target_claim'?'Check theorem with supporting steps':'Check selected node with support',true);
+      if(ready&&stage==='lemmas')alternatives=launch('group','Check all lemmas & subgoals');
     }
-    return proofProgress(r,structure)+tabs+
-      (busy?'':recovery(r,d))+'<section class="proof-stage-body">'+content+'</section><div class="action-row">'+launch('auto','Run full proof automatically')+setup(d,'proof')+(receipt.get('target_claim')?.checked?nav('expert-audit','Open expert audit'):'')+'</div>';
+    const diagnostic=blocked||[...receipt.values()].some(row=>!row.checked)?'<a href="'+details(d,'blocker')+'">View diagnostic</a>':'';
+    const more='<details class="proof-more"><summary>More actions</summary><div class="action-row">'+alternatives+
+      launch('auto','Run full proof automatically')+setup(d,'proof')+diagnostic+'</div></details>';
+    return proofProgress(r,structure)+'<div class="proof-browser"><nav aria-label="Proof stages" class="proof-stage-list">'+rail+'</nav>'+
+      '<section class="proof-stage-body"><header><h3>'+titles[stage]+'</h3><strong class="stage-result">'+esc(labels[stage])+'</strong></header>'+
+      body+action+more+'</section></div>';
   }
   /** @param {object} d Frozen edition. @param {object} structure Source register. @param {object} initial State before a graph exists. */
   function expert(d,structure,initial){
