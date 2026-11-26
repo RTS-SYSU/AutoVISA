@@ -70,7 +70,8 @@ function createReasoningSkills({request,esc,render,context,openRecord,listRuns,m
   function choices(ctx){
     const stored=ctx.owner.skillSetups?.[ctx.key];
     return Object.fromEntries(stages.map(stage=>{
-      const selection=stored?.[stage]||ctx.graph?.workflow?.[stage]?.skill||{id:'default-'+stage,version:ctx.graph?1:2};
+      const selection=stored?.[stage]||ctx.graph?.workflow?.[stage]?.skill||
+        (!ctx.graph&&catalog?latest().find(s=>s.id==='default-'+stage):null)||{id:'default-'+stage,version:ctx.graph?1:3};
       return [stage,{id:selection.id,version:selection.version}];
     }));
   }

@@ -20,6 +20,11 @@ const claim = {
   doi: '10.4230/LIPIcs.ECRTS.2022.19',
   page: 11,
   locator: 'Listing 2, lines 18–29 and 143–173',
+  subject: 'Task 2',
+  metrics: [
+    {label:'Response-time bound', value:60, unit:'ms'},
+    {label:'Deadline', value:100, unit:'ms'},
+  ],
   statement: 'Task 2 has a response-time bound of 60 ms and a deadline of 100 ms.',
   scope: 'Fully preemptive fixed-priority scheduling on one ideal processor, with the two tasks in Listing 1 and the arrival-sequence hypotheses in Listing 2.',
   method: 'Replay of the authors’ POET certificate, with a separate typed Rocq claim fixed to task 2 and the published numbers.',
@@ -28,7 +33,7 @@ const claim = {
 
 let inFlight;
 
-async function replay() {
+async function replay(onProgress) {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'autovisa-paper-'));
   const steps = [];
   const sources = {};
@@ -62,11 +67,14 @@ async function replay() {
     } catch (error) {
       const output = (error.stdout || '') + (error.stderr || '');
       steps.push({label, ok:false, output:(output || error.message).trim().slice(-10000)});
+      if (error.code === 'ENOENT') throw new Error(program + ' executable was not found.');
+      if (error.killed) throw new Error(label + ' timed out.');
       throw new Error(label + ' failed. See the checker log.');
     }
   }
 
   try {
+    onProgress('replay');
     for (const name of modules) {
       const file = name + '.v';
       const bytes = await fs.readFile(path.join(sourceDirectory, file));
@@ -87,20 +95,36 @@ async function replay() {
     const closed = [...claimOutput.matchAll(/^Closed under the global context\s*$/gm)].length;
     if (closed !== 2) throw new Error('The published claim or the numeric deadline uses global assumptions.');
     steps.push({label:'Audit assumptions of both exported declarations', ok:true, output:'Both declarations are closed under the global context.'});
+    onProgress('kernel');
     await check('Replay proof and imported dependencies', 'rocqchk', ['-silent', '-o', ...loadPath, 'PaperClaim']);
     return {status:'verified', checkedAt:new Date().toISOString(), claim, pdfHash, sources, steps};
   } catch (error) {
-    return {status:'error', claim, pdfHash, steps, message:error.message};
+    return {status:'error', checkedAt:new Date().toISOString(), claim, pdfHash, steps, message:error.message};
   } finally {
     await fs.rm(dir, {recursive:true, force:true});
   }
 }
 
-async function verifyPaper(bytes) {
+async function verifyPaper(bytes, onProgress = () => {}) {
   const digest = sha256(bytes);
   if (digest !== pdfHash) return {status:'unsupported', pdfHash:digest};
-  if (!inFlight) inFlight = replay().finally(() => { inFlight = undefined; });
-  return inFlight;
+  onProgress('identified');
+  if (!inFlight) {
+    const active = {phase:'identified', listeners:new Set()};
+    active.result = replay(phase => {
+      active.phase = phase;
+      for (const listener of active.listeners) listener(phase);
+    }).finally(() => { inFlight = undefined; });
+    inFlight = active;
+  }
+  const active = inFlight;
+  if (active.phase !== 'identified') onProgress(active.phase);
+  active.listeners.add(onProgress);
+  try {
+    return await active.result;
+  } finally {
+    active.listeners.delete(onProgress);
+  }
 }
 
 async function servePaperVerification(request, response, port) {
@@ -124,9 +148,20 @@ async function servePaperVerification(request, response, port) {
       }
       parts.push(chunk);
     }
-    reply(200, await verifyPaper(Buffer.concat(parts)));
+    const bytes = Buffer.concat(parts);
+    if (request.headers.accept !== 'application/x-ndjson') {
+      reply(200, await verifyPaper(bytes));
+      return;
+    }
+    response.writeHead(200, {'Content-Type':'application/x-ndjson; charset=utf-8', 'Cache-Control':'no-store'});
+    const send = event => { if (!response.destroyed) response.write(JSON.stringify(event) + '\n'); };
+    const result = await verifyPaper(bytes, phase => send({phase}));
+    send({result});
+    response.end();
   } catch {
-    reply(500, {message:'The local certificate check could not complete.'});
+    const message = 'The local certificate check could not complete.';
+    if (response.headersSent) response.end(JSON.stringify({message}) + '\n');
+    else reply(500, {message});
   }
 }
 

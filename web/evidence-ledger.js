@@ -70,7 +70,7 @@ function createEvidenceLedger({audit,request,refresh,esc,markdownView,runName}){
     bound.parentKey=owner.irKeys?.[bound.parentRun];
     const target=e.structure.targets[0],source=e.structure.sources.find(s=>s.id===target?.id);
     const goalHeader='<header class="av-title"><h2>'+esc(target?.title||'Proof target')+'</h2><a href="'+audit.details(bound)+'">Run details ↗</a></header>';
-    if(!detail)return '<div class="stack workflow-page">'+goalHeader+(source?(expert?markdownView(source.text):'<details><summary>Theorem statement</summary>'+markdownView(source.text)+'</details>'):'')+(expert?audit.expert(bound,e.structure):audit.panel(bound,e.structure))+'</div>';
+    if(!detail)return '<div class="stack workflow-page">'+goalHeader+(source?markdownView(source.text):'')+(expert?audit.expert(bound,e.structure):audit.panel(bound))+'</div>';
 
     const cards=e.receipts.map(r=>{
       const route=link('derivation',e.version,{step:r.backward,lemma:r.forward,route:r.index,evidence:['local',...r.trail].join('-')});

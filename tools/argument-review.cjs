@@ -46,30 +46,27 @@ function tasks(graph){
   return [...forward,...backward];
 }
 /** @param {string} base Checked shared context. @param {object[]} tasks Candidate tasks.
- * @param {object} forms Formal lemma statements. @param {object} graph Frozen derivation.
- * @param {Map} cache Previously checked sources. @param {Function} onStep Completed obligation callback.
- * @param {Function} onStart Records the obligation before invoking its checker. */
-async function construct(base,tasks,forms,graph,cache=new Map(),onStep=()=>{},onStart=()=>{},includeTarget=true){
+ * @param {object} forms Formal lemma statements. @param {object} graph Frozen derivation. */
+async function construct(base,tasks,forms,graph,cache=new Map(),onStep=()=>{}){
   if(forms.unresolved.length)throw Error(forms.unresolved.join('\n'));
   const statements=new Map(forms.lemmas.map(n=>[n.id,n.proposition]));
   if(forms.lemmas.length!==tasks.length||tasks.some(t=>!statements.has(t.id)))throw Error('Formal candidates do not cover the saved graph.');
   const accepted=new Map(),results=[];
   let module=base;
   async function attempt(id,formula,deps,name){
-    onStart(id);
     const used=deps.filter(d=>accepted.has(d)).map(d=>accepted.get(d));
     const using=used.length?' using '+used.join(', '):'';
     const body='Lemma '+name+' : model_assumptions -> '+formula+'.\nProof. unfold model_assumptions, target_claim in *; intros; first [ solve [eauto 6'+using+'] | tauto | lia | lra | nra ]. Qed.\n';
-    const source=module+body+'End Analysis.\nPrint Assumptions '+name+'.\nPrint All Dependencies '+name+'.\n';
+    const source=module+body+'End Analysis.\nPrint All Dependencies '+name+'.\n';
     const reused=id!=='target_claim'&&cache.has(source);
-    const result=reused?cache.get(source):await runChecker('check_argument.py',{source});
+    const result=reused?cache.get(source):await runChecker('check_argument.py',{source,theorem:name});
     if(result.checked&&id!=='target_claim')cache.set(source,result);
     results.push({id,formula,deps,source,reused,...result});
     onStep(results,id);
     if(result.checked){accepted.set(id,name);module+=body;}
   }
   for(const [i,t] of tasks.entries())await attempt(t.id,term(statements.get(t.id)),t.deps,'claim_'+i);
-  if(includeTarget)await attempt('target_claim','target_claim',graph.backward.filter(n=>!n.parents.length).map(n=>n.id),'proof_obligation');
+  await attempt('target_claim','target_claim',graph.backward.filter(n=>!n.parents.length).map(n=>n.id),'proof_obligation');
   return results;
 }
 /** @param {object} data Requested project/run/edition. */
@@ -89,29 +86,22 @@ function history(id){
   if(!fs.existsSync(store))return [];
   return fs.readdirSync(store).filter(f=>f.startsWith(id+'-')&&f.endsWith('.json')).sort().map(file=>{
     const report=JSON.parse(fs.readFileSync(path.join(store,file),'utf8'));
+    if(report.rounds){
+      report.rounds=report.rounds.map(round=>round.map(step=>step.checked&&!step.assumptionAudit?{
+        ...step,kernelChecked:true,checked:false,
+        log:(step.log||'')+'\nThis receipt predates assumption auditing. Run the proof again to audit its assumptions.',
+      }:step));
+    }
     if(report.stage==='running'&&active.get(id)?.attempt!==report.attempt){
       report.stage='interrupted';report.issue='The service restarted before completion.';
     }
     return report;
   });
 }
-/** Summarize the preceding proof without copying its evidence into a later attempt.
- * @param {object} report Previous proof for the same frozen edition.
- * @returns {object|undefined} Recorded outcome for the progress card.
- */
-function previousOutcome(report){
-  if(!report)return undefined;
-  const rows=report.rounds?.at(-1)||[];
-  return {attempt:report.attempt,stage:report.stage,scope:report.scope,
-    questions:report.context?.unresolved?.length||0,issue:report.issue?.split('\n')[0]?.slice(0,240),
-    finalChecked:rows.some(row=>row.id==='target_claim'&&row.checked),
-    open:rows.filter(row=>!row.checked).length,modelChecked:report.typecheck?.checked===true};
-}
 /** @param {object} data Exact run binding. @returns {object} Latest independent states. */
 function status(data){
   const {id}=binding(data),records=history(id);
-  const proofs=records.filter(r=>r.kind!=='audit');
-  const proof=proofs.at(-1)||{stage:'idle'};
+  const proof=records.filter(r=>r.kind!=='audit').at(-1)||{stage:'idle'};
   const audit=records.filter(r=>r.kind==='audit'||r.reviews?.length).at(-1);
   // Earlier editions and parent runs keep their own reports; expose only a navigation pointer.
   let previousAudit;
@@ -124,12 +114,12 @@ function status(data){
     previousAudit=prior.find(p=>history(p.key+'-v'+p.version).some(r=>r.kind==='audit'||r.reviews?.length));
   }
   const stale=Boolean(audit&&(audit.proofAttempt||audit.attempt)!==proof.attempt);
-  return {...proof,previousProof:previousOutcome(proofs.at(-2)),audit,previousAudit,stale,reviews:stale?[]:audit?.reviews||[],inputRevision:!stale&&audit?.inputRevision,refinementRemaining:audit?.refinementRemaining};
+  return {...proof,audit,previousAudit,stale,reviews:stale?[]:audit?.reviews||[],inputRevision:!stale&&audit?.inputRevision,refinementRemaining:audit?.refinementRemaining};
 }
 /** @param {string} stage Workflow role. @param {object} choices Requested pinned revisions. */
 function selectedSkill(stage,choices){
-  const ref=choices?.[stage]||{id:'default-'+stage,version:1};
-  const skill=require('./reasoning-skills.cjs').library().find(s=>s.stage===stage&&s.id===ref.id&&s.version===ref.version);
+  const skills=require('./reasoning-skills.cjs'),ref=choices?.[stage];
+  const skill=ref?skills.library().find(s=>s.stage===stage&&s.id===ref.id&&s.version===ref.version):skills.defaultSkill(stage);
   if(!skill)throw Object.assign(Error('Selected skill revision is unavailable.'),{status:400});
   return skill;
 }
@@ -143,15 +133,13 @@ function countCalls(generate,report){
 }
 /** Build and type-check the shared context before the two reasoning directions start.
  * @param {object} ir Frozen Analysis IR. @param {Function} generate Structured model callback.
- * @param {Function} onTypecheck Signals the handoff from model generation to Rocq.
  */
-async function prepare(ir,generate,onTypecheck=()=>{},previousIssues=[]){
+async function prepare(ir,generate){
   const inputs=ir.items.map(i=>({id:i.id,section:i.section,source:i.source,statement:i.statement}));
   let context;
   try{
-    context=await generate(contract+' Encode the shared typed context. Use parameters only for model entities/symbols, definitions for meanings, assumptions only for explicit input hypotheses; never assume an analysis result or goal. Encode every goal. Use the goal hypotheses to scope the guarantee. Distinguish behaviors outside that guarantee from gaps that prevent its formalization. Leave genuine gaps unresolved. Do not import assumptions or require definitions used only by unrelated analyses.',{inputs,previousIssues},contextSchema,'formal_context');
+    context=await generate(contract+' Encode the shared typed context. Use parameters only for model entities/symbols, definitions for meanings, assumptions only for explicit input hypotheses; never assume an analysis result or goal. Encode every goal.',inputs,contextSchema,'formal_context');
     const source=encode(ir,context)+'End Analysis.\n';
-    onTypecheck();
     const typecheck=await runChecker('check_argument.py',{source});
     return {context,source,typecheck,issue:typecheck.checked?'':'Shared context failed type checking.'};
   }catch(e){return {context,issue:e.message};}
@@ -159,60 +147,31 @@ async function prepare(ir,generate,onTypecheck=()=>{},previousIssues=[]){
 /** @param {object} data Run identity. @param {Function} generate Structured model callback. @param {object} environment Model settings. */
 function start(data,generate,environment){
   const {id,ir,g}=binding(data);if(active.has(id))return status(data);
-  const scope=data.scope||'auto',ordered=tasks(g),requested=data.nodeId;
-  const previous=history(id).filter(r=>r.kind!=='audit').at(-1);
-  if(data.proofAttempt&&previous?.attempt!==data.proofAttempt)throw Object.assign(Error('This attempt has changed. Reload its status.'),{status:409});
-  if(!['model','group','node','auto'].includes(scope)||scope==='node'&&requested!=='target_claim'&&!ordered.some(t=>t.id===requested))
-    throw Object.assign(Error('Select a node from this proof edition.'),{status:400});
-  const saved=previous?.typecheck?.checked?{context:previous.context,typecheck:previous.typecheck}:null;
-  const reusable=saved|| (g.formalContext?.typecheck?.checked?g.formalContext:null);
-  if(['group','node'].includes(scope)&&!reusable)throw Object.assign(Error('Check the formal model first.'),{status:409});
-  if(scope==='model'&&saved)return status(data);
   const skill=selectedSkill('proof',data.skills);
-  const report={id,kind:'proof',scope,nodeId:scope==='node'?requested:null,parentAttempt:previous?.attempt,skill,project:data.project,attempt:new Date().toISOString().replace(/:/g,'-')+'-'+randomUUID(),stage:'running',phase:'Formal context',environment,rounds:[],reviews:[]};
-  /** Save the current operation before waiting on the model or checker. */
-  function checkpoint(operation,round=0,step=null){
-    report.progress={operation,round,step};save(report);
-  }
+  const report={id,kind:'proof',skill,project:data.project,attempt:new Date().toISOString().replace(/:/g,'-')+'-'+randomUUID(),stage:'running',phase:'Formal context',environment,rounds:[],reviews:[]};
   generate=countCalls(generate,report);
-  active.set(id,report);checkpoint('prepare-model');
+  active.set(id,report);save(report);
   void(async()=>{try{
-    const formal=reusable||await prepare(ir,generate,()=>checkpoint('check-model'),previous?.context?.unresolved||[]);
+    const formal=g.formalContext?.typecheck?.checked?g.formalContext:await prepare(ir,generate);
     report.context=formal.context;report.typecheck=formal.typecheck;
     if(!formal.typecheck?.checked)throw Error(formal.issue||'The shared context did not type-check.');
     const c=formal.context,base=encode(ir,c);
-    if(scope==='model'){report.stage='ready';report.phase='Model checked';return;}
-    const receipts=saved?previous.rounds?.at(-1)||[]:[];
-    // Only the checker output can travel with an exact source hit, never its former node identity.
-    const cache=new Map(receipts.filter(r=>r.checked).map(({source,id,formula,deps,reused,...evidence})=>[source,evidence]));
-    const priorForms=new Map((saved&&!previous.forms?.unresolved?.length?previous.forms?.lemmas||[]:[]).map(f=>[f.id,f]));
-    const includeTarget=scope==='auto'||scope==='node'&&requested==='target_claim';
-    // Work backwards through the saved support graph to collect the selected route.
-    const needed=new Set(scope==='node'?(includeTarget?g.backward.filter(n=>!n.parents.length).map(n=>n.id):[requested]):ordered.map(t=>t.id));
-    for(const task of [...ordered].reverse())if(needed.has(task.id))for(const dep of task.deps)needed.add(dep);
-    const accepted=new Set(receipts.filter(r=>r.checked).map(r=>r.id));
-    const order=ordered.filter(t=>needed.has(t.id)||accepted.has(t.id));
-
+    const order=tasks(g),cache=new Map();
     for(let round=0;round<2;round++){
-      report.phase='Constructing proofs';checkpoint('prepare-statements',round+1);
+      report.phase='Constructing proofs';save(report);
       const feedback=report.rounds.at(-1)?.filter(r=>!r.checked).map(r=>({id:r.id,diagnostic:r.log.slice(-1200)}))||[];
-      const missing=order.filter(t=>!priorForms.has(t.id)||round&&feedback.some(f=>f.id===t.id)&&needed.has(t.id));
-      const fresh=missing.length?await generate(directions(skill)+' '+contract+' State each saved lemma as one proposition in the unchanged context. Preserve each original premise and conclusion. Repair only mistranslations identified by feedback, without weakening the target.',{context:c,tasks:missing,known:order.filter(t=>!missing.includes(t)).map(t=>priorForms.get(t.id)),feedback,previous:report.forms||null},statementSchema,'formal_lemmas'):{lemmas:[],unresolved:[]};
-      if(fresh.unresolved.length)throw Error(fresh.unresolved.join('\n'));
-      if(fresh.lemmas.length!==missing.length||missing.some(t=>!fresh.lemmas.some(f=>f.id===t.id)))throw Error('The selected obligations were not fully formalized.');
-      for(const f of fresh.lemmas)priorForms.set(f.id,f);
-      const forms={lemmas:order.map(t=>priorForms.get(t.id)),unresolved:fresh.unresolved};
+      const forms=await generate(directions(skill)+' '+contract+' State each saved lemma as one proposition in the unchanged context. Preserve each original premise and conclusion. Repair only mistranslations identified by feedback, without weakening the target.',{context:c,tasks:order,feedback,previous:report.forms||null},statementSchema,'formal_lemmas');
       if(round&&JSON.stringify(forms)===JSON.stringify(report.forms))break;
       report.forms=forms;report.rounds.push([]);
       const result=await construct(base,order,forms,g,cache,(steps,id)=>{
         report.rounds[report.rounds.length-1]=steps;
         report.lastStep=id;save(report);
-      },id=>checkpoint(id==='target_claim'?'check-target':'check-lemma',round+1,id),includeTarget);
-      if(!includeTarget||result.at(-1).checked)break;
+      });
+      if(result.at(-1).checked)break;
     }
     report.stage='ready';report.phase='Proof complete';
   }catch(e){report.stage='open';report.issue=e.message;}finally{save(report);active.delete(id);}})();
-  return {...report,previousProof:previousOutcome(previous)};
+  return report;
 }
 /** Start a manually requested audit bound to one proof attempt.
  * @param {object} data Run identity, round limit, selected roles and skill revisions.

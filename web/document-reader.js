@@ -35,10 +35,21 @@ async function readInputDocument(file){
     try{units=new TextDecoder(encoding,{fatal:true}).decode(bytes).replace(/\r\n?/g,'\n').split('\n');}
     catch{throw Error('Save the text as UTF-8 and choose it again.');}
   }else throw Error('Choose PDF, Markdown, TXT or DOCX.');
-  if(!units.some(text=>text.trim()))throw Error(ext==='pdf'?'No readable text. Choose a PDF with a text layer, or enter inputs manually.':'No readable text in this document.');
+  if(ext!=='pdf'&&!units.some(text=>text.trim()))throw Error('No readable text in this document.');
   return {id:crypto.randomUUID(),name:file.name,units,unit};
 }
 
+/** Crop the rendered page at its original canvas resolution. Box coordinates are normalized. */
+function cropPdfCanvas(canvas,box){
+  const left=Math.floor(box.x*canvas.width),top=Math.floor(box.y*canvas.height);
+  const right=Math.min(canvas.width,Math.ceil((box.x+box.width)*canvas.width));
+  const bottom=Math.min(canvas.height,Math.ceil((box.y+box.height)*canvas.height));
+  const image=document.createElement('canvas');
+  image.width=right-left;
+  image.height=bottom-top;
+  image.getContext('2d').drawImage(canvas,left,top,image.width,image.height,0,0,image.width,image.height);
+  return image.toDataURL('image/png');
+}
 
 /** @returns {Promise<IDBDatabase>} Browser store for original PDF copies. */
 function openPdfStore() {
@@ -114,6 +125,7 @@ async function drawOriginalPage(host, id, number, project) {
     canvas.width = Math.ceil(viewport.width);
     canvas.height = Math.ceil(viewport.height);
     await page.render({canvas, viewport}).promise;
+    if (!host.isConnected) return;
     canvas.hidden = false;
     status.textContent = '';
   } catch {

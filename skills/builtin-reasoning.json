@@ -93,5 +93,51 @@
     "id": "default-coverage",
     "version": 1,
     "builtin": true
+  },
+  {
+    "id": "default-forward",
+    "version": 3,
+    "stage": "forward",
+    "name": "Derive from model",
+    "instructions": "Start with the confirmed model and assumptions. Derive useful bounds step by step. Identify the rule and required conditions for each mathematical transformation.",
+    "example": "Comparing the confirmed values 60 and 100 needs one calculation, 60 <= 100, with references to both values.",
+    "builtin": true,
+    "when": "Derive a reusable consequence from confirmed model or service assumptions.",
+    "method": "Fix the time domain, endpoints, units and quantified workload. Select one definition or compatible lemma. State its hypotheses before applying it. Show the actual substitutions and distinguish a bound on capacity from delivered service. When cancelling a factor, cite its sign. Branch when a boundary case changes strictness.",
+    "acceptance": "Cite premises and definitions. Show calculations only when they establish the result. For a named theorem, give its instantiation and applicability conditions. Keep unestablished conditions in requires."
+  },
+  {
+    "id": "default-backward",
+    "version": 3,
+    "stage": "backward",
+    "name": "Decompose the goal",
+    "instructions": "Start with the quantified guarantee and its premises. Reduce it to sufficient subgoals. Distinguish joint premises, case splits and alternative routes.",
+    "example": "A deadline guarantee can require both a response-time bound and a comparison with the deadline.",
+    "builtin": true,
+    "when": "Reduce a target with fixed quantifiers and scope into sufficient obligations.",
+    "method": "Preserve the target and its hypotheses verbatim in the root. Try a direct reduction or contrapositive. Identify joint, alternative and exhaustive case obligations. For each witness split existence, admissibility and use. For minima and maxima distinguish nonemptiness from attainment. Prioritize the branch whose failure prevents the parent goal.",
+    "acceptance": "State how the subgoals imply their parent. Record all joint, case or alternative obligations and cite the source of the target. Use calculations only where the reduction actually uses them."
+  },
+  {
+    "id": "default-alignment",
+    "version": 3,
+    "stage": "alignment",
+    "name": "Compare claims",
+    "instructions": "Compare quantities, domains, quantifiers and strict inequalities. State the exact missing condition or witness. Mark conditional routes separately from direct matches.",
+    "example": "A response-time bound implies a deadline guarantee only after comparing the bound with the task's deadline.",
+    "builtin": true,
+    "when": "Compare an available claim with a specific backward obligation.",
+    "method": "Match subjects, units, time domains, interval endpoints, quantifier order, direction and strictness. Test the boundary case. Separate the local algebra from scheduler-specific premises. Suggest the smallest bridge obligation. For Prosa bindings check instantiation and all premises before claiming correspondence.",
+    "acceptance": "Classify direct matches, conditional routes and gaps. Name the exact missing condition. Use the saved statement, hypotheses and instantiation together when comparing a theorem application to an obligation."
+  },
+  {
+    "stage": "proof",
+    "name": "Construct a proof",
+    "instructions": "Translate lemmas in dependency order in the frozen context. Preserve premises, domains and units. Use joint support only after its prerequisites have been checked. Leave unavailable bridges open; never weaken a target to make it pass.",
+    "id": "default-proof",
+    "version": 2,
+    "builtin": true,
+    "acceptance": "Preserve the frozen statement and explicit theorem premises. Leave an obligation open when its dependencies do not establish it. A proof receipt records the result of the kernel check and the separate assumption audit.",
+    "example": "Keep applicability conditions as explicit theorem premises, and show whether the resulting theorem depends on global axioms."
   }
 ]

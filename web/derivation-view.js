@@ -369,10 +369,15 @@ function createDerivationReader({esc,math,markdownView,citation,request,refresh}
     const current=step.side===section?step:steps.get(graph[section][0].id);
     const picker=graph[section].map(node=>'<button class="step-row" type="button" data-arg-id="'+esc(node.id)+'" data-arg-target="detail" aria-pressed="'+(current.id===node.id)+'"><b>'+steps.get(node.id).label+'</b> '+esc(node.title)+'</button>').join('');
     const dependencies=current.parents.map(id=>jump(id,steps.get(id).label+' · '+steps.get(id).title)).join(' ');
+    const labels={premise:'Premise',definition:'Definition',calculation:'Calculation',theorem_application:'Theorem application',goal_reduction:'Goal reduction',obligation:'Open obligation'};
+    const theorem=current.theorem;
     const details=graph.version===1?markdownView(current.reason):
-      markdownView(current.reason)+'<h4>Premises</h4>'+current.premises.map(text=>markdownView(text)).join('')+
-      '<h4>Reasoning · '+esc(current.structure)+'</h4><ol class="dag-calculations">'+current.calculations.map(line=>'<li>'+markdownView(line.operation)+math(line.formula,true)+'<details><summary>Source inputs</summary>'+sources(ir,line.sources)+'</details></li>').join('')+'</ol>'+
-      (current.requires.length?'<h4>Outstanding conditions</h4>'+current.requires.map(text=>markdownView(text)).join(''):'');
+      '<h4>'+esc([labels[current.kind]||'Reasoning',current.structure].filter(Boolean).join(' · '))+'</h4>'+markdownView(current.reason)+
+      (current.premises?.length?'<h4>Premises</h4>'+current.premises.map(text=>markdownView(text)).join(''):'')+
+      (theorem?'<h4>Theorem used</h4><p><code>'+esc(theorem.name)+'</code></p>'+
+        (theorem.instantiations.length?'<dl>'+theorem.instantiations.map(({parameter,value})=>'<dt>'+esc(parameter)+'</dt><dd>'+expressionView(value)+'</dd>').join('')+'</dl>':''):'')+
+      (current.calculations?.length?'<h4>Calculations</h4><ol class="dag-calculations">'+current.calculations.map(line=>'<li>'+markdownView(line.operation)+math(line.formula,true)+'<details><summary>Source inputs</summary>'+sources(ir,line.sources)+'</details></li>').join('')+'</ol>':'')+
+      (current.requires?.length?'<h4>Outstanding conditions</h4>'+current.requires.map(text=>markdownView(text)).join(''):'');
     return '<div class="action-row dag-tabs">'+tabs+'</div><div class="dag-record"><nav aria-label="Steps in reading order">'+picker+'</nav><article id="arg-record" tabindex="-1"><header><h3>'+current.label+' · '+esc(current.title)+'</h3>'+jump(current.id,'Show on graph','map')+'</header>'+
       (dependencies?'<div class="dag-deps">Parent steps · '+dependencies+'</div>':'')+
       '<h4>'+(section==='forward'?'Result':'Obligation')+'</h4>'+stepReading(graph,current,ir,true)+details+'<h4>Source statements</h4>'+sources(ir,current.sources)+'</article></div>';

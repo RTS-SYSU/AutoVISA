@@ -10,15 +10,15 @@ const skillFile=path.resolve(__dirname,'../artifacts/reasoning-skills/library.js
 const tasks=new Map();
 require('./project-cleanup.cjs').track(tasks, job => job.stage === 'running');
 const digest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
-/** @type {object[]} Published built-ins, including revisions referenced by older runs. */
 const builtinSkills=require('../skills/builtin-reasoning.json');
-const currentDefaults=builtinSkills.filter(skill=>stages.includes(skill.stage)&&skill.version===2);
-/** @returns {object[]} All published skill revisions, including the default methods. */
+const proofStages=new Set(builtinSkills.filter(skill=>!stages.includes(skill.stage)).map(skill=>skill.stage));
+/** Return all revisions so saved runs can still use their selected skills. */
 function library(){return builtinSkills.concat(fs.existsSync(skillFile)?JSON.parse(fs.readFileSync(skillFile,'utf8')):[]);}
+function defaultSkill(stage){return builtinSkills.findLast(skill=>skill.stage===stage);}
 function problem(message){throw Object.assign(new Error(message),{status:400});}
 /** @param {object} draft Editable Markdown method. @returns {object} Validated fields. */
 function fields(draft){
-  if(!draft||!builtinSkills.some(skill=>skill.stage===draft.stage)||!draft.name?.trim()||!draft.instructions?.trim())problem('Enter a name, stage and instructions.');
+  if(!draft||![...stages,...proofStages].includes(draft.stage)||!draft.name?.trim()||!draft.instructions?.trim())problem('Enter a name, stage and instructions.');
   return {stage:draft.stage,name:draft.name.trim(),instructions:draft.instructions.trim(),example:String(draft.example||'').trim(),...Object.fromEntries(['when','method','acceptance'].filter(k=>draft[k]?.trim()).map(k=>[k,draft[k].trim()]))};
 }
 /** @param {object} draft New skill or an edit with the revision originally opened. */
@@ -34,8 +34,7 @@ function save(draft){
 const text={type:'string'},strings={type:'array',items:text};
 const object=properties=>({type:'object',properties,additionalProperties:false,required:Object.keys(properties)});
 const array=items=>({type:'array',items});
-const line=object({operation:text,formula:text,sources:strings});
-const node=object({...graphs.readingFields,id:text,title:text,parents:strings,formula:text,summaryFormula:text,reason:text,sources:strings,premises:strings,structure:text,calculations:array(line),requires:strings});
+const node=object({...graphs.readingFields,...graphs.reasoningEvidenceFields,id:text,title:text,parents:strings,formula:text,summaryFormula:text,reason:text,sources:strings,structure:text});
 const pair=object({forward:text,supports:array(object({id:text,role:text})),backward:text,branch:text,status:{type:'string',enum:['Matches','Conditional','Gap']},available:text,required:text,condition:text,sources:strings});
 /** Public inputs for each direction are also displayed in the configuration editor. */
 const inputs={forward:'Model, assumptions and analysis method',backward:'Goals, model, assumptions and analysis definitions',alignment:'Saved forward and backward steps and their source statements'};
@@ -55,13 +54,14 @@ function requireRefs(refs,allowed){
 async function direction(stage,ir,skill,generate,formal,findings=[]){
   const rows=ir.items.filter(sections[stage]),sources=new Map(rows.map(r=>[r.id,r.section])),seen=new Set();
   const prefix=stage==='forward'?'F':'B';
-  const result=await generate(prompt(skill,graphs.readingContract+' Generate the DAG steps justified by the inputs. Cover each selected goal in the backward direction; use separate roots when the goals are independent. IDs are '+prefix+'1, '+prefix+'2, etc. Parents must precede children. Roots must cite '+(stage==='forward'?'model or assumptions':'a goal')+'. Give explicit premises and at least two sourced calculations per step.'),{reviewFindings:findings,sources:sourceRows({items:rows}),formalContext:formal?.typecheck?.checked?{...formal.context,goals:stage==='forward'?[]:formal.context.goals}:null},object({steps:array(node)}),stage+'_steps');
+  const contract=graphs.readingContract+' '+graphs.reasoningEvidenceContract+' Generate the DAG steps justified by the inputs. Cover each selected goal in the backward direction and use separate roots for independent goals. IDs are '+prefix+'1, '+prefix+'2, etc. Parents must precede children. Roots must cite '+(stage==='forward'?'model or assumptions':'a goal')+'.';
+  const result=await generate(prompt(skill,contract),{reviewFindings:findings,sources:sourceRows({items:rows}),formalContext:formal?.typecheck?.checked?{...formal.context,goals:stage==='forward'?[]:formal.context.goals}:null},object({steps:array(node)}),stage+'_steps');
   if(!result.steps?.length)problem('The model returned an empty reasoning graph.');
   for(const [i,n] of result.steps.entries()){
     requireRefs(n.sources,sources);
-    if(n.id!==prefix+(i+1)||n.parents.some(p=>!seen.has(p))||!n.formula.trim()||!n.premises.length||n.calculations.length<2)problem('The model returned incomplete steps or an invalid dependency.');
+    if(n.id!==prefix+(i+1)||n.parents.some(p=>!seen.has(p))||![n.title,n.formula,n.reason].every(text=>text.trim()))problem('The model returned an incomplete step or an invalid dependency.');
     if(!n.parents.length&&!n.sources.some(id=>stage==='forward'?['model','assumptions'].includes(sources.get(id)):sources.get(id)==='goal'))problem('A root step is missing its starting evidence.');
-    for(const c of n.calculations)requireRefs(c.sources,sources);
+    if(!graphs.validReasoningEvidence(n,sources))problem('Incomplete reasoning evidence at '+n.id+'.');
     seen.add(n.id);
   }
   return result.steps;
@@ -94,7 +94,7 @@ function start(data,generate,environment){
   if(trial&&!stages.includes(trial.stage))problem('Use this skill on its proof or audit page.');
   const available=library(), chosen={};
   for(const stage of stages){
-    const sel=data.setup?.[stage]||(review&&base.workflow?.[stage]?.skill)||currentDefaults.find(s=>s.stage===stage);
+    const sel=data.setup?.[stage]||(review&&base.workflow?.[stage]?.skill)||defaultSkill(stage);
     chosen[stage]=available.find(s=>s.id===sel.id&&s.version===sel.version&&s.stage===stage);
     if(!chosen[stage])problem('One selected skill revision is unavailable.');
   }
@@ -160,4 +160,4 @@ function adopt(data){
   task.adopted=graphs.publish({...base,created:new Date().toISOString(),...task.environment,parentVersion:base.version,workflow,changed:['alignment'],connections});
   return {version:task.adopted};
 }
-module.exports={library,save,start,progress,adopt,inputs};
+module.exports={library,defaultSkill,save,start,progress,adopt,inputs};

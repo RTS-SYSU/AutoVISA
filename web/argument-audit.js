@@ -11,13 +11,13 @@ function createArgumentAudit({request,esc,refresh}){
     return preferences.get(key);
   }
   /** @param {object} d Run binding. @param {string} action Explicit launch or status refresh. */
-  async function load(d,action='status',selection={}){
+  async function load(d,action='status'){
     const id=identity(d),previous=reports.get(id),settings=options(d);
     clearTimeout(timers.get(id));
     reports.set(id,{...previous,stage:'loading'});if(action!=='status')refresh();
     try{
       const route={status:'argument-review-status',proof:'argument-review',audit:'start-audit'}[action];
-      const report=await request(route,{...d,...settings,...selection,proofAttempt:previous?.attempt});
+      const report=await request(route,{...d,...settings,proofAttempt:previous?.attempt});
       reports.set(id,report);histories.delete(id);
       if(report.stage==='running'||report.audit?.stage==='running')timers.set(id,setTimeout(()=>load(d),2000));
     }catch(e){reports.set(id,{stage:'error',issue:e.message});}
@@ -35,200 +35,25 @@ function createArgumentAudit({request,esc,refresh}){
   names.audit='Audit';
   /** @param {object} d Run identity. @param {string} anchor Optional evidence section. */
   function details(d,anchor=''){return '?'+esc(new URLSearchParams({view:'proof-details',project:d.project,run:d.run,version:d.version}).toString())+(anchor?'#'+anchor:'');}
-  /** @param {string} attempt Historic UTC timestamp followed by its unique suffix.
-   * @returns {string} Local date and time to distinguish retries of the same run.
-   */
-  function attemptTime(attempt){
-    const match=/^(\d{4}-\d\d-\d\dT\d\d)-(\d\d)-(\d\d\.\d{3}Z)/.exec(attempt||'');
-    if(!match)return '';
-    const date=new Date(match[1]+':'+match[2]+':'+match[3]);
-    return date.toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-  }
-  /** @param {object} previous Compact outcome recorded for the preceding proof attempt. */
-  function previousLine(previous){
-    if(!previous)return '';
-    let outcome;
-    if(previous.stage==='interrupted')outcome='Interrupted by a service restart.';
-    else if(previous.questions)outcome='Stopped with '+previous.questions+' model clarification item(s).';
-    else if(previous.issue)outcome=previous.issue;
-    else if(previous.finalChecked)outcome='Final theorem verified.';
-    else if(previous.open)outcome=previous.open+' obligation(s) remained open.';
-    else if(previous.scope==='model'&&previous.modelChecked)outcome='Formal model checked.';
-    else outcome='Recorded status: '+previous.stage+'.';
-    return '<p><small>'+esc(attemptTime(previous.attempt))+' — '+esc(outcome)+'</small></p>';
-  }
-  /** @param {object} report Current attempt only. @returns {string} Its observed stage and next action. */
-  function currentMessage(report){
-    const operation=report.progress?.operation;
-    if(report.stage==='running'){
-      if(operation==='prepare-model')return 'Waiting for the model response. Rocq checking has not started. This page updates automatically.';
-      if(operation==='check-model')return 'Rocq is type-checking the formal model. This page updates automatically.';
-      if(operation==='prepare-statements')return 'Preparing statements for the selected obligations. This page updates automatically.';
-      return 'Checks are in progress. This page updates automatically.';
-    }
-    if(report.stage==='open'&&report.context?.unresolved?.length)
-      return 'Review the '+report.context.unresolved.length+' model clarification '+(report.context.unresolved.length===1?'item':'items')+' in Formal model. Rocq checking has not started.';
-    if(report.stage==='interrupted'||report.stage==='open')return report.issue?.split('\n')[0]||'Open the diagnostic below for this attempt.';
-    if(report.stage==='ready'&&report.scope==='model')return 'Rocq checked the model. Choose a lemma or the final theorem to continue.';
-    return '';
-  }
-  /** Render counts from completed checker receipts in the most recent recorded round.
-   * @param {object} report Saved attempt or an idle state. @param {object} structure DAG of this edition.
-   * @returns {string} Stage indicator and accessible obligation counter.
-   */
-  function proofProgress(report,structure){
-    const rounds=report.rounds||[], rows=rounds.at(-1)||[], total=structure.lemmas.length+1;
-    const verified=rows.filter(row=>row.checked).length, root=rows.find(row=>row.id==='target_claim');
-    const progress=report.progress||{}, idle=report.stage==='idle', running=report.stage==='running';
-    /** @type {boolean} A stopped or partially completed attempt still needs user attention. */
-    const blocked=['open','interrupted'].includes(report.stage)||(!running&&rows.some(row=>!row.checked));
-    const modelOnly=report.scope==='model'&&report.typecheck?.checked;
-    const stage=(!running&&root)||progress.operation==='check-target'?2:
-      modelOnly||(!rounds.length&&!report.typecheck?.checked)?0:1;
-    const stages=['Formal model','Lemmas & subgoals','Final theorem'];
-    const selected=structure.lemmas.find(node=>node.id===progress.step);
-    const checkingNode=progress.operation==='check-lemma'&&selected?'Checking '+selected.id+' · '+selected.title+'.':'';
-    const time=attemptTime(report.attempt);
-    /** @type {string} Only a positive checker receipt for the root establishes theorem success. */
-    const headline=root?.checked?'Proof verified':idle?'Ready to start':running?'Proof in progress':
-      report.stage==='interrupted'?'Proof interrupted':report.stage==='open'?'Proof stopped':
-      blocked?'Proof needs attention':modelOnly?'Formal model checked':'Selected checks complete';
-    const tone=root?.checked?'verified':idle?'idle':running?'running':blocked?'blocked':'partial';
-    const verdict=root?.checked?'Verified by Rocq':root?'Open':progress.operation==='check-target'&&running?'Checking in Rocq':'Not yet verified';
-    const count=rows.length+' / '+total;
-    const message=checkingNode&&running?checkingNode:currentMessage(report);
-    const round=progress.round>1?' · Round '+progress.round:'';
-    return '<section class="proof-progress" data-tone="'+tone+'" aria-label="Proof progress">'+
-      '<div class="proof-heading"><div><p class="proof-stage">Step '+(stage+1)+' of 3 · '+esc(stages[stage]+round)+'</p>'+
-      '<h3 role="status">'+esc(headline)+'</h3></div><div class="proof-verdict"><span>Final theorem</span><strong>'+esc(verdict)+'</strong></div></div>'+
-      (message?'<p class="proof-message">'+esc(message)+'</p>':'')+
-      '<div class="proof-count"><span><strong>'+count+'</strong> obligations checked</span>'+
-      (rows.length?'<span>'+verified+' verified · '+(rows.length-verified)+' open</span>':'')+'</div>'+
-      '<progress aria-label="Obligations checked in the latest round" value="'+rows.length+'" max="'+total+'"></progress>'+
-      (time?'<div class="proof-attempt">Attempt started · '+esc(time)+'</div>':'')+
-      (report.previousProof?'<details class="proof-history"><summary>Previous attempt</summary>'+previousLine(report.previousProof)+'</details>':'')+'</section>';
-  }
-  /** @type {Map<string,object>} Keep the reader's selected stage and node across status polls. */
-  const selections=new Map();
-  /** @param {object} d Frozen run binding. @param {string} stage Stage name. @param {string} node Selected DAG identifier. */
-  function select(d,stage,node){
-    selections.set(identity(d),{stage,node});refresh();
-  }
-  /** @param {object} structure Saved lemmas and support edges, including multiple supporters per goal. */
-  function topology(structure){
-    const nodes=new Map(structure.lemmas.map(node=>[node.id,node]));
-    nodes.set('target_claim',{id:'target_claim',title:structure.targets.map(t=>t.title).join(' · ')});
-    const edges=[...structure.dependencies,...(structure.roots||[]).map(from=>({from,to:'target_claim'}))];
-    const parents=new Map([...nodes.keys()].map(id=>[id,new Set()]));
-    for(const {from,to} of edges)if(nodes.has(from)&&nodes.has(to))parents.get(to).add(from);
-    return {nodes,parents};
-  }
-  /** Draw the frozen support DAG with prerequisites above their consumers.
-   * @param {object} dag Node and predecessor maps. @param {string} selected Focused node.
-   * @param {Map} receipts Checker results from this attempt. @param {object} d Run binding.
-   */
-  function plot(dag,selected,receipts,d){
-    const levels=new Map(),layers=[];
-    // Both directional graphs use immutable topological dependencies.
-    function level(id){
-      if(!levels.has(id))levels.set(id,1+Math.max(-1,...[...dag.parents.get(id)].map(level)));
-      return levels.get(id);
-    }
-    for(const id of dag.nodes.keys())(layers[level(id)]??=[]).push(id);
-    const width=Math.max(310,...layers.map(layer=>layer.length*76)),height=layers.length*61+12,points=new Map();
-    layers.forEach((layer,row)=>layer.forEach((id,i)=>points.set(id,{x:width/2+(i-(layer.length-1)/2)*76,y:30+(layers.length-1-row)*61})));
-    let paths='';
-    for(const [id,deps] of dag.parents)for(const parent of deps){
-      const a=points.get(parent),b=points.get(id),y=(a.y+b.y)/2,focus=id===selected||parent===selected;
-      paths+='<path class="'+(focus?'focus':'')+'" d="M '+a.x+' '+(a.y-14)+' C '+a.x+' '+y+' '+b.x+' '+y+' '+b.x+' '+(b.y+18)+'" marker-end="url(#proof-arrow)"/>';
-    }
-    const buttons=[...points].map(([id,{x,y}])=>{
-      const receipt=receipts.get(id),status=receipt?(receipt.checked?'verified':'open'):'pending',node=dag.nodes.get(id);
-      return '<button type="button" class="dag-dot '+status+'" data-proof-node="'+esc(id)+'" data-version="'+d.version+'" aria-pressed="'+(id===selected)+'" aria-label="'+esc(node.title+' · '+status)+'" title="'+esc(node.title+' · '+status)+'" style="left:'+x+'px;top:'+y+'px">'+esc(id==='target_claim'?'Final':id)+'</button>';
-    }).join('');
-    return '<div class="proof-graph-scroll" aria-label="Proof dependency graph"><div class="proof-graph" style="width:'+width+'px;height:'+height+'px"><svg aria-hidden="true" width="'+width+'" height="'+height+'"><defs><marker id="proof-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L6 3 L0 6Z"/></marker></defs><g>'+paths+'</g></svg>'+buttons+'</div></div>';
-  }
-  /** Summarize this edition's model, local checks and final receipt independently.
-   * @param {object} report Current proof attempt.
-   * @param {boolean} ready Whether the bound formal context has passed Rocq.
-   * @param {Map} receipts Latest round's checks, keyed by node ID.
-   * @returns {object} Stage labels used in navigation and the selected panel.
-   */
-  function stageLabels(report,ready,receipts){
-    const running=report.stage==='running',operation=report.progress?.operation;
-    const stopped=['open','interrupted'].includes(report.stage);
-    const local=[...receipts.values()].filter(row=>row.id!=='target_claim');
-    const final=receipts.get('target_claim');
-    return {
-      model:ready?'Checked by Rocq':running?(operation==='check-model'?'Checking in Rocq':'Preparing model'):
-        stopped?(report.context?.unresolved?.length?'Needs clarification':'Stopped'):'Not started',
-      lemmas:running&&['prepare-statements','check-lemma'].includes(operation)?'In progress':
-        local.length?local.filter(row=>row.checked).length+' verified · '+local.filter(row=>!row.checked).length+' open':
-        ready?(stopped&&operation==='prepare-statements'?'Stopped':'Not started'):'Waiting for model',
-      final:running&&operation==='check-target'?'Checking in Rocq':final?(final.checked?'Verified by Rocq':'Open'):
-        stopped&&operation==='check-target'?'Stopped':ready?'Not checked':'Waiting for model'
-    };
-  }
-  /** @param {object} d Frozen edition. @param {object} structure Immutable proof topology. */
-  function panel(d,structure){
-    const r=current(d),busy=r.stage==='running'||r.audit?.stage==='running';
+  /** @param {object} d Frozen run and edition. */
+  function panel(d){
+    const r=current(d),root=r.rounds?.at(-1)?.find(x=>x.id==='target_claim'),busy=r.stage==='running'||r.audit?.stage==='running';
     if(r.stage==='loading')return '<p role="status">Reading proof status…</p>';
-    if(r.stage==='error')return '<h3>Proof status unavailable</h3><p>'+esc(r.issue)+'</p><p>Reload to see the latest recorded attempt.</p>'+start(d,'status','Reload status');
-    const dag=topology(structure),ready=Boolean(r.typecheck?.checked||structure.modelChecked);
-    const view=selections.get(identity(d))||{stage:ready?'final':'model'};
-    const stage=view.stage,first=structure.lemmas[0]?.id;
-    const id=stage==='final'?'target_claim':dag.nodes.has(view.node)?view.node:first;
-    const receipt=new Map((r.rounds?.at(-1)||[]).map(n=>[n.id,n])),node=dag.nodes.get(id);
-    const tab=(key,title)=>'<button class="control" type="button" data-proof-stage="'+key+'" data-version="'+d.version+'" aria-pressed="'+(stage===key)+'">'+title+'</button>';
-    const launch=(scope,label,primary=false)=>'<button type="button" class="control '+(primary?'primary':'')+'" data-workflow="proof" data-proof-scope="'+scope+'" data-proof-target="'+esc(id||'')+'" data-version="'+d.version+'" '+(busy?'disabled':'')+'>'+label+'</button>';
-    /** @type {object} The stage selected for inspection can differ from the running stage. */
-    const labels=stageLabels(r,ready,receipt);
-    const titles={model:'Formal model',lemmas:'Lemmas & subgoals',final:'Final theorem'};
-    const rail=Object.keys(titles).map(key=>tab(key,'<strong>'+titles[key]+'</strong><small>'+esc(labels[key])+'</small>')).join('');
-    const issues=r.context?.unresolved||[];
-    const blocked=['open','interrupted'].includes(r.stage);
-    const network=blocked&&/OpenAI|network|proxy|connection/i.test(r.issue||'');
-    const revise='<button type="button" class="control" data-module-action="revise">Revise inputs</button>';
-    let body='',action='',alternatives='';
-    if(stage==='model'){
-      if(ready){
-        body='<p>The model and theorem statement passed the Rocq type check.</p>';
-        action=tab('lemmas','Choose a lemma');
-      }else if(!busy&&blocked&&issues.length){
-        body='<p>Review the definitions needed for this theorem. Revise the inputs if an assumption must change.</p>';
-        action='<details class="stage-issues"><summary>Review model issues ('+issues.length+')</summary><ul>'+
-          issues.map(issue=>'<li>'+esc(issue)+'</li>').join('')+'</ul><div class="action-row">'+revise+launch('model','Rebuild for selected theorem')+'</div></details>';
-      }else if(!busy&&network){
-        body='<p>The connection stopped before the model check finished.</p>';
-        action='<button type="button" class="control primary" data-module-action="openai-settings">Check connection</button>';
-        alternatives=launch('model','Retry model');
-      }else{
-        body='<p>'+esc(busy?(r.stage==='running'?currentMessage(r):'The audit is running.'):'Check the model assumptions and theorem statement in Rocq.')+'</p>';
-        if(!busy)action=launch('model',blocked?'Retry model':'Check formal model',true);
-        if(blocked)alternatives=revise;
-      }
-    }else{
-      const deps=[...dag.parents.get(id)||[]],row=receipt.get(id);
-      const status=row?(row.checked?'Verified':'Open'):ready?'Not checked':'Waiting for formal model';
-      body='<div class="proof-dag-layout"><section>'+plot(dag,id,receipt,d)+'</section><section class="proof-node"><h4>'+esc((id==='target_claim'?'Final theorem':id)+' · '+(node?.title||''))+'</h4><p>'+esc(status)+'</p>'+
-        (deps.length?'<p>Direct support · '+esc(deps.join(', '))+'</p>':'')+'</section></div>';
-      if(!busy)action=!ready?tab('model','Open formal model'):id==='target_claim'&&row?.checked?
-        nav('expert-audit','Open expert audit'):launch('node',id==='target_claim'?'Check theorem with supporting steps':'Check selected node with support',true);
-      if(ready&&stage==='lemmas')alternatives=launch('group','Check all lemmas & subgoals');
-    }
-    const diagnostic=blocked||[...receipt.values()].some(row=>!row.checked)?'<a href="'+details(d,'blocker')+'">View diagnostic</a>':'';
-    const more='<details class="proof-more"><summary>More actions</summary><div class="action-row">'+alternatives+
-      launch('auto','Run full proof automatically')+setup(d,'proof')+diagnostic+'</div></details>';
-    return proofProgress(r,structure)+'<div class="proof-browser"><nav aria-label="Proof stages" class="proof-stage-list">'+rail+'</nav>'+
-      '<section class="proof-stage-body"><header><h3>'+titles[stage]+'</h3><strong class="stage-result">'+esc(labels[stage])+'</strong></header>'+
-      body+action+more+'</section></div>';
+    if(r.stage==='error')return '<p>'+esc(r.issue)+'</p>'+start(d,'status','Reload status');
+    const pending=!root?.checked&&(root?.kernelChecked?root:r.rounds?.at(-1)?.find(n=>!n.checked));
+    const auditIssue=pending?.kernelChecked?(pending.assumptionAudit?'Assumption audit failed · '+pending.id:'Assumption audit required · '+pending.id):'';
+    const blocked=r.issue||auditIssue||(pending?'Open obligation · '+pending.id:'');
+    const state=r.stage==='running'?(r.lastStep?'Constructing proofs · last checked '+r.lastStep:r.phase):root?.checked?'Proof verified':r.stage==='idle'?'Ready to start':'Needs attention';
+    const primary=root?.checked?nav('expert-audit','Open expert audit'):blocked?'<a class="control primary" href="'+details(d,'blocker')+'">View blocker</a>':start(d,'proof','Start proof');
+    const evidence=blocked||(root?.assumptionAudit?.passed?'Kernel check and assumption audit passed.':'');
+    return '<section class="audit-summary"><div role="status"><h3>'+esc(state)+'</h3>'+(evidence?'<p>'+esc(evidence.split('\n')[0].slice(0,240))+'</p>':'')+'</div></section><div class="action-row">'+(busy?'':primary+(blocked?start(d,'proof','Retry proof'):'')+setup(d,'proof'))+'</div>';
   }
   /** @param {object} d Frozen edition. @param {object} structure Source register. @param {object} initial State before a graph exists. */
   function expert(d,structure,initial){
     const p=initial||current(d),a=p.audit,eligible=p.typecheck?.checked&&p.rounds?.some(rows=>rows.length);
     const busy=p.stage==='running'||a?.stage==='running',settings=options(d);
     const root=p.rounds?.at(-1)?.find(x=>x.id==='target_claim');
-    const state=p.stage==='loading'?'Reading audit status…':p.stage==='empty'?'Add project inputs':p.stage==='underived'?'Waiting for derivation':p.stage==='error'?'Could not read status':(p.stale||p.previousAudit)?'Changes since last audit':busy?(a?.stage==='running'?'Reviewing · round '+(a.auditRounds?.length||1):'Proof in progress'):a?.stage==='ready'?'Audit complete · '+(a.auditRounds?.length||1)+' round(s)':a?.stage==='open'||a?.stage==='interrupted'?'Audit interrupted':eligible?(root?.checked?'Ready to audit':'Reviewing a partial proof'):'A checked formal model and a proof attempt are needed.';
+    const state=p.stage==='loading'?'Reading audit status…':p.stage==='empty'?'Add project inputs':p.stage==='underived'?'Waiting for derivation':p.stage==='error'?'Could not read status':(p.stale||p.previousAudit)?'Changes since last audit':busy?(a?.stage==='running'?'Reviewing · round '+(a.auditRounds?.length||1):'Proof in progress'):a?.stage==='ready'?'Audit complete · '+(a.auditRounds?.length||1)+' round(s)':a?.stage==='open'||a?.stage==='interrupted'?'Audit interrupted':eligible?(root.checked?'Ready to audit':'Reviewing a partial proof'):'A checked formal model and a proof attempt are needed.';
     const cards=roles.map(role=>{
       const row=a?.reviews?.find(r=>r.role===role);
       const status=p.stale?'Earlier attempt':row?.assessment==='insufficient'?'Insufficient evidence':row?row.findings.length?row.findings.length+' findings':'No findings':a?.skills&&!a.skills[role]?'Not selected':'Not started';
@@ -250,8 +75,10 @@ function createArgumentAudit({request,esc,refresh}){
     const dialog=document.createElement('dialog');dialog.className='skill-dialog';
     dialog.innerHTML='<form><h2>'+names[mode]+' settings</h2>'+stages.map(role=>{
       const choices=Array.from(new Map(skills.filter(s=>s.stage===role).map(s=>[s.id,s])).values());
-      const ref=opts.skills[role]||{id:'default-'+role,version:1};
-      return '<section><label>'+(mode==='audit'?'<input type="checkbox" name="role" value="'+role+'" '+(opts.roles.includes(role)?'checked':'')+'> ':'')+names[role]+'</label><select aria-label="'+names[role]+' skill" name="'+role+'">'+choices.map(s=>'<option value="'+esc(s.id+'@'+s.version)+'" '+(s.id===ref.id?'selected':'')+'>'+esc(s.name)+'</option>').join('')+'</select></section>';
+      const ref=opts.skills[role]||{id:'default-'+role};
+      const pinned=skills.find(s=>s.stage===role&&s.id===ref.id&&s.version===ref.version);
+      if(pinned&&!choices.includes(pinned))choices.push(pinned);
+      return '<section><label>'+(mode==='audit'?'<input type="checkbox" name="role" value="'+role+'" '+(opts.roles.includes(role)?'checked':'')+'> ':'')+names[role]+'</label><select aria-label="'+names[role]+' skill" name="'+role+'">'+choices.map(s=>'<option value="'+esc(s.id+'@'+s.version)+'" '+(s.id===ref.id&&(!ref.version||s.version===ref.version)?'selected':'')+'>'+esc(s.name)+(choices.filter(choice=>choice.id===s.id).length>1?' · revision '+s.version:'')+'</option>').join('')+'</select></section>';
     }).join('')+'<p role="status"></p><footer><button type="button">Cancel</button><button>Apply</button></footer></form>';
     document.body.append(dialog);dialog.onclose=()=>dialog.remove();dialog.querySelector('button').onclick=()=>dialog.close();
     dialog.querySelector('form').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target),selected=f.getAll('role');
@@ -277,5 +104,5 @@ function createArgumentAudit({request,esc,refresh}){
         '<details><summary>Evidence and settings</summary><pre>'+esc(JSON.stringify(r,null,2))+'</pre></details></section>';
     }).join('');
   }
-  return {load,current,select,panel,expert,configure,options,details,record,rootChecked:d=>Boolean(current(d).rounds?.at(-1)?.find(x=>x.id==='target_claim')?.checked)};
+  return {load,current,panel,expert,configure,options,details,record,rootChecked:d=>Boolean(current(d).rounds?.at(-1)?.find(x=>x.id==='target_claim')?.checked)};
 }
